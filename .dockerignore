@@ -1,0 +1,12 @@
+.git*
+.idea*
+*.md
+.venv/
+.local_runtime/
+tmp/
+Model catalog/
+output/
+ui/node_modules/
+ui/dist/
+**/__pycache__/
+*.pyc
