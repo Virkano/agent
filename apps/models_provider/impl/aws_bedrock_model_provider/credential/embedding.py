@@ -7,7 +7,7 @@ from common.exception.app_exception import AppApiException
 from common.forms import BaseForm
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
 from models_provider.impl.aws_bedrock_model_provider.model.embedding import BedrockEmbeddingModel
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class BedrockEmbeddingCredential(BaseForm, BaseModelCredential):
 
@@ -34,7 +34,7 @@ class BedrockEmbeddingCredential(BaseForm, BaseModelCredential):
         except AppApiException:
             raise
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if raise_exception:
                 raise AppApiException(ValidCode.valid_error.value,
                                       _('Verification failed, please check whether the parameters are correct: {error}').format(

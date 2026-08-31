@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： login.py
     @date：2025/4/14 10:30
     @desc:

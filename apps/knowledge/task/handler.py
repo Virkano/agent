@@ -5,7 +5,7 @@ import re
 import traceback
 
 from common.utils.fork import ChildLink, Fork
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import get_split_model
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
@@ -36,7 +36,7 @@ def get_save_handler(knowledge_id, user_id, selector):
                     with_valid=True,
                 )
             except Exception as e:
-                maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
 
     return handler
 
@@ -71,7 +71,7 @@ def get_sync_handler(knowledge_id, user_id):
                         with_valid=True,
                     )
             except Exception as e:
-                maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
 
     return handler
 
@@ -94,7 +94,7 @@ def get_sync_web_document_handler(knowledge_id, user_id):
                     with_valid=True,
                 )
             except Exception as e:
-                maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
         else:
             Document(
                 name=source_url[0:128],
@@ -131,4 +131,4 @@ def save_problem(knowledge_id, document_id, paragraph_id, problem):
             }
         ).save(instance={"content": problem}, with_valid=True)
     except Exception as e:
-        maxkb_logger.error(_("Association problem failed {error}").format(error=str(e)))
+        telecom_ai_logger.error(_("Association problem failed {error}").format(error=str(e)))

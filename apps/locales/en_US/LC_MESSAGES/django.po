@@ -3210,7 +3210,7 @@ msgstr ""
 msgid "Get the list of questions by page"
 msgstr ""
 
-#: apps/maxkb/settings/base.py:101
+#: apps/telecom_ai_agent/settings/base.py:101
 msgid "Intelligent customer service platform"
 msgstr ""
 
@@ -6487,7 +6487,7 @@ msgstr ""
 
 #: apps/system_manage/views/system_profile.py:22
 #: apps/system_manage/views/system_profile.py:23
-msgid "Get MaxKB related information"
+msgid "Get Telecom AI Agent related information"
 msgstr ""
 
 #: apps/system_manage/views/system_profile.py:25

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： login.py
 @date：2025/4/14 11:08
 @desc:
@@ -24,9 +24,9 @@ from common.database_model_manage.database_model_manage import DatabaseModelMana
 from common.exception.app_exception import AppApiException
 from common.utils.common import password_encrypt, password_verify, needs_password_upgrade, get_random_chars
 from common.utils.rsa_util import decrypt
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from users.models import User
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class LoginRequest(serializers.Serializer):
@@ -109,7 +109,7 @@ class LoginSerializer(serializers.Serializer):
                 if isinstance(decrypted_data, dict):
                     instance.update(decrypted_data)
             except Exception as e:
-                maxkb_logger.exception("Failed to decrypt/parse encryptedData for user %s: %s", username, e)
+                telecom_ai_logger.exception("Failed to decrypt/parse encryptedData for user %s: %s", username, e)
                 raise AppApiException(500, _("Invalid encrypted data"))
 
         try:
@@ -221,14 +221,14 @@ class LoginSerializer(serializers.Serializer):
         try:
             record_login_fail(username)
         except Exception:
-            maxkb_logger.exception("Failed to record login fail for user %s", username)
+            telecom_ai_logger.exception("Failed to record login fail for user %s", username)
 
         # 记录用于锁定判断的失败计数（按 lock_time 作为初始化过期分钟）
         lock_fail_count = 0
         try:
             lock_fail_count = record_login_fail_lock(username, lock_time)
         except Exception:
-            maxkb_logger.exception("Failed to record lock fail count for user %s", username)
+            telecom_ai_logger.exception("Failed to record lock fail count for user %s", username)
 
         # 如果不是企业版或禁用锁定功能，直接返回（但计数已经记录）
         if not is_license_valid or failed_attempts <= 0:
@@ -250,11 +250,11 @@ class LoginSerializer(serializers.Serializer):
                 system_get_key(f"system_{username}_lock"), 1, timeout=lock_time * 60, version=system_version
             )
             if locked:
-                maxkb_logger.info("Account %s locked by setting cache key", username)
+                telecom_ai_logger.info("Account %s locked by setting cache key", username)
             else:
-                maxkb_logger.info("Account %s lock key already present (another request set it)", username)
+                telecom_ai_logger.info("Account %s lock key already present (another request set it)", username)
         except Exception:
-            maxkb_logger.exception("Failed to set lock key for user %s", username)
+            telecom_ai_logger.exception("Failed to set lock key for user %s", username)
 
         raise AppApiException(
             1005, _("This account has been locked for %s minutes, please try again later") % lock_time

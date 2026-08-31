@@ -92,7 +92,7 @@ class IModelProvider(ABC):
         raise AppApiException(500, _('The current platform does not support downloading models'))
 
 
-class MaxKBBaseModel(ABC):
+class TelecomAIBaseModel(ABC):
     @staticmethod
     @abstractmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
@@ -158,7 +158,7 @@ class ModelTypeConst(Enum):
 
 class ModelInfo:
     def __init__(self, name: str, desc: str, model_type: ModelTypeConst, model_credential: BaseModelCredential,
-                 model_class: Type[MaxKBBaseModel],
+                 model_class: Type[TelecomAIBaseModel],
                  **keywords):
         self.name = name
         self.desc = desc

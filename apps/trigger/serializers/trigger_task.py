@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： trigger_task.py
     @date：2026/1/14 16:34
     @desc:
@@ -18,7 +18,7 @@ from common.db.search import native_page_search, get_dynamics_model
 from common.exception.app_exception import AppApiException
 from common.utils.common import get_file_content
 from knowledge.models.knowledge_action import State
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from tools.models import ToolRecord
 from trigger.models import TriggerTask, TaskRecord, Trigger
 

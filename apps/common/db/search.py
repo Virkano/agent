@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： search.py
     @date：2023/10/7 18:20
     @desc:

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： application_task.py
     @date：2026/1/14 19:14
     @desc:
@@ -15,7 +15,7 @@ from django.db.models import QuerySet
 
 from application.models import ChatUserType, Chat, ChatRecord, ChatSourceChoices, Application
 from chat.serializers.chat import ChatSerializers
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from knowledge.models.knowledge_action import State
 from trigger.handler.base_task import BaseTriggerTask
 from trigger.models import TaskRecord, TriggerTask
@@ -243,7 +243,7 @@ class ApplicationTask(BaseTriggerTask):
                                                                             'input': parameters, 'output': None,
                                                                             'err_message': 'Error: An unknown error occurred during the execution of the conversation'})
         except Exception as e:
-            maxkb_logger.error(f"Application execution error: {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Application execution error: {traceback.format_exc()}")
             QuerySet(TaskRecord).filter(id=task_record_id).update(
                 state=State.FAILURE,
                 run_time=time.time() - start_time,

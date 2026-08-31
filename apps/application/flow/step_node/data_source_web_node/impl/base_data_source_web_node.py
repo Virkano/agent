@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： base_data_source_web_node.py
     @date：2025/11/12 13:47
@@ -15,7 +15,7 @@ from application.flow.step_node.data_source_web_node.i_data_source_web_node impo
 from common import forms
 from common.forms import BaseForm
 from common.utils.fork import ForkManage, Fork, ChildLink
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class BaseDataSourceWebNodeForm(BaseForm):
@@ -44,7 +44,7 @@ def get_collect_handler(workflow_manage):
                 })
 
             except Exception as e:
-                maxkb_logger.error(f'{str(e)}:{traceback.format_exc()}')
+                telecom_ai_logger.error(f'{str(e)}:{traceback.format_exc()}')
         if workflow_manage.is_the_task_interrupted():
             raise InterruptedTaskException('Task interrupted')
 
@@ -80,7 +80,7 @@ class BaseDataSourceWebNode(IDataSourceWebNode):
             if isinstance(e, InterruptedTaskException):
                 return NodeResult({'document_list': document_list, 'source_url': source_url, 'selector': selector},
                                   self.workflow_manage.params.get('knowledge_base') or {})
-            maxkb_logger.error(_('data source web node:{node_id} error{error}{traceback}').format(
+            telecom_ai_logger.error(_('data source web node:{node_id} error{error}{traceback}').format(
                 node_id=node_id, error=str(e), traceback=traceback.format_exc()))
 
     def get_details(self, index: int, **kwargs):

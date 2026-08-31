@@ -12,7 +12,7 @@ import subprocess
 import filecmp
 
 
-from common.utils.logger import maxkb_logger as logger
+from common.utils.logger import telecom_ai_logger as logger
 
 
 class LocaleManager:
@@ -25,11 +25,11 @@ class LocaleManager:
         Args:
             external_locale_path: 外置语言包路径，默认从配置读取
         """
-        from maxkb.const import CONFIG, PROJECT_DIR
+        from telecom_ai_agent.const import CONFIG, PROJECT_DIR
 
         self.PROJECT_DIR = PROJECT_DIR
         self.external_locale_path = external_locale_path or CONFIG.get(
-            "EXTERNAL_LOCALE_PATH", "/opt/maxkb/local/locales"
+            "EXTERNAL_LOCALE_PATH", "/opt/telecom_ai_agent/local/locales"
         )
 
         # 目录路径

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： application_chat.py
     @date：2025/6/10 13:54
     @desc:

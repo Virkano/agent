@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： static_headers_middleware.py
     @date：2024/3/13 18:26
     @desc:
@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from common.auth import TokenDetails, handles
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 
 content = """
 <!DOCTYPE html>

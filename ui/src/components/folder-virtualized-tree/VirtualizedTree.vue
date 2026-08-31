@@ -5,7 +5,7 @@
     :defaultOpen="false"
     v-bind="$attrs"
     :model-value="filteredTreeData"
-    class="maxkb-virtualized-tree"
+    class="telecom-ai-virtualized-tree"
     @click:node="handleNodeClick"
     @after-drop="onAfterDrop"
     :rootDroppable="false"
@@ -15,7 +15,7 @@
   >
     <template #default="{ node, stat }">
       <div
-        class="flex align-center maxkb-tree-node"
+        class="flex align-center telecom-ai-tree-node"
         :class="currentNodeKey === node.id ? 'is-current' : ''"
       >
         <el-icon
@@ -192,7 +192,7 @@ defineExpose({
 </script>
 
 <style lang="scss">
-.maxkb-virtualized-tree {
+.telecom-ai-virtualized-tree {
   overflow: auto !important;
   scrollbar-gutter: stable;
   // 滚动条
@@ -238,7 +238,7 @@ defineExpose({
     &:hover {
       background: rgba(var(--el-text-color-primary-rgb), 0.1);
     }
-    &:has(.maxkb-tree-node.is-current) {
+    &:has(.telecom-ai-tree-node.is-current) {
       background: var(--el-color-primary-light-9);
       color: var(--el-color-primary);
       font-weight: 500;

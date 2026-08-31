@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： base_tool_workflow_lib_node.py.py
     @date：2026/3/16 13:55
     @desc:

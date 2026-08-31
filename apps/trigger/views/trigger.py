@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： trigger.py
     @date：2026/1/14 11:44

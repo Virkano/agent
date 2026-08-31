@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： i_loop_node.py
     @date：2025/3/11 18:19
     @desc:

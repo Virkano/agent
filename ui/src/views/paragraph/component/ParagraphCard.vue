@@ -137,7 +137,7 @@
       ref="editorRef"
       editorId="preview-only"
       :modelValue="data.content"
-      class="maxkb-md"
+      class="telecom-ai-md"
       style="background: none"
       @clickPreview="handleClickCard(data)"
     />

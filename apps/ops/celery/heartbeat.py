@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from celery.signals import heartbeat_sent, worker_ready, worker_shutdown
-from maxkb.const import CONFIG, PROJECT_DIR
+from telecom_ai_agent.const import CONFIG, PROJECT_DIR
 
 
 def get_tmp_path(filename):

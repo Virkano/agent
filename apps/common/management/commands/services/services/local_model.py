@@ -1,14 +1,14 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： local_model.py
     @date：2024/8/21 13:28
     @desc:
 """
 import subprocess
 
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from .base import BaseService
 from ..hands import *
 
@@ -29,7 +29,7 @@ class GunicornLocalModelService(BaseService):
         worker = CONFIG.get("LOCAL_MODEL_HOST_WORKER", 1)
         max_requests = 10240 if int(worker) > 1 else 0
         cmd = [
-            'gunicorn', 'maxkb.wsgi:application',
+            'gunicorn', 'telecom_ai_agent.wsgi:application',
             '-b', bind,
             '-k', 'gthread',
             '--threads', '200',

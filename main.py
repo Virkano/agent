@@ -12,9 +12,9 @@ APP_DIR = os.path.join(BASE_DIR, 'apps')
 
 os.chdir(BASE_DIR)
 sys.path.insert(0, APP_DIR)
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "maxkb.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "telecom_ai_agent.settings")
 
-from maxkb.env import get_env
+from telecom_ai_agent.env import get_env
 
 
 def collect_static():
@@ -74,7 +74,7 @@ def start_services():
     if args.worker:
         start_args.extend(['--worker', str(args.worker)])
     else:
-        worker = get_env('MAXKB_CORE_WORKER')
+        worker = get_env('TELECOM_AI_CORE_WORKER')
         if isinstance(worker, str) and worker.isdigit():
             start_args.extend(['--worker', worker])
 
@@ -92,20 +92,20 @@ def dev():
     services = args.services if isinstance(args.services, list) else args.services
     if services.__contains__('web'):
         runserver_args = ["0.0.0.0:8080"]
-        if get_env('MAXKB_DJANGO_NORELOAD') in ['1', 'true', 'True']:
+        if get_env('TELECOM_AI_DJANGO_NORELOAD') in ['1', 'true', 'True']:
             runserver_args.append('--noreload')
         management.call_command('runserver', *runserver_args)
     elif services.__contains__('celery'):
         management.call_command('celery', 'celery')
     elif services.__contains__('local_model'):
-        from maxkb.const import CONFIG
+        from telecom_ai_agent.const import CONFIG
         bind = f'{CONFIG.get("LOCAL_MODEL_HOST")}:{CONFIG.get("LOCAL_MODEL_PORT")}'
         management.call_command('runserver', bind)
 
 
 if __name__ == '__main__':
-    os.environ['HF_HOME'] = get_env('MAXKB_HF_HOME', '/opt/maxkb-app/model/base')
-    os.environ['TMPDIR'] = get_env('MAXKB_TMPDIR', '/opt/maxkb-app/tmp')
+    os.environ['HF_HOME'] = get_env('TELECOM_AI_HF_HOME', '/opt/telecom_ai_agent-app/model/base')
+    os.environ['TMPDIR'] = get_env('TELECOM_AI_TMPDIR', '/opt/telecom_ai_agent-app/tmp')
     parser = argparse.ArgumentParser(
         description="""
            qabot service control tools;

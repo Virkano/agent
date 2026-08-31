@@ -18,7 +18,7 @@ from django.core.cache import cache
 from django.db import transaction
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from models_provider.base_model_provider import DownModelChunkStatus, ValidCode
 from models_provider.constants.model_provider_constants import ModelProvideConstants
 from models_provider.models import Model, Status

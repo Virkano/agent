@@ -7,7 +7,7 @@ from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
 from django.utils.translation import gettext_lazy as _
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from models_provider.impl.wenxin_model_provider.model.reranker import QfBgeReranker
 
 
@@ -43,7 +43,7 @@ class QfRerankerCredential(BaseForm, BaseModelCredential):
             test_text = str(_('Hello'))
             model.compress_documents([Document(page_content=test_text)], test_text)
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

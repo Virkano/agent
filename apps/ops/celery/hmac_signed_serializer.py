@@ -4,9 +4,9 @@ import pickle
 import os
 import socket
 from kombu.serialization import register
-from maxkb.env import get_env
+from telecom_ai_agent.env import get_env
 
-_local_secret_key = get_env('MAXKB_HMAC_SIGNED_SERIALIZER_SECRET_KEY', 'default_hmac_signed_serializer_secret_key:' + get_env('MAXKB_VERSION', socket.gethostname()))
+_local_secret_key = get_env('TELECOM_AI_HMAC_SIGNED_SERIALIZER_SECRET_KEY', 'default_hmac_signed_serializer_secret_key:' + get_env('TELECOM_AI_VERSION', socket.gethostname()))
 try:
     from xpack import get_md5
     _local_secret_key = get_md5()

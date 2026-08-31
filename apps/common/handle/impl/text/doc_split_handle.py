@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： text_split_handle.py
     @date：2024/3/27 18:19
     @desc:
@@ -20,7 +20,7 @@ from docx.table import Table
 from docx.text.paragraph import Paragraph
 
 from common.handle.base_split_handle import BaseSplitHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import SplitModel
 from knowledge.models import File
 
@@ -79,7 +79,7 @@ def get_paragraph_element_txt(paragraph_element, doc: Document, images_list, get
             return paragraph_element.text
         return ""
     except Exception as e:
-        maxkb_logger.error(f'Error getting paragraph element text: {e}')
+        telecom_ai_logger.error(f'Error getting paragraph element text: {e}')
     return ""
 
 
@@ -158,7 +158,7 @@ class DocSplitHandle(BaseSplitHandle):
                 return title
 
         except Exception as e:
-            maxkb_logger.error(f"Error processing DOC file: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing DOC file: {e}, {traceback.format_exc()}")
             return paragraph.text
         return get_paragraph_txt(paragraph, doc, images_list, get_image_id)
 
@@ -214,7 +214,7 @@ class DocSplitHandle(BaseSplitHandle):
             else:
                 split_model = SplitModel(default_pattern_list, with_filter=with_filter, limit=limit)
         except BaseException as e:
-            maxkb_logger.error(f"Error processing DOC file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing DOC file {file.name}: {e}, {traceback.format_exc()}")
             return {
                 'name': file_name,
                 'content': []

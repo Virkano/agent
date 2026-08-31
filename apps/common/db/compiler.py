@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： compiler.py
     @date：2023/10/7 10:53
     @desc:

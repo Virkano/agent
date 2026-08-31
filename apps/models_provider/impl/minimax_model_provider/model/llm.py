@@ -1,11 +1,11 @@
 # coding=utf-8
 from typing import Dict
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 
 
-class MiniMaxChatModel(MaxKBBaseModel, BaseChatOpenAI):
+class MiniMaxChatModel(TelecomAIBaseModel, BaseChatOpenAI):
 
     @staticmethod
     def is_cache_model():
@@ -13,7 +13,7 @@ class MiniMaxChatModel(MaxKBBaseModel, BaseChatOpenAI):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         extra_body = optional_params.get('extra_body', {})
         if not isinstance(extra_body, dict):
             extra_body = {}

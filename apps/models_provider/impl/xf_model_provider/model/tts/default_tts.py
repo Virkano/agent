@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：
     @file： default_tts.py
     @date：2025/12/9
@@ -8,11 +8,11 @@
 """
 from typing import Dict
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tts import BaseTextToSpeech
 
 
-class XFSparkDefaultTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
+class XFSparkDefaultTextToSpeech(TelecomAIBaseModel, BaseTextToSpeech):
     """讯飞 TTS 工厂类，根据 api_version 参数路由到具体实现"""
 
     def check_auth(self):

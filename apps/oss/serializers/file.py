@@ -21,7 +21,7 @@ from homepage.serializers.homepage import (
     is_workspace_manage,
 )
 from knowledge.models import Document, File, FileSourceType, Knowledge, PublicFileAccess
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from rest_framework import serializers
 from system_manage.models import WorkspaceUserResourcePermission
 from system_manage.models.resource_mapping import ResourceMapping, ResourceType

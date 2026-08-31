@@ -1,19 +1,19 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/10/16 16:34
     @desc:
 """
 from typing import Dict, List
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 import requests
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class SiliconCloudEmbeddingModel(MaxKBBaseModel):
+class SiliconCloudEmbeddingModel(TelecomAIBaseModel):
     model_name: str
     openai_api_key: str
     base_url: str
@@ -30,7 +30,7 @@ class SiliconCloudEmbeddingModel(MaxKBBaseModel):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return SiliconCloudEmbeddingModel(
             api_key=model_credential.get('api_key'),
             model_name=model_name,
@@ -57,7 +57,7 @@ class SiliconCloudEmbeddingModel(MaxKBBaseModel):
             # 假设返回结构中有 'data[0].embedding'
             return data["data"][0]["embedding"]
         else:
-            maxkb_logger.error(f"Unexpected response from Embedding API: {data}")
+            telecom_ai_logger.error(f"Unexpected response from Embedding API: {data}")
 
     def embed_documents(self, texts: list) -> list:
         return [self.embed_query(text) for text in texts]

@@ -10,7 +10,7 @@
 ## 1. 本地检查
 
 ```bash
-cd /Users/zhaozhenchao/course/AI/MaxKB
+cd <project-dir>
 git status --short
 docker version
 docker info
@@ -34,7 +34,7 @@ docker network create jb-agent-net
 docker run -d \
   --name jb-postgres \
   --network jb-agent-net \
-  -e POSTGRES_DB=maxkb \
+  -e POSTGRES_DB=telecom_ai_agent \
   -e POSTGRES_USER=root \
   -e POSTGRES_PASSWORD=123456 \
   -p 5432:5432 \
@@ -89,7 +89,7 @@ docker logs --tail=100 jb-redis
 使用应用专用 Dockerfile 打包。这个 Dockerfile 只打应用，不启动内置 PostgreSQL、Redis、Ollama。
 
 ```bash
-cd /Users/zhaozhenchao/course/AI/MaxKB
+cd <project-dir>
 
 docker build \
   -f docker/Dockerfile.app \
@@ -280,7 +280,7 @@ http://服务器IP:11434
 检查数据库连通：
 
 ```bash
-docker exec -it jb-postgres psql -U root -d maxkb -c '\dt'
+docker exec -it jb-postgres psql -U root -d telecom_ai_agent -c '\dt'
 ```
 
 检查 Redis 连通：

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： workspace_user_resource_permission.py
     @date：2025/4/28 17:17
     @desc:
@@ -18,7 +18,7 @@ from common.database_model_manage.database_model_manage import DatabaseModelMana
 from common.db.search import native_page_search, get_dynamics_model
 from common.result import Page
 from common.utils.common import get_file_content
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from system_manage.models.resource_mapping import ResourceMapping
 
 

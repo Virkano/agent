@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： chat_anonymous_user_token.py
     @date：2025/6/6 15:08
     @desc:

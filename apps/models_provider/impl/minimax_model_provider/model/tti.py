@@ -6,12 +6,12 @@ import requests
 from dashscope import ImageSynthesis, MultiModalConversation
 from dashscope.aigc.image_generation import ImageGeneration
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tti import BaseTextToImage
 
 
-class MiniMaxTextToImageModel(MaxKBBaseModel, BaseTextToImage):
+class MiniMaxTextToImageModel(TelecomAIBaseModel, BaseTextToImage):
     api_key: str
     model_name: str
     params: dict
@@ -67,5 +67,5 @@ class MiniMaxTextToImageModel(MaxKBBaseModel, BaseTextToImage):
                     file_urls.append(f"data:image/png;base64,{img}")
             return file_urls
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             raise e

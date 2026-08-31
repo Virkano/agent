@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： i_reranker_node.py
     @date：2024/9/4 10:40
     @desc:

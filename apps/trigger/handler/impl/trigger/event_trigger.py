@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： event_trigger.py
     @date：2026/1/15 11:08
     @desc:
@@ -19,7 +19,7 @@ from common.auth import WebhookAuth
 from common.exception.app_exception import AppApiException, AppAuthenticationFailed
 from common.log.log import _get_ip_address
 from common.result import Result
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from trigger.handler.base_trigger import BaseTrigger
 from trigger.models import TriggerTask, Trigger
 from trigger.serializers.trigger import TriggerResponse
@@ -40,7 +40,7 @@ def valid_parameter_type(value, _type, desc):
     elif _type == 'string':
         instance_type = str
     else:
-        maxkb_logger.error(_(
+        telecom_ai_logger.error(_(
             'Field: {name} Type: {_type} Value: {value} Unsupported this type'
         ).format(name=desc, _type=_type, value=value))
         return

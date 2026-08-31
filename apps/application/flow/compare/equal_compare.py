@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： equal_compare.py
     @date：2024/6/7 14:44
     @desc:

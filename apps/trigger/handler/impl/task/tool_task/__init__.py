@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： __init__.py.py
     @date：2026/3/27 18:45
     @desc:
@@ -10,7 +10,7 @@ from .base_tool_task import ToolTask as BaseToolTask
 from .workflow_tool_task import ToolTask as WorkflowToolTask
 from django.db.models import QuerySet
 
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from tools.models import Tool
 from trigger.handler.base_task import BaseTriggerTask
 
@@ -31,6 +31,6 @@ class ToolTask(BaseTriggerTask):
         tool_id = trigger_task.get('source_id')
         tool = QuerySet(Tool).filter(id=tool_id, is_active=True).first()
         if not tool:
-            maxkb_logger.info(f"Tool with id {tool_id} not found or inactive.")
+            telecom_ai_logger.info(f"Tool with id {tool_id} not found or inactive.")
             return
         execute(tool, trigger_task, **kwargs)

@@ -1,9 +1,9 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
-    @file： __init__.py
-    @date：2025/11/5 14:50
+    @project: dianxin-xpack
+    @project: dianxin虎
+    @file： __init__.py.py
+    @date：2025/11/5 14:45
     @desc:
 """
 import os

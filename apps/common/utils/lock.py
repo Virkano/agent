@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎
+    @project: dianxin
     @file： lock.py
     @date：2023/9/11 11:45
     @desc:

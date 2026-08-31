@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： chat_embed_serializers.py
     @date：2025/5/30 14:34
     @desc:
@@ -17,8 +17,8 @@ from rest_framework import serializers
 
 from application.models import ApplicationAccessToken
 from common.database_model_manage.database_model_manage import DatabaseModelManage
-from maxkb.conf import PROJECT_DIR
-from maxkb.const import CONFIG
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.const import CONFIG
 
 
 class ChatEmbedSerializer(serializers.Serializer):
@@ -39,7 +39,7 @@ class ChatEmbedSerializer(serializers.Serializer):
             access_token=self.data.get('token')).first()
         is_draggable = 'false'
         show_guide = 'true'
-        float_icon = f"{self.data.get('protocol')}://{self.data.get('host')}{CONFIG.get_chat_path()}/MaxKB.gif"
+        float_icon = f"{self.data.get('protocol')}://{self.data.get('host')}{CONFIG.get_chat_path()}/TelecomAI.gif"
         is_license_valid = DatabaseModelManage.get_model('license_is_valid')
         X_PACK_LICENSE_IS_VALID = is_license_valid() if is_license_valid is not None else False
         # 获取接入的query参数
@@ -82,7 +82,7 @@ class ChatEmbedSerializer(serializers.Serializer):
                  'x_value': float_location.get('x', {}).get('value', 0),
                  'y_type': float_location.get('y', {}).get('type', 'bottom'),
                  'y_value': float_location.get('y', {}).get('value', 30),
-                 'max_kb_id': str(uuid.uuid7()).replace('-', ''),
+                 'telecom_ai_id': str(uuid.uuid7()).replace('-', ''),
                  'header_font_color': header_font_color}))
         response = HttpResponse(s, status=200, headers={'Content-Type': 'text/javascript'})
         return response

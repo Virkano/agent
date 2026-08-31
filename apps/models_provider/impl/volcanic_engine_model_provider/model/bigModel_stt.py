@@ -17,8 +17,8 @@ import uuid_utils.compat as uuid
 
 from typing import Dict
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_stt import BaseSpeechToText
 
 audio_format = "mp3"  # wav 或者 mp3，根据实际音频格式设置
@@ -189,7 +189,7 @@ class VolcanicASRClient:
             return None
 
 
-class VolcanicEngineBigModelSpeechToText(MaxKBBaseModel, BaseSpeechToText):
+class VolcanicEngineBigModelSpeechToText(TelecomAIBaseModel, BaseSpeechToText):
     volcanic_app_id: str
     volcanic_api_url: str
     volcanic_token: str
@@ -232,4 +232,4 @@ class VolcanicEngineBigModelSpeechToText(MaxKBBaseModel, BaseSpeechToText):
             if result.status_code == 200:
                 return result.json().get('result').get('text')
         except Exception as e:
-            maxkb_logger.error(f'Error getting speech to text: {e}')
+            telecom_ai_logger.error(f'Error getting speech to text: {e}')

@@ -1,18 +1,18 @@
 #!/bin/bash
 
-if [ ! -d /opt/maxkb/data/redis ]; then
-    mkdir -p /opt/maxkb/data/redis
-    chmod 700 /opt/maxkb/data/redis
+if [ ! -d /opt/telecom_ai_agent/data/redis ]; then
+    mkdir -p /opt/telecom_ai_agent/data/redis
+    chmod 700 /opt/telecom_ai_agent/data/redis
 fi
-if [ ! -d /opt/maxkb/logs ]; then
-    mkdir -p /opt/maxkb/logs
-    chmod 700 /opt/maxkb/logs
+if [ ! -d /opt/telecom_ai_agent/logs ]; then
+    mkdir -p /opt/telecom_ai_agent/logs
+    chmod 700 /opt/telecom_ai_agent/logs
 fi
-if [ ! -f /opt/maxkb/conf/redis.conf ]; then
-  mkdir -p /opt/maxkb/conf
-  touch /opt/maxkb/conf/redis.conf
-  chmod 700 /opt/maxkb/conf/redis.conf
-  cat <<EOF > /opt/maxkb/conf/redis.conf
+if [ ! -f /opt/telecom_ai_agent/conf/redis.conf ]; then
+  mkdir -p /opt/telecom_ai_agent/conf
+  touch /opt/telecom_ai_agent/conf/redis.conf
+  chmod 700 /opt/telecom_ai_agent/conf/redis.conf
+  cat <<EOF > /opt/telecom_ai_agent/conf/redis.conf
 bind 0.0.0.0
 port 6379
 databases 16
@@ -30,10 +30,10 @@ auto-aof-rewrite-percentage 100
 auto-aof-rewrite-min-size 64mb
 maxmemory-policy allkeys-lru
 loglevel warning
-logfile /opt/maxkb/logs/redis.log
-dir /opt/maxkb/data/redis
+logfile /opt/telecom_ai_agent/logs/redis.log
+dir /opt/telecom_ai_agent/data/redis
 requirepass ${REDIS_PASSWORD}
 EOF
 fi
 
-redis-server /opt/maxkb/conf/redis.conf
+redis-server /opt/telecom_ai_agent/conf/redis.conf

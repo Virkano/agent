@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎
+    @project: dianxin
     @file： exception_code_constants.py
     @date：2023/9/4 14:09
     @desc: 异常常量类

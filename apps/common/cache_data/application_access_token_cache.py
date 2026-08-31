@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： application_access_token_cache.py
     @date：2024/7/25 11:34
     @desc:

@@ -10,7 +10,7 @@ from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, PasswordInputField, TooltipLabel
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
 from models_provider.impl.aliyun_bai_lian_model_provider.model.reranker import AliyunBaiLianReranker
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class AliyunRerankerModelParams(BaseForm):
@@ -72,7 +72,7 @@ class AliyunBaiLianRerankerCredential(BaseForm, BaseModelCredential):
             model: AliyunBaiLianReranker = provider.get_model(model_type, model_name, model_credential)
             model.compress_documents([Document(page_content=_('Hello'))], _('Hello'))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

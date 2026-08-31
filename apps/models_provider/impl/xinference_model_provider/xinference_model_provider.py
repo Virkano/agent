@@ -22,7 +22,7 @@ from models_provider.impl.xinference_model_provider.model.reranker import XInfer
 from models_provider.impl.xinference_model_provider.model.stt import XInferenceSpeechToText
 from models_provider.impl.xinference_model_provider.model.tti import XinferenceTextToImage
 from models_provider.impl.xinference_model_provider.model.tts import XInferenceTextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 xinference_llm_model_credential = XinferenceLLMModelCredential()

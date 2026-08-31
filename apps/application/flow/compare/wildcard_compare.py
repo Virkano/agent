@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: maxkb
+    @project: dianxin
     @Author：wangliang181230
     @file： wildcard_compare.py
     @date：2026/3/30 12:11

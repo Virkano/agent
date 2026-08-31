@@ -5,7 +5,7 @@ import UserApi from '@/api/user/user'
 import LoginApi from '@/api/user/login'
 import {useLocalStorage} from '@vueuse/core'
 
-import {localeConfigKey, getBrowserLang} from '@/locales/index'
+import {localeConfigKey, getBrowserLang, getStoredLocale} from '@/locales/index'
 import useThemeStore from './theme'
 import {defaultPlatformSetting} from '@/utils/theme'
 import useLoginStore from './login'
@@ -32,7 +32,7 @@ const useUserStore = defineStore('user', {
   }),
   actions: {
     getLanguage() {
-      return localStorage.getItem('MaxKB-locale') || getBrowserLang()
+      return getStoredLocale() || getBrowserLang()
     },
     setWorkspaceId(workspace_id: string) {
       this.workspace_id = workspace_id

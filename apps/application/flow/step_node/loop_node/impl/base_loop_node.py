@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： base_loop_node.py
     @date：2025/3/11 18:24
     @desc:
@@ -18,7 +18,7 @@ from application.flow.step_node.loop_node.i_loop_node import ILoopNode
 from application.flow.tools import Reasoning
 from application.models import ChatRecord
 from common.handle.impl.response.loop_to_response import LoopToResponse
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 
 max_loop_count = int(CONFIG.get("WORKFLOW_LOOP_NODE_MAX_LOOP_COUNT", 500))
 

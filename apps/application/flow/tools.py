@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: maxkb
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： utils.py
 @date：2024/6/6 15:15
 @desc:
@@ -36,7 +36,7 @@ import langchain_core.messages.ai as _lc_ai_module
 import uuid_utils.compat as uuid
 from asgiref.sync import sync_to_async
 from common.result import result
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from deepagents import create_deep_agent
 from django.db.models import OuterRef, QuerySet, Subquery
 from django.http import StreamingHttpResponse
@@ -47,7 +47,7 @@ from langchain_core.tools import StructuredTool
 from langchain_core.utils._merge import merge_lists as _original_merge_lists
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.checkpoint.memory import MemorySaver
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from pydantic import Field, create_model
 from tools.models import Tool, ToolRecord, ToolScope, ToolType, ToolWorkflowVersion
 
@@ -527,7 +527,7 @@ async def _yield_mcp_response(
             if raw_id and str(raw_id).strip():
                 new_id = str(raw_id).strip()
                 if entry.get("completed") and entry.get("id") and entry["id"] != new_id:
-                    maxkb_logger.debug(f"Resetting completed fragment {key}: old ID {entry['id']} -> new ID {new_id}")
+                    telecom_ai_logger.debug(f"Resetting completed fragment {key}: old ID {entry['id']} -> new ID {new_id}")
                     entry.clear()
                     entry.update({"id": "", "name": "", "arguments": ""})
                 entry["id"] = new_id
@@ -598,16 +598,16 @@ async def _yield_mcp_response(
 
                 if is_finish_chunk:
                     # 在 finish chunk 时，将所有未完成的 fragment 标记完成并更新 tool_calls_info
-                    maxkb_logger.debug(f"Processing finish chunk. Tool fragments: {_tool_fragments}")
+                    telecom_ai_logger.debug(f"Processing finish chunk. Tool fragments: {_tool_fragments}")
                     for idx, entry in _tool_fragments.items():
                         if entry.get("completed"):
-                            maxkb_logger.debug(f"Skipping fragment {idx}: already completed")
+                            telecom_ai_logger.debug(f"Skipping fragment {idx}: already completed")
                             continue
                         if not entry.get("id"):
-                            maxkb_logger.debug(f"Skipping fragment {idx}: missing id. Fragment: {entry}")
+                            telecom_ai_logger.debug(f"Skipping fragment {idx}: missing id. Fragment: {entry}")
                             continue
                         if not entry.get("arguments"):
-                            maxkb_logger.debug(f"Skipping fragment {idx}: missing arguments. Fragment: {entry}")
+                            telecom_ai_logger.debug(f"Skipping fragment {idx}: missing arguments. Fragment: {entry}")
                             continue
 
                         if not entry.get("completed") and entry.get("id") and entry.get("arguments"):
@@ -624,11 +624,11 @@ async def _yield_mcp_response(
                                 if normalized_id and normalized_id != entry["id"]:
                                     tool_calls_info[normalized_id] = info
                                 entry["completed"] = True
-                                maxkb_logger.debug(f"Added tool call {entry['id']} to tool_calls_info")
+                                telecom_ai_logger.debug(f"Added tool call {entry['id']} to tool_calls_info")
                             except (json.JSONDecodeError, ValueError) as e:
                                 # JSON parsing failed, but still add to tool_calls_info with raw arguments
                                 # to prevent "Tool ID not found" errors when ToolMessage arrives
-                                maxkb_logger.warning(
+                                telecom_ai_logger.warning(
                                     f"Failed to parse tool arguments at finish for tool {entry.get('id', 'unknown')}: "
                                     f"{entry['arguments']}, error: {e}. Using raw arguments."
                                 )
@@ -708,7 +708,7 @@ async def _yield_mcp_response(
                     )
                     chunk[0].content = content
                 else:
-                    maxkb_logger.warning(
+                    telecom_ai_logger.warning(
                         f"Tool ID {tool_id} not found in tool_calls_info. "
                         f"Normalized Tool ID: {normalized_tool_id}. "
                         f"Available IDs: {list(tool_calls_info.keys())}. "
@@ -791,7 +791,7 @@ def mcp_response_generator(
             async for chunk in async_gen:
                 result_queue.put(("data", chunk))
         except Exception as e:
-            maxkb_logger.error(f"Exception: {e}", exc_info=True)
+            telecom_ai_logger.error(f"Exception: {e}", exc_info=True)
             result_queue.put(("error", e))
         finally:
             result_queue.put(("done", None))

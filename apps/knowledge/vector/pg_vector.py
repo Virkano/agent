@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: maxkb
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： pg_vector.py
 @date：2023/10/19 15:28
 @desc:
@@ -23,7 +23,7 @@ from common.utils.common import get_file_content
 from common.utils.ts_vecto_util import to_ts_vector, to_query
 from knowledge.models import Embedding, SearchMode, SourceType, Termbase
 from knowledge.vector.base_vector import BaseVectorStore, normalize_for_embedding
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 
 
 class PGVector(BaseVectorStore):

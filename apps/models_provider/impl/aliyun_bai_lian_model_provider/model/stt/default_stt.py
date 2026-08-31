@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： default_stt.py
     @date：2025/12/5 15:40
@@ -9,12 +9,12 @@
 import os
 from typing import Dict
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 from models_provider.impl.base_stt import BaseSpeechToText
 
 
-class AliyunBaiLianDefaultSpeechToText(MaxKBBaseModel, BaseSpeechToText):
+class AliyunBaiLianDefaultSpeechToText(TelecomAIBaseModel, BaseSpeechToText):
     def check_auth(self):
         pass
 

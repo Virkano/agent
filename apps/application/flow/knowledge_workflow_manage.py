@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： Knowledge_workflow_manage.py
     @date：2025/11/13 19:02
     @desc:

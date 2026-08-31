@@ -5,12 +5,12 @@ from typing import Dict
 
 import dashscope
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_stt import BaseSpeechToText
 
 
-class AliyunBaiLianAsrSpeechToText(MaxKBBaseModel, BaseSpeechToText):
+class AliyunBaiLianAsrSpeechToText(TelecomAIBaseModel, BaseSpeechToText):
     api_key: str
     api_url: str
     model: str
@@ -70,5 +70,5 @@ class AliyunBaiLianAsrSpeechToText(MaxKBBaseModel, BaseSpeechToText):
                 raise Exception('Error: ', response.message)
 
         except Exception as err:
-            maxkb_logger.error(f":Error: {str(err)}: {traceback.format_exc()}")
+            telecom_ai_logger.error(f":Error: {str(err)}: {traceback.format_exc()}")
             raise err

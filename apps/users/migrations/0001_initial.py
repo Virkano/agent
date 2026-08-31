@@ -5,9 +5,9 @@ from django.db import migrations, models
 
 from common.constants.permission_constants import RoleConstants
 from common.utils.common import password_encrypt
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 
-default_password = CONFIG.get('DEFAULT_PASSWORD', 'MaxKB@123..')
+default_password = CONFIG.get('DEFAULT_PASSWORD', 'TelecomAI@123..')
 
 
 def insert_default_data(apps, schema_editor):

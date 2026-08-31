@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： __init__.py.py
     @date：2024/04/19 15:55
     @desc:
@@ -14,17 +14,17 @@ from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.messages import BaseMessage, AIMessageChunk
 from langchain_core.outputs import ChatGenerationChunk
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class XFChatSparkLLM(MaxKBBaseModel, ChatSparkLLM):
+class XFChatSparkLLM(TelecomAIBaseModel, ChatSparkLLM):
     @staticmethod
     def is_cache_model():
         return False
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return XFChatSparkLLM(
             spark_app_id=model_credential.get('spark_app_id'),
             spark_api_key=model_credential.get('spark_api_key'),

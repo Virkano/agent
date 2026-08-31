@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： i_generate_human_message_step.py
     @date：2024/1/9 18:15
     @desc: 生成对话模板

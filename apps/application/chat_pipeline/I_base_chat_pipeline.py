@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： I_base_chat_pipeline.py
     @date：2024/1/9 17:25
     @desc:

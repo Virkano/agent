@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： chat.py
     @date：2025/6/6 11:18
     @desc:
@@ -28,7 +28,7 @@ from common.exception.app_exception import AppAuthenticationFailed
 from common.log.log import _get_ip_address
 from common.result import result
 from knowledge.models import FileSourceType
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from oss.serializers.file import FileSerializer
 from users.api import CaptchaAPI
 from users.serializers.login import CaptchaSerializer

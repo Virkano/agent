@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： application.py
 @date：2025/5/26 17:03
 @desc:
@@ -39,7 +39,7 @@ from common.utils.common import (
     get_file_content,
     restricted_loads,
 )
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.tool_code import ToolExecutor
 from common.utils.url_validator import ALLOWED_CALLBACK_HOSTS, ALLOWED_DOWNLOAD_HOSTS, validate_trusted_url
 from django.core import validators
@@ -52,8 +52,8 @@ from knowledge.models import File, FileSourceType, Knowledge, KnowledgeScope
 from knowledge.serializers.common import BatchMoveSerializer, BatchSerializer
 from knowledge.serializers.knowledge import KnowledgeModelSerializer, KnowledgeSerializer
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from maxkb.conf import PROJECT_DIR
-from maxkb.const import CONFIG
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.const import CONFIG
 from models_provider.models import Model
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from rest_framework import serializers, status
@@ -778,7 +778,7 @@ class ApplicationSerializer(serializers.Serializer):
                 raise AppApiException(500, _("Illegal download callback url"))
             requests.get(download_callback_url, timeout=5, allow_redirects=False)
         except Exception as e:
-            maxkb_logger.error(f"callback appstore tool download error: {e}")
+            telecom_ai_logger.error(f"callback appstore tool download error: {e}")
         return app
 
     def insert_workflow(self, instance: Dict):
@@ -1016,7 +1016,7 @@ class ApplicationSerializer(serializers.Serializer):
             self.is_valid(raise_exception=True)
             # 下载zip文件
             try:
-                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/maxkb.json.zip")
+                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/telecom_ai_agent.json.zip")
                 res = requests.get(appstore_url, timeout=5)
                 res.raise_for_status()
                 # 创建临时文件保存zip
@@ -1058,7 +1058,7 @@ class ApplicationSerializer(serializers.Serializer):
                     # 清理临时文件
                     os.unlink(temp_zip_path)
             except Exception as e:
-                maxkb_logger.error(f"fetch appstore tools error: {e}")
+                telecom_ai_logger.error(f"fetch appstore tools error: {e}")
                 return {"apps": [], "additionalProperties": {"tags": []}}
 
 
@@ -1556,7 +1556,7 @@ class ApplicationOperateSerializer(serializers.Serializer):
                 raise AppApiException(500, _("Illegal download callback url"))
             requests.get(download_callback_url, timeout=5, allow_redirects=False)
         except Exception as e:
-            maxkb_logger.error(f"callback appstore tool download error: {e}")
+            telecom_ai_logger.error(f"callback appstore tool download error: {e}")
 
         return self.one(with_valid=False)
 

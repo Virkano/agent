@@ -146,7 +146,7 @@ const props = defineProps({
 
 const emit = defineEmits(['addData'])
 
-const apiUrl = window.location.origin + `${window.MaxKB.prefix}/api-doc/`
+const apiUrl = window.location.origin + `${window.TelecomAI.prefix}/api-doc/`
 const SettingAPIKeyDialogRef = ref()
 const dialogVisible = ref<boolean>(false)
 const loading = ref(false)

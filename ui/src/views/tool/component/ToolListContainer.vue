@@ -521,6 +521,7 @@ import ExecutionRecordDrawer from '@/views/tool-workflow/execution-record/Execut
 import ToolStoreApi from '@/api/tool/store.ts'
 import { resetUrl, i18n_name } from '@/utils/common'
 import { MsgSuccess, MsgConfirm, MsgError } from '@/utils/message'
+import { openUpgradeUrl } from '@/utils/upgrade'
 import { SourceTypeEnum } from '@/enums/common'
 import { dateFormat } from '@/utils/time'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
@@ -1196,7 +1197,7 @@ function importTool(file: any) {
           cancelButtonText: t('common.confirm'),
           confirmButtonText: t('common.professional'),
         }).then(() => {
-          window.open('https://maxkb.cn/pricing.html', '_blank')
+          openUpgradeUrl()
         })
       }
     })

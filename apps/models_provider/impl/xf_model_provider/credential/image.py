@@ -11,7 +11,7 @@ from common.exception.app_exception import AppApiException
 from common.forms import BaseForm
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
 from models_provider.impl.xf_model_provider.model.image import ImageMessage
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class XunFeiImageModelCredential(BaseForm, BaseModelCredential):
     spark_api_url = forms.TextInputField('API URL', required=True,
@@ -41,7 +41,7 @@ class XunFeiImageModelCredential(BaseForm, BaseModelCredential):
                                 HumanMessage(_('Please outline this picture'))]
                 model.stream(message_list)
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

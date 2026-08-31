@@ -80,7 +80,7 @@ const damo_data: Array<FormField> = [
     ],
   },
   {
-    field: 'maxkb_tokens',
+    field: 'telecom_ai_tokens',
     input_type: 'Slider',
     default_value: 1,
     attrs: {

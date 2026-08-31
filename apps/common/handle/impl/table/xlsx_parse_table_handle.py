@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 
 from common.handle.base_parse_table_handle import BaseParseTableHandle
 from common.handle.impl.common_handle import xlsx_embed_cells_images
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class XlsxParseTableHandle(BaseParseTableHandle):
@@ -75,7 +75,7 @@ class XlsxParseTableHandle(BaseParseTableHandle):
                 result.append({'name': sheetname, 'paragraphs': paragraphs})
 
         except BaseException as e:
-            maxkb_logger.error(f"Error processing XLSX file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing XLSX file {file.name}: {e}, {traceback.format_exc()}")
             return [{'name': file.name, 'paragraphs': []}]
         return result
 
@@ -88,7 +88,7 @@ class XlsxParseTableHandle(BaseParseTableHandle):
                 if len(image_dict) > 0:
                     save_image(image_dict.values())
             except Exception as e:
-                maxkb_logger.error(f'Exception: {e}')
+                telecom_ai_logger.error(f'Exception: {e}')
                 image_dict = {}
             md_tables = ''
             # 遍历所有工作表
@@ -116,5 +116,5 @@ class XlsxParseTableHandle(BaseParseTableHandle):
 
             return md_tables
         except Exception as e:
-            maxkb_logger.error(f'excel split handle error: {e}')
+            telecom_ai_logger.error(f'excel split handle error: {e}')
             return f'error: {e}'

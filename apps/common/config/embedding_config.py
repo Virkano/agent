@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding_config.py
     @date：2023/10/23 16:03
     @desc:
@@ -75,7 +75,7 @@ class VectorStore:
     def get_embedding_vector() -> BaseVectorStore:
         from knowledge.vector.pg_vector import PGVector
         if VectorStore.instance is None:
-            from maxkb.const import CONFIG
+            from telecom_ai_agent.const import CONFIG
             vector_store_class = VectorStore.instance_map.get(CONFIG.get("VECTOR_STORE_NAME"),
                                                               PGVector)
             VectorStore.instance = vector_store_class()

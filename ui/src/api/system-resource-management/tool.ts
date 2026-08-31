@@ -154,7 +154,7 @@ const downloadSkillFile: (tool_id: string, loading?: Ref<boolean>) => Promise<Re
 }
 
 const generateCode: (data: any) => Promise<Result<any>> = (data: any) => {
-  const p = (window.MaxKB?.prefix ? window.MaxKB?.prefix : '/admin') + '/api'
+  const p = (window.TelecomAI?.prefix ? window.TelecomAI?.prefix : '/admin') + '/api'
   return postStream(`${p}${prefix}/generate_code`, data)
 }
 
@@ -200,7 +200,7 @@ const publish: (tool_id: string, loading?: Ref<boolean>) => Promise<Result<any>>
  * data
  */
 const debugToolWorkflow: (tool_id: string, data: any) => Promise<any> = (tool_id, data) => {
-  const p = (window.MaxKB?.prefix ? window.MaxKB?.prefix : '/admin') + '/api'
+  const p = (window.TelecomAI?.prefix ? window.TelecomAI?.prefix : '/admin') + '/api'
   return postStream(`${p}${prefix}/${tool_id}/debug`, data)
 }
 

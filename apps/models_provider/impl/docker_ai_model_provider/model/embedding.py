@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/7/12 17:44
     @desc:
@@ -10,10 +10,10 @@ from typing import Dict, List
 
 import openai
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class DockerAIEmbeddingModel(MaxKBBaseModel):
+class DockerAIEmbeddingModel(TelecomAIBaseModel):
     model_name: str
     optional_params: dict
 
@@ -27,7 +27,7 @@ class DockerAIEmbeddingModel(MaxKBBaseModel):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return DockerAIEmbeddingModel(
             api_key=model_credential.get('api_key'),
             model_name=model_name,

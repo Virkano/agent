@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： model_apply_serializers.py
     @date：2024/8/20 20:39
     @desc:

@@ -4,12 +4,12 @@ from typing import Dict
 
 import requests
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.base_ttv import BaseGenerationVideo
 
 
-class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
+class GenerationVideoModel(TelecomAIBaseModel, BaseGenerationVideo):
     api_key: str
     api_base: str
     model_name: str
@@ -67,10 +67,10 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             except (requests.exceptions.ProxyError,
                     requests.exceptions.ConnectionError,
                     requests.exceptions.Timeout) as e:
-                maxkb_logger.error(f"⚠️ 网络错误: {e}，正在重试 {attempt + 1}/{self.max_retries}...")
+                telecom_ai_logger.error(f"⚠️ 网络错误: {e}，正在重试 {attempt + 1}/{self.max_retries}...")
                 time.sleep(self.retry_delay)
             except requests.exceptions.HTTPError as e:
-                maxkb_logger.error(f"HTTP 错误: {e}")
+                telecom_ai_logger.error(f"HTTP 错误: {e}")
                 raise RuntimeError(f"HTTP 请求失败: {e.response.text if hasattr(e, 'response') else str(e)}")
 
         raise RuntimeError("多次重试后仍无法连接到 MiniMax API，请检查代理或网络配置")
@@ -98,27 +98,27 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             # 模式三：首尾帧生成视频
             payload["first_frame_image"] = first_frame_url
             payload["last_frame_image"] = last_frame_url
-            maxkb_logger.info("使用首尾帧模式生成视频")
+            telecom_ai_logger.info("使用首尾帧模式生成视频")
         elif first_frame_url:
             # 模式二：图生视频
             payload["first_frame_image"] = first_frame_url
-            maxkb_logger.info("使用图生视频模式")
+            telecom_ai_logger.info("使用图生视频模式")
         else:
             # 模式一：文生视频
-            maxkb_logger.info("使用文生视频模式")
+            telecom_ai_logger.info("使用文生视频模式")
 
         # 合并额外参数（duration, resolution 等）
         payload.update(self.params)
 
         # --- 步骤 1: 提交任务 ---
-        maxkb_logger.info(f"提交视频生成任务，模型: {self.model_name}")
+        telecom_ai_logger.info(f"提交视频生成任务，模型: {self.model_name}")
         response_data = self._safe_call('POST', base_url, json=payload)
 
         task_id = response_data.get("task_id")
         if not task_id:
             raise RuntimeError(f"提交任务失败，未获取到 task_id: {response_data}")
 
-        maxkb_logger.info(f"任务已提交，task_id: {task_id}")
+        telecom_ai_logger.info(f"任务已提交，task_id: {task_id}")
 
         # --- 步骤 2: 轮询查询任务状态 ---
         query_url = f"{self.api_base}/query/video_generation"
@@ -127,7 +127,7 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
         # --- 步骤 3: 获取视频下载链接 ---
         video_url = self._get_video_download_url(file_id)
 
-        maxkb_logger.info(f"视频生成完成！视频 URL: {video_url}")
+        telecom_ai_logger.info(f"视频生成完成！视频 URL: {video_url}")
         return video_url
 
     def _poll_task_status(self, query_url: str, task_id: str) -> str:
@@ -139,17 +139,17 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             response_data = self._safe_call('GET', query_url, params=params)
             status = response_data.get("status")
 
-            maxkb_logger.info(f"当前任务状态 (尝试 {attempt + 1}/{max_attempts}): {status}")
+            telecom_ai_logger.info(f"当前任务状态 (尝试 {attempt + 1}/{max_attempts}): {status}")
 
             if status == "Success":
                 file_id = response_data.get("file_id")
                 if not file_id:
                     raise RuntimeError(f"任务成功但未获取到 file_id: {response_data}")
-                maxkb_logger.info(f"任务处理成功，file_id: {file_id}")
+                telecom_ai_logger.info(f"任务处理成功，file_id: {file_id}")
                 return file_id
             elif status == "Fail":
                 error_msg = response_data.get("error_message", "未知错误")
-                maxkb_logger.error(f"视频生成失败: {error_msg}")
+                telecom_ai_logger.error(f"视频生成失败: {error_msg}")
                 raise RuntimeError(f"视频生成失败: {error_msg}")
             else:
                 # 任务仍在处理中，等待后继续轮询

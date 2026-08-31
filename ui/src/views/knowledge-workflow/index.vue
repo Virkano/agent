@@ -193,6 +193,7 @@ import ExecutionRecord from '@/views/knowledge-workflow/component/execution-reco
 import PublishHistory from '@/views/knowledge-workflow/component/PublishHistory.vue'
 import { isAppIcon, resetUrl } from '@/utils/common'
 import { MsgSuccess, MsgError, MsgConfirm } from '@/utils/message'
+import { openUpgradeUrl } from '@/utils/upgrade'
 import { datetimeFormat } from '@/utils/time'
 import useStore from '@/stores'
 import { KnowledgeWorkFlowInstance } from '@/workflow/common/validate'
@@ -436,7 +437,7 @@ const importKnowledgeWorkflow = (file: any) => {
               cancelButtonText: t('common.confirm'),
               confirmButtonText: t('common.professional'),
             }).then(() => {
-              window.open('https://maxkb.cn/pricing.html', '_blank')
+              openUpgradeUrl()
             })
           }
         })

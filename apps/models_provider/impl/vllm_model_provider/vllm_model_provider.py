@@ -15,7 +15,7 @@ from models_provider.impl.vllm_model_provider.credential.whisper_stt import VLLM
 from models_provider.impl.vllm_model_provider.model.embedding import VllmEmbeddingModel
 from models_provider.impl.vllm_model_provider.model.image import VllmImage
 from models_provider.impl.vllm_model_provider.model.llm import VllmChatModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 from models_provider.impl.vllm_model_provider.model.reranker import VllmBgeReranker

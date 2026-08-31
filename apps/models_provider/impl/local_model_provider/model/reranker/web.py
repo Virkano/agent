@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： web.py
     @date：2025/11/5 15:30
     @desc:
@@ -13,11 +13,11 @@ from anthropic import BaseModel
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import Document, BaseDocumentCompressor
 
-from maxkb.const import CONFIG
-from models_provider.base_model_provider import MaxKBBaseModel
+from telecom_ai_agent.const import CONFIG
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class LocalReranker(MaxKBBaseModel, BaseModel, BaseDocumentCompressor):
+class LocalReranker(TelecomAIBaseModel, BaseModel, BaseDocumentCompressor):
 
     @staticmethod
     def is_cache_model():

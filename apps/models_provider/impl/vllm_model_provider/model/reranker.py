@@ -4,10 +4,10 @@ import cohere
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import BaseDocumentCompressor, Document
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class VllmBgeReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class VllmBgeReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     api_key: str
     api_url: str
     model: str
@@ -32,7 +32,7 @@ class VllmBgeReranker(MaxKBBaseModel, BaseDocumentCompressor):
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         r_url = model_credential.get('api_url')[:-3] if model_credential.get('api_url').endswith('/v1') else model_credential.get('api_url')
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         top_n = optional_params.pop('top_n', 3)
         return VllmBgeReranker(
             model=model_name,

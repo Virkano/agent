@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： workflow_tool_task.py.py
     @date：2026/3/27 18:47
     @desc:
@@ -16,7 +16,7 @@ from application.flow.common import WorkflowMode, Workflow
 from application.flow.i_step_node import ToolWorkflowPostHandler, get_tool_workflow_state
 from application.serializers.common import ToolExecute
 from common.utils.common import common_convert_value
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.tool_code import ToolExecutor
 from knowledge.models.knowledge_action import State
 from tools.models import ToolRecord, ToolTaskTypeChoices, ToolWorkflowVersion, ToolType
@@ -86,7 +86,7 @@ class ToolTask(BaseToolTriggerTask):
             tool_workflow_version = QuerySet(ToolWorkflowVersion).filter(tool_id=tool.id).order_by(
                 '-create_time')[0:1].first()
             if not tool_workflow_version:
-                maxkb_logger.info(f"Tool with id {tool_id} not found or inactive.")
+                telecom_ai_logger.info(f"Tool with id {tool_id} not found or inactive.")
                 return
             flow = Workflow.new_instance(tool_workflow_version.work_flow, WorkflowMode.TOOL)
             base_node = flow.get_node('tool-base-node')
@@ -124,7 +124,7 @@ class ToolTask(BaseToolTriggerTask):
                 meta={'input': parameter_setting, 'output': work_flow_manage.out_context}
             )
         except Exception as e:
-            maxkb_logger.error(f"Tool execution error: {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Tool execution error: {traceback.format_exc()}")
             QuerySet(TaskRecord).filter(id=task_record_id).update(
                 state=State.FAILURE,
                 run_time=time.time() - start_time,

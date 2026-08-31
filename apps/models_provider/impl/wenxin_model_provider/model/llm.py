@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： llm.py
     @date：2023/11/10 17:45
     @desc:
@@ -16,18 +16,18 @@ from langchain_core.messages import (
 )
 from langchain_core.outputs import ChatGenerationChunk
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 
 
-class QianfanChatModelQianfan(MaxKBBaseModel, QianfanChatEndpoint):
+class QianfanChatModelQianfan(TelecomAIBaseModel, QianfanChatEndpoint):
     @staticmethod
     def is_cache_model():
         return False
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return QianfanChatModelQianfan(model=model_name,
                                        qianfan_ak=model_credential.get('api_key'),
                                        qianfan_sk=model_credential.get('secret_key'),
@@ -77,14 +77,14 @@ class QianfanChatModelQianfan(MaxKBBaseModel, QianfanChatEndpoint):
                 yield chunk
 
 
-class QianfanChatModelOpenai(MaxKBBaseModel, BaseChatOpenAI):
+class QianfanChatModelOpenai(TelecomAIBaseModel, BaseChatOpenAI):
     @staticmethod
     def is_cache_model():
         return False
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return QianfanChatModelOpenai(
             model=model_name,
             openai_api_base=model_credential.get('api_base'),
@@ -93,7 +93,7 @@ class QianfanChatModelOpenai(MaxKBBaseModel, BaseChatOpenAI):
         )
 
 
-class QianfanChatModel(MaxKBBaseModel):
+class QianfanChatModel(TelecomAIBaseModel):
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         api_version = model_credential.get('api_version', 'v1')

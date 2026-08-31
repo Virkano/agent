@@ -202,6 +202,32 @@ const {
   query: { mode },
 } = route as any
 
+const goChatPage = () => {
+  const nextQuery = { ...route.query }
+  delete nextQuery.code
+  delete nextQuery.state
+  delete nextQuery.authCode
+  delete nextQuery.corpId
+  delete nextQuery.client
+  const chatRouteName = router.hasRoute('chat') ? 'chat' : router.hasRoute('Chat') ? 'Chat' : undefined
+  if (chatRouteName) {
+    router.replace({
+      name: chatRouteName,
+      params: { accessToken },
+      query: nextQuery,
+    })
+    return
+  }
+  router.replace({
+    path: `${window.TelecomAI?.chatPrefix || window.TelecomAI?.prefix || '/chat'}/${accessToken}/`,
+    query: nextQuery,
+  })
+}
+
+const getAuthErrorMessage = (error: any) => {
+  return error?.response?.data?.message || error?.message || error?.msg || String(error || '')
+}
+
 const isPc = computed(() => {
   console.log(common.isMobile())
   let modeName = ''
@@ -453,16 +479,20 @@ onBeforeMount(() => {
   const handleDingTalk = () => {
     const code = params.get('corpId')
     if (code) {
-      dd.runtime.permission.requestAuthCode({ corpId: code }).then((res) => {
-        console.log('DingTalk client request success:', res)
-        chatUser.dingOauth2Callback(res.code, accessToken).then(() => {
-          router.push({
-            name: 'chat',
-            params: { accessToken: accessToken },
-            query: route.query,
-          })
+      dd.runtime.permission
+        .requestAuthCode({ corpId: code })
+        .then((res) => {
+          console.log('DingTalk client request success:', res)
+          chatUser
+            .dingOauth2Callback(res.code, accessToken)
+            .then(goChatPage)
+            .catch((error: any) => {
+              MsgError(getAuthErrorMessage(error) || 'DingTalk authentication failed')
+            })
         })
-      })
+        .catch((error: any) => {
+          MsgError(getAuthErrorMessage(error) || 'DingTalk authorization failed')
+        })
     }
   }
 

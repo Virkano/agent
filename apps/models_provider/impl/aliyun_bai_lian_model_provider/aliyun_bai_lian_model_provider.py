@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： aliyun_bai_lian_model_provider.py
 @date：2024/9/9 17:43
 @desc:
@@ -47,7 +47,7 @@ from models_provider.impl.aliyun_bai_lian_model_provider.model.stt import (
 )
 from models_provider.impl.aliyun_bai_lian_model_provider.model.tti import QwenTextToImageModel
 from models_provider.impl.aliyun_bai_lian_model_provider.model.tts import AliyunBaiLianTextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _, gettext
 
 from models_provider.impl.aliyun_bai_lian_model_provider.model.ttv import GenerationVideoModel

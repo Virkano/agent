@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： xf_model_provider.py
     @date：2024/04/19 14:47
     @desc:
@@ -26,7 +26,7 @@ from models_provider.impl.xf_model_provider.model.stt import XFSparkSpeechToText
 from models_provider.impl.xf_model_provider.model.tts import XFSparkTextToSpeech
 from models_provider.impl.xf_model_provider.model.tts.super_humanoid_tts import XFSparkSuperHumanoidTextToSpeech
 from models_provider.impl.xf_model_provider.model.tts.default_tts import XFSparkDefaultTextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 from models_provider.impl.xf_model_provider.model.zh_en_stt import XFZhEnSparkSpeechToText

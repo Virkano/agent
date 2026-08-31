@@ -25,7 +25,7 @@
       </div>
 
       <!-- Markdown -->
-      <MdPreview v-else editorId="preview-only" :modelValue="item.content" class="maxkb-md" />
+      <MdPreview v-else editorId="preview-only" :modelValue="item.content" class="telecom-ai-md" />
     </template>
   </div>
 </template>

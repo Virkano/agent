@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： reranker.py
     @date：2024/9/10 9:45
     @desc:
@@ -12,10 +12,10 @@ from langchain_core.callbacks import Callbacks
 from langchain_core.documents import BaseDocumentCompressor, Document
 from xinference_client.client.restful.restful_client import RESTfulRerankModelHandle
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class XInferenceReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class XInferenceReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     server_url: Optional[str]
     """URL of the xinference server"""
     model_uid: Optional[str]

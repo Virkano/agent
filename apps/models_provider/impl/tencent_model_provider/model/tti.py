@@ -11,13 +11,13 @@ from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.hunyuan.v20230901 import hunyuan_client, models
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tti import BaseTextToImage
 from models_provider.impl.tencent_model_provider.model.hunyuan import ChatHunyuan
 
 
-class TencentTextToImageModel(MaxKBBaseModel, BaseTextToImage):
+class TencentTextToImageModel(TelecomAIBaseModel, BaseTextToImage):
     hunyuan_secret_id: str
     hunyuan_secret_key: str
     model: str
@@ -89,5 +89,5 @@ class TencentTextToImageModel(MaxKBBaseModel, BaseTextToImage):
             file_urls.append(resp.ResultImage)
             return file_urls
         except TencentCloudSDKException as err:
-            maxkb_logger.error(f"Tencent Text to Image API call failed: {err}")
+            telecom_ai_logger.error(f"Tencent Text to Image API call failed: {err}")
             raise RuntimeError(f"Tencent Text to Image API call failed: {err}") from err

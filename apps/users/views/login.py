@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： user.py
 @date：2025/4/14 10:22
 @desc:
@@ -15,7 +15,7 @@ from common.utils.common import encryption
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from models_provider.api.model import DefaultModelResponse
 from rest_framework.request import Request
 from rest_framework.views import APIView

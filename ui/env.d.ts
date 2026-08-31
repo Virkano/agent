@@ -17,8 +17,9 @@ declare module 'sanitize-html' {
 interface Window {
   sendMessage: ?((message: string, other_params_data: any) => void)
   chatUserProfile: ?(() => any)
-  MaxKB: {
+  TelecomAI: {
     prefix: string
     chatPrefix: string
   }
+  TelecomAI: Window['TelecomAI']
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： trigger.py
     @date：2026/1/14 11:48
@@ -23,7 +23,7 @@ from common.exception.app_exception import AppApiException
 from common.field.common import ObjectField
 from common.utils.common import get_file_content
 from knowledge.serializers.common import BatchSerializer
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from tools.models import Tool, ToolWorkflow
 from trigger.models import TriggerTypeChoices, Trigger, TriggerTaskTypeChoices, TriggerTask, TaskRecord
 

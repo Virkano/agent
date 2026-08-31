@@ -134,7 +134,7 @@ import LoginContainer from '@/layout/login-layout/LoginContainer.vue'
 import LoginLayout from '@/layout/login-layout/LoginLayout.vue'
 import loginApi from '@/api/user/login'
 import authApi from '@/api/system-settings/auth-setting'
-import { getBrowserLang, t } from '@/locales'
+import { getBrowserLang, getStoredLocale, t } from '@/locales'
 import useStore from '@/stores'
 import { useI18n } from 'vue-i18n'
 import QrCodeTab from '@/views/login/scanCompinents/QrCodeTab.vue'
@@ -193,7 +193,7 @@ const loginHandle = () => {
         login
           .asyncLdapLogin(loginForm.value)
           .then(() => {
-            locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
+            locale.value = getStoredLocale() || getBrowserLang() || 'en-US'
             router.push({ name: 'home' })
           })
           .catch(() => {
@@ -210,7 +210,7 @@ const loginHandle = () => {
         login
           .asyncLogin({ encryptedData: encryptedBase64, username: loginForm.value.username })
           .then(() => {
-            locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
+            locale.value = getStoredLocale() || getBrowserLang() || 'en-US'
             localStorage.setItem('workspace_id', 'default')
             router.push({ name: 'home' })
           })

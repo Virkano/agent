@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/7/12 17:44
     @desc:
@@ -10,10 +10,10 @@ from typing import Dict
 
 from langchain_openai import OpenAIEmbeddings
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class RegoloEmbeddingModel(MaxKBBaseModel, OpenAIEmbeddings):
+class RegoloEmbeddingModel(TelecomAIBaseModel, OpenAIEmbeddings):
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         return RegoloEmbeddingModel(

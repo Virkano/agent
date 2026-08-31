@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： siliconcloud_reranker.py
     @date：2024/9/10 9:45
     @desc: SiliconCloud 文档重排封装
@@ -13,11 +13,11 @@ import requests
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import BaseDocumentCompressor, Document
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from django.utils.translation import gettext as _
 
 
-class SiliconCloudReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class SiliconCloudReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     api_base: Optional[str]
     """SiliconCloud API URL"""
     model: Optional[str]

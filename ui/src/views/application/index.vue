@@ -429,6 +429,7 @@ import TemplateStoreDialog from '@/views/application/template-store/TemplateStor
 import ApplicationApi from '@/api/application/application'
 import WorkspaceApi from '@/api/workspace/workspace'
 import { MsgSuccess, MsgConfirm, MsgError } from '@/utils/message'
+import { openUpgradeUrl } from '@/utils/upgrade'
 import { i18n_name, resetUrl } from '@/utils/common'
 import { isWorkFlow } from '@/utils/application'
 import { dateFormat } from '@/utils/time'
@@ -875,7 +876,7 @@ const importApplication = (file: any) => {
           cancelButtonText: t('common.confirm'),
           confirmButtonText: t('common.professional'),
         }).then(() => {
-          window.open('https://maxkb.cn/pricing.html', '_blank')
+          openUpgradeUrl()
         })
       }
     })

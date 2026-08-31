@@ -1,5 +1,9 @@
 import json
+import re
 
+import requests
+import uuid_utils.compat as uuid
+from django.db import IntegrityError, transaction
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from rest_framework.request import Request
@@ -9,14 +13,22 @@ from application.models import ApplicationAccessToken, ChatUserType
 from common.auth.common import ChatAuthentication, ChatUserToken, FileToken
 from common.auth.authenticate import ChatTokenAuth, TokenAuth
 from common.constants.authentication_type import AuthenticationType
+from common.constants.permission_constants import Group
 from common.exception.app_exception import AppApiException
 from common.result import result
-from common.utils.common import password_encrypt, password_verify
+from common.utils.common import get_random_chars, password_encrypt, password_verify
 from common.utils.rsa_util import decrypt
-from maxkb.const import CONFIG
-from system_manage.models.chat_user import ChatUser
+from telecom_ai_agent.const import CONFIG
+from knowledge.models import Knowledge
+from system_manage.models.chat_user import (
+    ChatUser,
+    ResourceChatUserGroupAuthorize,
+    UserGroup,
+    UserGroupRelation,
+)
+from system_manage.models.resource_mapping import ResourceMapping
 from users.models import User
-from xpack_lite.models import ChatAuthSetting, ChatPlatform
+from xpack_lite.models import ChatAuthSetting, ChatExternalAccount, ChatPlatform
 from xpack_lite.services import chat_user_to_dict, is_admin, is_auth_chat_user
 
 
@@ -70,6 +82,9 @@ PLATFORM_NAMES = {
     'lark': '飞书',
 }
 
+DINGTALK_USER_GROUP_ID = 'dingtalk'
+DINGTALK_USER_GROUP_NAME = '钉钉用户组'
+
 
 def _request_data(request):
     payload = dict(request.data or {})
@@ -94,7 +109,7 @@ def _get_application_access_token(access_token):
     return application_access_token
 
 
-def _create_chat_user_token(application_access_token, chat_user):
+def _create_chat_user_token(application_access_token, chat_user, auth_type='login'):
     token = ChatUserToken(
         application_access_token.application_id,
         None,
@@ -102,7 +117,7 @@ def _create_chat_user_token(application_access_token, chat_user):
         AuthenticationType.CHAT_USER,
         ChatUserType.CHAT_USER,
         chat_user.id,
-        ChatAuthentication('login'),
+        ChatAuthentication(auth_type),
     ).to_token()
     file_token = FileToken(
         str(chat_user.id),
@@ -182,6 +197,14 @@ def _platform_to_dict(platform):
     }
 
 
+def _platform_to_public_dict(platform):
+    data = _platform_to_dict(platform)
+    config = dict(data.get('config') or {})
+    config.pop('app_secret', None)
+    data['config'] = config
+    return data
+
+
 def _get_platform(platform_key):
     if platform_key not in PLATFORM_NAMES:
         raise AppApiException(500, 'Unsupported platform')
@@ -195,6 +218,206 @@ def _get_platform(platform_key):
         },
     )
     return platform
+
+
+def _require_platform_enabled(platform_key):
+    platform = _get_platform(platform_key)
+    if not platform.is_active or not platform.is_valid:
+        raise AppApiException(1002, _('Authentication information is incorrect'))
+    return platform
+
+
+def _ensure_platform_allowed(application_access_token, platform_key):
+    if not application_access_token.authentication:
+        return
+    authentication_value = application_access_token.authentication_value or {}
+    if authentication_value.get('type') != 'login':
+        return
+    if platform_key not in (authentication_value.get('login_value') or []):
+        raise AppApiException(1002, _('Authentication information is incorrect'))
+
+
+def _ensure_chat_user_authorized(application_access_token, chat_user):
+    if (
+        application_access_token.authentication
+        and application_access_token.authentication_value.get('type') == 'login'
+        and not is_auth_chat_user(chat_user.id, application_access_token.application_id)
+    ):
+        raise AppApiException(1002, _('The chat user is not authorized.'))
+
+
+def _ensure_dingtalk_user_group():
+    group, _ = UserGroup.objects.get_or_create(
+        id=DINGTALK_USER_GROUP_ID,
+        defaults={'name': DINGTALK_USER_GROUP_NAME},
+    )
+    return group
+
+
+def _ensure_chat_user_in_platform_group(chat_user, platform_key):
+    if platform_key != 'dingtalk':
+        return
+    group = _ensure_dingtalk_user_group()
+    UserGroupRelation.objects.get_or_create(
+        user=chat_user,
+        group=group,
+        defaults={'id': uuid.uuid7()},
+    )
+
+
+def _ensure_platform_group_authorized(application_access_token, platform_key):
+    if platform_key != 'dingtalk':
+        return
+    group = _ensure_dingtalk_user_group()
+    application = getattr(application_access_token, 'application', None)
+    workspace_id = getattr(application, 'workspace_id', None) or 'default'
+    application_id = str(application_access_token.application_id)
+    ResourceChatUserGroupAuthorize.objects.update_or_create(
+        user_group=group,
+        resource_id=application_id,
+        resource_type=Group.APPLICATION.value,
+        defaults={'workspace_id': workspace_id, 'is_auth': True},
+    )
+    knowledge_ids = list(
+        ResourceMapping.objects.filter(
+            source_type=Group.APPLICATION.value,
+            source_id=application_id,
+            target_type=Group.KNOWLEDGE.value,
+        ).values_list('target_id', flat=True)
+    )
+    knowledge_workspace_map = {
+        str(row.id): row.workspace_id
+        for row in Knowledge.objects.filter(id__in=knowledge_ids).only('id', 'workspace_id')
+    }
+    for knowledge_id in knowledge_ids:
+        ResourceChatUserGroupAuthorize.objects.update_or_create(
+            user_group=group,
+            resource_id=knowledge_id,
+            resource_type=Group.KNOWLEDGE.value,
+            defaults={'workspace_id': knowledge_workspace_map.get(str(knowledge_id), workspace_id), 'is_auth': True},
+        )
+
+
+def _unique_chat_username(platform_key, external_id):
+    normalized = re.sub(r'[^a-zA-Z0-9_@.-]', '_', str(external_id or 'user'))
+    return f'{platform_key}_{normalized}'[:150]
+
+
+def _unique_chat_nick_name(preferred_name, platform_key):
+    base_name = (preferred_name or PLATFORM_NAMES.get(platform_key) or platform_key).strip()[:120]
+    for _attempt in range(10):
+        nick_name = f'{base_name}_{get_random_chars(6)}'[:150]
+        if not ChatUser.objects.filter(nick_name=nick_name).exists():
+            return nick_name
+    return f'{platform_key}_{get_random_chars(16)}'
+
+
+def _get_or_create_external_chat_user(platform_key, external_id, profile):
+    account = ChatExternalAccount.objects.select_related('chat_user').filter(
+        platform=platform_key,
+        external_id=external_id,
+    ).first()
+    if account is not None:
+        account.profile = profile
+        account.union_id = profile.get('unionId') or profile.get('union_id') or account.union_id
+        account.open_id = profile.get('openId') or profile.get('open_id') or account.open_id
+        account.save(update_fields=['profile', 'union_id', 'open_id', 'update_time'])
+        _ensure_chat_user_in_platform_group(account.chat_user, platform_key)
+        return account.chat_user
+
+    username = _unique_chat_username(platform_key, external_id)
+    if ChatUser.objects.filter(username=username).exists():
+        username = f'{username[:130]}_{get_random_chars(8)}'
+
+    with transaction.atomic():
+        try:
+            chat_user = ChatUser.objects.create(
+                username=username,
+                nick_name=_unique_chat_nick_name(
+                    profile.get('nick') or profile.get('name') or profile.get('nickname'),
+                    platform_key,
+                ),
+                password=password_encrypt(get_random_chars(32)),
+                source=platform_key,
+                email=profile.get('email') or None,
+                phone=profile.get('mobile') or profile.get('phone') or '',
+                is_active=True,
+            )
+            ChatExternalAccount.objects.create(
+                chat_user=chat_user,
+                platform=platform_key,
+                external_id=external_id,
+                union_id=profile.get('unionId') or profile.get('union_id') or '',
+                open_id=profile.get('openId') or profile.get('open_id') or '',
+                profile=profile,
+            )
+        except IntegrityError:
+            account = ChatExternalAccount.objects.select_related('chat_user').get(
+                platform=platform_key,
+                external_id=external_id,
+            )
+            _ensure_chat_user_in_platform_group(account.chat_user, platform_key)
+            return account.chat_user
+    _ensure_chat_user_in_platform_group(chat_user, platform_key)
+    return chat_user
+
+
+def _request_dingtalk_user(config, code):
+    client_id = config.get('app_key')
+    client_secret = config.get('app_secret')
+    if not client_id or not client_secret:
+        raise AppApiException(500, _('Authentication information is incorrect'))
+
+    def get_dingtalk_error(data):
+        if not isinstance(data, dict):
+            return _('Authentication information is incorrect')
+        message = data.get('message') or data.get('msg') or data.get('error_description') or data.get('error')
+        error_code = data.get('code') or data.get('errcode')
+        if error_code and message:
+            return f'DingTalk error {error_code}: {message}'
+        return message or _('Authentication information is incorrect')
+
+    try:
+        token_response = requests.post(
+            'https://api.dingtalk.com/v1.0/oauth2/userAccessToken',
+            json={
+                'clientId': client_id,
+                'clientSecret': client_secret,
+                'code': code,
+                'grantType': 'authorization_code',
+            },
+            timeout=10,
+        )
+        try:
+            token_data = token_response.json()
+        except ValueError:
+            token_data = {}
+        if not token_response.ok:
+            raise AppApiException(1002, get_dingtalk_error(token_data))
+        user_access_token = token_data.get('accessToken')
+        if not user_access_token:
+            raise AppApiException(1002, get_dingtalk_error(token_data))
+
+        user_response = requests.get(
+            'https://api.dingtalk.com/v1.0/contact/users/me',
+            headers={'x-acs-dingtalk-access-token': user_access_token},
+            timeout=10,
+        )
+        try:
+            user_data = user_response.json()
+        except ValueError:
+            user_data = {}
+        if not user_response.ok:
+            raise AppApiException(1002, get_dingtalk_error(user_data))
+    except AppApiException:
+        raise
+    except Exception as e:
+        raise AppApiException(1002, f'DingTalk authentication failed: {e}')
+
+    external_id = user_data.get('unionId') or user_data.get('openId')
+    if not external_id:
+        raise AppApiException(1002, _('Authentication information is incorrect'))
+    return external_id, user_data
 
 
 class ChatAuthTypeView(APIView):
@@ -273,6 +496,49 @@ class ChatAuthPlatformSourceView(APIView):
         return result.success(True)
 
 
+class PublicChatQrTypeView(APIView):
+    authentication_classes = []
+
+    def get(self, request: Request):
+        platforms = ChatPlatform.objects.filter(is_active=True, is_valid=True).exclude(auth_type='LOCAL').order_by('name')
+        return result.success([
+            {'key': platform.auth_type, 'value': platform.name, 'auth_type': platform.auth_type, 'name': platform.name}
+            for platform in platforms
+        ])
+
+
+class PublicChatQrPlatformSourceView(APIView):
+    authentication_classes = []
+
+    def get(self, request: Request):
+        platforms = ChatPlatform.objects.filter(is_active=True, is_valid=True).exclude(auth_type='LOCAL').order_by('name')
+        return result.success([_platform_to_public_dict(platform) for platform in platforms])
+
+
+class DingTalkChatUserCallbackView(APIView):
+    authentication_classes = []
+
+    def get(self, request: Request):
+        code = request.query_params.get('code')
+        access_token = request.query_params.get('accessToken') or request.query_params.get('access_token')
+        if not code or not access_token:
+            raise AppApiException(500, _('Authentication information is incorrect'))
+
+        platform = _require_platform_enabled('dingtalk')
+        application_access_token = _get_application_access_token(access_token)
+        _ensure_platform_allowed(application_access_token, 'dingtalk')
+        external_id, profile = _request_dingtalk_user(platform.config or {}, code)
+        chat_user = _get_or_create_external_chat_user('dingtalk', external_id, profile)
+        if not chat_user.is_active:
+            raise AppApiException(1005, _('The user has been disabled, please contact the administrator!'))
+        _ensure_platform_group_authorized(application_access_token, 'dingtalk')
+        _ensure_chat_user_authorized(application_access_token, chat_user)
+
+        token, file_token = _create_chat_user_token(application_access_token, chat_user, 'dingtalk')
+        response = result.success({'token': token})
+        return _set_file_cookie(request, response, file_token)
+
+
 class LocalChatUserLoginView(APIView):
     def post(self, request: Request, access_token):
         payload = _request_data(request)
@@ -297,12 +563,7 @@ class LocalChatUserLoginView(APIView):
                 raise AppApiException(500, _('The username or password is incorrect'))
         if not chat_user.is_active:
             raise AppApiException(1005, _('The user has been disabled, please contact the administrator!'))
-        if (
-            application_access_token.authentication
-            and application_access_token.authentication_value.get('type') == 'login'
-            and not is_auth_chat_user(chat_user.id, application_access_token.application_id)
-        ):
-            raise AppApiException(1002, _('The chat user is not authorized.'))
+        _ensure_chat_user_authorized(application_access_token, chat_user)
 
         token, file_token = _create_chat_user_token(application_access_token, chat_user)
         response = result.success({'token': token})

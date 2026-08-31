@@ -25,7 +25,7 @@ class MCPToolHandler:
         return {
             "protocolVersion": "2025-06-18",
             "serverInfo": {
-                "name": "maxkb-mcp",
+                "name": "telecom-ai-agent-mcp",
                 "version": "1.0.0"
             },
             "capabilities": {

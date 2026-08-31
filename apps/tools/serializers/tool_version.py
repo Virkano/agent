@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： KnowledgeVersionSerializer.py
     @date：2025/11/28 18:00
     @desc:

@@ -1,10 +1,10 @@
 from typing import Dict, List
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from volcenginesdkarkruntime import Ark
 
 
-class VolcanicEngineEmbeddingModel(MaxKBBaseModel):
+class VolcanicEngineEmbeddingModel(TelecomAIBaseModel):
     api_key: str
     model_name: str
     api_base: str
@@ -24,7 +24,7 @@ class VolcanicEngineEmbeddingModel(MaxKBBaseModel):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return VolcanicEngineEmbeddingModel(
             api_key=model_credential.get("api_key"),
             model=model_name,

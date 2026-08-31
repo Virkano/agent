@@ -6,8 +6,8 @@ import shlex
 from deepagents.backends import LocalShellBackend
 from deepagents.backends.protocol import ExecuteResponse
 
-from common.utils.logger import maxkb_logger
-from maxkb.const import CONFIG
+from common.utils.logger import telecom_ai_logger
+from telecom_ai_agent.const import CONFIG
 
 _enable_sandbox = bool(int(CONFIG.get("SANDBOX", 0)))
 _run_user = "sandbox" if _enable_sandbox else getpass.getuser()
@@ -252,7 +252,7 @@ class SandboxShellBackend(LocalShellBackend):
 
     def _build_sandbox_command(self, command: str) -> str:
         prefix = (
-            "env -i LD_PRELOAD=/opt/maxkb-app/sandbox/lib/sandbox.so "
+            "env -i LD_PRELOAD=/opt/telecom_ai_agent-app/sandbox/lib/sandbox.so "
             f'PATH="${{PATH}}" PYTHONPATH="${{PYTHONPATH}}" gosu {_run_user} '
         )
         parts = self._split_shell_command_list(command)
@@ -307,5 +307,5 @@ class SandboxShellBackend(LocalShellBackend):
                 return ExecuteResponse(output=f"Invalid command: {e}", exit_code=1)
             # command = f"runuser -u {_run_user} -- env -i PATH=${{PATH}} {command}"
 
-        maxkb_logger.debug(f"Executing command in sandbox: {command}")
+        telecom_ai_logger.debug(f"Executing command in sandbox: {command}")
         return super().execute(command=command, timeout=timeout)

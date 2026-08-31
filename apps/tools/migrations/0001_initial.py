@@ -7,7 +7,7 @@ import uuid_utils.compat
 from django.db import migrations, models
 
 from common.utils.common import get_file_content
-from maxkb.const import PROJECT_DIR
+from telecom_ai_agent.const import PROJECT_DIR
 from tools.models import ToolFolder
 
 

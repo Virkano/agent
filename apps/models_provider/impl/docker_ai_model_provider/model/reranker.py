@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： siliconcloud_reranker.py
     @date：2024/9/10 9:45
     @desc: SiliconCloud 文档重排封装
@@ -13,10 +13,10 @@ import requests
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import BaseDocumentCompressor, Document
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class DockerAIReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class DockerAIReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     api_base: Optional[str]
     model: Optional[str]
 

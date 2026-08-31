@@ -7,7 +7,7 @@ from common import forms
 from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class OpenAISTTModelParams(BaseForm):
     language = forms.TextInputField(
@@ -37,7 +37,7 @@ class OpenAISTTModelCredential(BaseForm, BaseModelCredential):
             model = provider.get_model(model_type, model_name, model_credential, **model_params)
             model.check_auth()
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: maxkb
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： base_vector.py
 @date：2023/10/18 19:16
 @desc:

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： conf.py
 @date：2025/4/11 16:58
 @desc:
@@ -14,11 +14,11 @@ import os
 
 import yaml
 
-from maxkb.env import get_env
+from telecom_ai_agent.env import get_env
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.dirname(BASE_DIR)
-logger = logging.getLogger("maxkb.conf")
+logger = logging.getLogger("telecom_ai_agent.conf")
 
 
 class Config(dict):
@@ -121,9 +121,9 @@ class Config(dict):
 
             return LocaleConfigHelper.get_languages(self, PROJECT_DIR)
         except Exception as e:
-            from common.utils.logger import maxkb_logger
+            from common.utils.logger import telecom_ai_logger
 
-            maxkb_logger.warning(f"Failed to load languages, using defaults: {e}")
+            telecom_ai_logger.warning(f"Failed to load languages, using defaults: {e}")
             return [("en", "English"), ("zh", "中文简体"), ("zh-hant", "中文繁体")]
 
     def get_log_level(self):
@@ -220,7 +220,7 @@ class ConfigManager:
 
     def load_from_env(self):
         keys = os.environ.keys()
-        config = {key.replace("MAXKB_", ""): os.environ.get(key) for key in keys if key.startswith("MAXKB_")}
+        config = {key.replace("TELECOM_AI_", ""): os.environ.get(key) for key in keys if key.startswith("TELECOM_AI_")}
         config.update({key.replace("JB_", ""): os.environ.get(key) for key in keys if key.startswith("JB_")})
         if len(config.keys()) <= 0:
             msg = """
@@ -252,7 +252,7 @@ class ConfigManager:
         if not root_path:
             root_path = PROJECT_DIR
         manager = cls(root_path=root_path)
-        config_type = get_env("MAXKB_CONFIG_TYPE")
+        config_type = get_env("TELECOM_AI_CONFIG_TYPE")
         if config_type is None or config_type != "ENV":
             manager.load_from_yml()
         else:

@@ -9,7 +9,7 @@ from django.utils import timezone
 from application.models import Application, Chat, ChatRecord, ApplicationChatUserStats
 from common.job.scheduler import scheduler
 from common.utils.lock import lock, RedisLock
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from knowledge.models import File
 
 
@@ -20,7 +20,7 @@ def clean_chat_log_job():
 @lock(lock_key='clean_chat_log_job_execute', timeout=30)
 def clean_chat_log_job_lock():
     from django.utils.translation import gettext_lazy as _
-    maxkb_logger.info(_('start clean chat log'))
+    telecom_ai_logger.info(_('start clean chat log'))
     now = timezone.now()
 
     applications = Application.objects.all().values('id', 'clean_time', 'file_clean_time')
@@ -42,7 +42,7 @@ def clean_chat_log_job_lock():
         query_conditions |= Q(chat__application_id=app_id, create_time__lt=cutoff_date)
     clean_method(query_conditions)
 
-    maxkb_logger.info(_('end clean chat log'))
+    telecom_ai_logger.info(_('end clean chat log'))
 
 
 def clean_method(query_conditions, clean_log=True):
@@ -108,7 +108,7 @@ def run():
     rlock = RedisLock()
     if rlock.try_lock('clean_chat_log_job', 30 * 30):
         try:
-            maxkb_logger.debug('get lock clean_chat_log_job')
+            telecom_ai_logger.debug('get lock clean_chat_log_job')
 
             existing_job = scheduler.get_job(job_id='clean_chat_log')
             if existing_job is not None:

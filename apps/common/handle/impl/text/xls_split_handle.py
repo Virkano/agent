@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： xls_parse_qa_handle.py
     @date：2024/5/21 14:59
     @desc:
@@ -12,7 +12,7 @@ from typing import List
 import xlrd
 
 from common.handle.base_split_handle import BaseSplitHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 def post_cell(cell_value):
@@ -71,7 +71,7 @@ class XlsSplitHandle(BaseSplitHandle):
                         sheet.name, sheet, limit) for sheet
                      in worksheets] if row is not None]
         except Exception as e:
-            maxkb_logger.error(f"Error processing XLS file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing XLS file {file.name}: {e}, {traceback.format_exc()}")
             return [{'name': file.name, 'content': []}]
 
     def get_content(self, file, save_image):
@@ -103,7 +103,7 @@ class XlsSplitHandle(BaseSplitHandle):
 
             return md_tables
         except Exception as e:
-            maxkb_logger.error(f'excel split handle error: {e}')
+            telecom_ai_logger.error(f'excel split handle error: {e}')
             return f'error: {e}'
 
     def support(self, file, get_buffer):

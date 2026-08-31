@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.urls import resolve
 
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from oss.views import FileRetrievalView, FileView, GetUrlView
 
 

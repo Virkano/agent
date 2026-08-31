@@ -187,7 +187,7 @@ defineExpose({ open })
     padding: 0 !important;
     margin-bottom: 8px;
   }
-  :deep(.maxkb-virtualized-tree) {
+  :deep(.telecom-ai-virtualized-tree) {
     border: 1px solid var(--el-border-color-light);
     border-radius: 6px;
     height: calc(100vh - 320px) !important;

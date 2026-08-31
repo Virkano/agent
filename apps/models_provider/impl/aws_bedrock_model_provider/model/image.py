@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @file: image.py
     @desc: AWS Bedrock Vision-Language Model Implementation
 """
@@ -11,11 +11,11 @@ from langchain_aws import ChatBedrock
 from langchain_core.messages import BaseMessage, get_buffer_string
 
 from common.config.tokenizer_manage_config import TokenizerManage
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.aws_bedrock_model_provider.model.llm import _update_aws_credentials
 
 
-class BedrockVLModel(MaxKBBaseModel, ChatBedrock):
+class BedrockVLModel(TelecomAIBaseModel, ChatBedrock):
     """
     AWS Bedrock Vision-Language Model
     Supports Claude 3 models with vision capabilities (Haiku, Sonnet, Opus)
@@ -39,7 +39,7 @@ class BedrockVLModel(MaxKBBaseModel, ChatBedrock):
     @classmethod
     def new_instance(cls, model_type: str, model_name: str, model_credential: Dict[str, str],
                      **model_kwargs) -> 'BedrockVLModel':
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
 
         config = {}
         # Check if proxy URL is provided

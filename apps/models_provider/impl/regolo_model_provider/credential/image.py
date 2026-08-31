@@ -11,7 +11,7 @@ from common.forms import BaseForm, TooltipLabel
 from django.utils.translation import gettext_lazy as _, gettext
 
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class RegoloImageModelParams(BaseForm):
@@ -54,7 +54,7 @@ class RegoloImageModelCredential(BaseForm, BaseModelCredential):
             model = provider.get_model(model_type, model_name, model_credential, **model_params)
             res = model.stream([HumanMessage(content=[{"type": "text", "text": gettext('Hello')}])])
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

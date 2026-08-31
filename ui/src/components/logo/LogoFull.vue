@@ -1,6 +1,6 @@
 <template>
   <img v-if="theme.themeInfo?.loginLogo" :src="fileURL" alt="" height="45px" class="mr-8" />
-  <img v-else src="@/assets/logo/MaxKB-logo.svg" :height="height" />
+  <img v-else src="@/assets/logo/TelecomAI-logo.svg" :height="height" />
 </template>
 
 <script setup lang="ts">

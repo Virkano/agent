@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： url_validator.py
 @date：2025/7/27
 @desc: Shared URL validation utilities to prevent SSRF (CWE-918)

@@ -34,7 +34,7 @@ from common.handle.impl.text.xlsx_split_handle import XlsxSplitHandle
 from common.handle.impl.text.zip_split_handle import ZipSplitHandle
 from common.utils.common import bulk_create_in_batches, get_file_content, parse_file_link, parse_image, post
 from common.utils.fork import Fork
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import flat_map, get_split_model
 from django.contrib.postgres.fields import JSONField
 from django.core import validators
@@ -46,7 +46,7 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.utils.translation import get_language, gettext, to_locale
 from django.utils.translation import gettext_lazy as _
-from maxkb.const import PROJECT_DIR
+from telecom_ai_agent.const import PROJECT_DIR
 from models_provider.models import Model
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from oss.serializers.file import FileSerializer
@@ -665,7 +665,7 @@ class DocumentSerializers(serializers.Serializer):
                 else:
                     state = State.FAILURE
             except Exception as e:
-                maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
                 state = State.FAILURE
             ListenerManagement.update_status(QuerySet(Document).filter(id=document_id), TaskType.SYNC, state)
             ListenerManagement.update_status(QuerySet(Paragraph).filter(document_id=document_id), TaskType.SYNC, state)

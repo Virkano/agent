@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： web.py
     @date：2025/11/5 15:14
     @desc:
@@ -31,12 +31,12 @@ class TorchBlocker:
 # 安装导入拦截器
 builtins.__import__ = TorchBlocker()
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'maxkb.settings')
-from maxkb.env import get_env
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'telecom_ai_agent.settings')
+from telecom_ai_agent.env import get_env
 
 os.environ['TIKTOKEN_CACHE_DIR'] = get_env(
-    'MAXKB_TIKTOKEN_CACHE_DIR',
-    '/opt/maxkb-app/model/tokenizer/openai-tiktoken-cl100k-base'
+    'TELECOM_AI_TIKTOKEN_CACHE_DIR',
+    '/opt/telecom_ai_agent-app/model/tokenizer/openai-tiktoken-cl100k-base'
 )
 application = get_wsgi_application()
 

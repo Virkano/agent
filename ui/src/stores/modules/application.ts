@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 const useApplicationStore = defineStore('application', {
   state: () => ({
     location: `${window.location.origin}${
-      window.MaxKB.chatPrefix ? window.MaxKB.chatPrefix : window.MaxKB.prefix
+      window.TelecomAI.chatPrefix ? window.TelecomAI.chatPrefix : window.TelecomAI.prefix
     }/`,
   }),
   actions: {},

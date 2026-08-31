@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： homepage.py
     @date：2026/5/13 14:34
     @desc:
@@ -26,7 +26,7 @@ from common.constants.permission_constants import RoleConstants
 from common.db.search import native_search, get_dynamics_model, page_search
 from common.utils.common import get_file_content
 from knowledge.models import Knowledge
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from models_provider.base_model_provider import ModelTypeConst
 from models_provider.models import Model
 from system_manage.models import WorkspaceUserResourcePermission

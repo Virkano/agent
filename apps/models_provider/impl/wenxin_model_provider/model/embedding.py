@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/10/17 16:48
     @desc:
@@ -9,10 +9,10 @@
 from typing import Dict, List
 from langchain_community.embeddings import QianfanEmbeddingsEndpoint
 import openai
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class QianfanV1Embeddings(MaxKBBaseModel, QianfanEmbeddingsEndpoint):
+class QianfanV1Embeddings(TelecomAIBaseModel, QianfanEmbeddingsEndpoint):
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         return QianfanV1Embeddings(
@@ -22,7 +22,7 @@ class QianfanV1Embeddings(MaxKBBaseModel, QianfanEmbeddingsEndpoint):
         )
 
 
-class QianfanV2EmbeddingModel(MaxKBBaseModel):
+class QianfanV2EmbeddingModel(TelecomAIBaseModel):
     model_name: str
 
     @staticmethod
@@ -52,7 +52,7 @@ class QianfanV2EmbeddingModel(MaxKBBaseModel):
         return [e.embedding for e in res.data]
 
 
-class QianfanEmbeddings(MaxKBBaseModel):
+class QianfanEmbeddings(TelecomAIBaseModel):
 
 
     @staticmethod

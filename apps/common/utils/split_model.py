@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎
+    @project: dianxin
     @file： split_model.py
     @date：2023/9/1 15:12
     @desc:

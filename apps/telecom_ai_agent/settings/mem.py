@@ -2,8 +2,8 @@
 import os
 import gc
 import threading
-from maxkb.const import CONFIG
-from common.utils.logger import maxkb_logger
+from telecom_ai_agent.const import CONFIG
+from common.utils.logger import telecom_ai_logger
 import random
 import psutil
 
@@ -20,11 +20,11 @@ def enable_force_gc():
     except Exception:
         pass
     after = int(psutil.Process(CURRENT_PID).memory_info().rss / 1024 / 1024)
-    maxkb_logger.debug(f"(PID: {CURRENT_PID}) Forced GC ({collected} objects and {before - after} MB recycled)")
+    telecom_ai_logger.debug(f"(PID: {CURRENT_PID}) Forced GC ({collected} objects and {before - after} MB recycled)")
     t = threading.Timer(GC_INTERVAL - random.randint(0, 900), enable_force_gc)
     t.daemon = True
     t.start()
 
 if CONFIG.get("ENABLE_FORCE_GC", '1') == "1":
-    maxkb_logger.info(f"(PID: {CURRENT_PID}) Forced GC enabled")
+    telecom_ai_logger.info(f"(PID: {CURRENT_PID}) Forced GC enabled")
     enable_force_gc()

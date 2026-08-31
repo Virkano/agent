@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： base_function_lib_node.py
     @date：2024/8/8 17:49
     @desc:
@@ -26,7 +26,7 @@ from application.flow.step_node.tool_lib_node.i_tool_lib_node import IToolLibNod
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import AppApiException
 from common.utils.common import common_convert_value
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.shared_resource_auth import get_runtime_user_id, validate_authorized_tool_ids
 from common.utils.tool_code import ToolExecutor
@@ -74,7 +74,7 @@ def valid_reference_value(_type, value, name):
     elif _type == 'string':
         instance_type = str
     else:
-        maxkb_logger.error(_(
+        telecom_ai_logger.error(_(
             'Field: {name} Type: {_type} Value: {value} Unsupported this type'
         ).format(name=name, _type=_type, value=value))
         return value
@@ -281,7 +281,7 @@ class BaseToolLibNodeNode(IToolLibNode):
 
             return result
         except Exception as e:
-            maxkb_logger.error(f"Tool execution error: {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Tool execution error: {traceback.format_exc()}")
             QuerySet(ToolRecord).filter(id=task_record_id).update(
                 state=State.FAILURE,
                 run_time=time.time() - start_time,

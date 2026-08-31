@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： base_reset_problem_step.py
     @date：2024/1/10 14:35
     @desc:

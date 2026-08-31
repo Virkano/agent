@@ -79,6 +79,31 @@ const {
   params: {accessToken},
 } = route as any
 
+const navigateToChat = () => {
+  const nextQuery = {...route.query}
+  delete nextQuery.code
+  delete nextQuery.state
+  delete nextQuery.authCode
+  delete nextQuery.corpId
+  const chatRouteName = router.hasRoute('chat') ? 'chat' : router.hasRoute('Chat') ? 'Chat' : undefined
+  if (chatRouteName) {
+    router.replace({
+      name: chatRouteName,
+      params: {accessToken},
+      query: nextQuery,
+    })
+    return
+  }
+  router.replace({
+    path: `${window.TelecomAI?.chatPrefix || window.TelecomAI?.prefix || '/chat'}/${accessToken}/`,
+    query: nextQuery,
+  })
+}
+
+const getErrorMessage = (error: any) => {
+  return error?.response?.data?.message || error?.message || error?.msg || String(error || '')
+}
+
 const initActive = async () => {
   try {
     await load(true)
@@ -110,19 +135,19 @@ const initActive = async () => {
       },
       (loginResult) => {
         const authCode = loginResult.authCode
-        chatUser.dingCallback(authCode, accessToken).then(() => {
-          router.push({
-            name: 'chat',
-            params: {accessToken: accessToken},
-            query: route.query,
+        chatUser
+          .dingCallback(authCode, accessToken)
+          .then(navigateToChat)
+          .catch((error: any) => {
+            MsgError(getErrorMessage(error) || 'DingTalk authentication failed')
           })
-        })
       },
       (errorMsg: string) => {
         MsgError(errorMsg)
       }
     )
-  } catch (error) {
+  } catch (error: any) {
+    MsgError(getErrorMessage(error) || 'DingTalk QR code failed to initialize')
   }
 }
 

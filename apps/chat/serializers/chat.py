@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： chat.py
     @date：2025/6/9 11:23
     @desc:
@@ -39,7 +39,7 @@ from common.handle.impl.response.openai_to_response import OpenaiToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
 from common.utils.common import flat_map, get_file_content, is_valid_uuid
 from knowledge.models import Document, Paragraph
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from models_provider.models import Model, Status
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from system_manage.models.resource_mapping import ResourceMapping

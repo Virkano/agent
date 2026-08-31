@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： celery.py
     @date：2024/8/19 11:57
     @desc:
@@ -11,7 +11,7 @@ import subprocess
 
 from django.core.management.base import BaseCommand
 
-from maxkb.const import BASE_DIR
+from telecom_ai_agent.const import BASE_DIR
 
 
 class Command(BaseCommand):

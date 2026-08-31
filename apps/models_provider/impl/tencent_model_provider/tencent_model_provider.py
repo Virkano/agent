@@ -16,7 +16,7 @@ from models_provider.impl.tencent_model_provider.model.image import TencentVisio
 from models_provider.impl.tencent_model_provider.model.llm import TencentModel
 from models_provider.impl.tencent_model_provider.model.stt import TencentSpeechToText
 from models_provider.impl.tencent_model_provider.model.tti import TencentTextToImageModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 def _create_model_info(model_name, description, model_type, credential_class, model_class):

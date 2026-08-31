@@ -3,7 +3,7 @@ from celery_once import QueueOnce
 from django.db.models import QuerySet
 
 from common.utils.lock import RedisLock
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from ops import celery_app
 from trigger.handler.base_trigger import BaseTrigger
 from trigger.models import TriggerTask
@@ -42,7 +42,7 @@ def _deploy_daily(trigger: dict, trigger_tasks: list[dict], setting: dict, trigg
         try:
             hour, minute = _parse_hhmm(t)
         except Exception:
-            maxkb_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
+            telecom_ai_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
             continue
 
         for task in trigger_tasks:
@@ -66,21 +66,21 @@ def _deploy_weekly(trigger: dict, trigger_tasks: list[dict], setting: dict, trig
     times = setting.get("time") or []
     days = setting.get("days") or []
     if not times or not days:
-        maxkb_logger.warning(f"empty weekly setting, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"empty weekly setting, trigger_id={trigger_id}")
         return
 
     for d in days:
         try:
             dow = _weekday_to_cron(d)
         except Exception:
-            maxkb_logger.warning(f"invalid weekday={d}, trigger_id={trigger_id}")
+            telecom_ai_logger.warning(f"invalid weekday={d}, trigger_id={trigger_id}")
             continue
 
         for t in times:
             try:
                 hour, minute = _parse_hhmm(t)
             except Exception:
-                maxkb_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
+                telecom_ai_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
                 continue
 
             for task in trigger_tasks:
@@ -105,7 +105,7 @@ def _deploy_monthly(trigger: dict, trigger_tasks: list[dict], setting: dict, tri
     times = setting.get("time") or []
     days = setting.get("days") or []
     if not times or not days:
-        maxkb_logger.warning(f"empty monthly setting, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"empty monthly setting, trigger_id={trigger_id}")
         return
 
     for d in days:
@@ -114,14 +114,14 @@ def _deploy_monthly(trigger: dict, trigger_tasks: list[dict], setting: dict, tri
             if not (1 <= dom <= 31):
                 raise ValueError("invalid day of month")
         except Exception:
-            maxkb_logger.warning(f"invalid day={d}, trigger_id={trigger_id}")
+            telecom_ai_logger.warning(f"invalid day={d}, trigger_id={trigger_id}")
             continue
 
         for t in times:
             try:
                 hour, minute = _parse_hhmm(t)
             except Exception:
-                maxkb_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
+                telecom_ai_logger.warning(f"invalid time={t}, trigger_id={trigger_id}")
                 continue
 
             for task in trigger_tasks:
@@ -145,13 +145,13 @@ def _deploy_cron(trigger: dict, trigger_tasks: list[dict], setting: dict, trigge
 
     cron_expression = setting.get('cron_expression')
     if not cron_expression:
-        maxkb_logger.warning(f"empty cron_expression, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"empty cron_expression, trigger_id={trigger_id}")
         return
 
     try:
         cron_trigger = CronTrigger.from_crontab(cron_expression.strip())
     except ValueError:
-        maxkb_logger.warning(f"invalid cron_expression={cron_expression}, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"invalid cron_expression={cron_expression}, trigger_id={trigger_id}")
         return
 
     for task in trigger_tasks:
@@ -177,11 +177,11 @@ def _deploy_interval(trigger: dict, trigger_tasks: list[dict], setting: dict, tr
         if value_i <= 0:
             raise ValueError("interval_value must be positive")
     except Exception:
-        maxkb_logger.warning(f"invalid interval_value={value}, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"invalid interval_value={value}, trigger_id={trigger_id}")
         return
 
     if unit not in {"seconds", "minutes", "hours", "days"}:
-        maxkb_logger.warning(f"invalid interval_unit={unit}, trigger_id={trigger_id}")
+        telecom_ai_logger.warning(f"invalid interval_unit={unit}, trigger_id={trigger_id}")
         return
 
     for task in trigger_tasks:
@@ -207,7 +207,7 @@ def _remove_trigger_jobs(trigger_id: str) -> None:
             try:
                 job.remove()
             except Exception as e:
-                maxkb_logger.warning(f"remove job failed, job_id={job.id}, err={e}")
+                telecom_ai_logger.warning(f"remove job failed, job_id={job.id}, err={e}")
 
 
 @celery_app.task(name="celery:deploy_scheduled_trigger")
@@ -223,7 +223,7 @@ def deploy_scheduled_trigger(trigger: dict, trigger_tasks: list[dict], setting: 
     }
     fn = deployers.get(schedule_type)
     if not fn:
-        maxkb_logger.warning(f"unsupported schedule_type={schedule_type}, trigger_id={trigger['id']}")
+        telecom_ai_logger.warning(f"unsupported schedule_type={schedule_type}, trigger_id={trigger['id']}")
         return
 
     fn(trigger, trigger_tasks, setting, trigger["id"])
@@ -238,7 +238,7 @@ class ScheduledTrigger(BaseTrigger):
     def execute(trigger, **kwargs):
         trigger_task = kwargs.pop("trigger_task", None)
         if not trigger_task:
-            maxkb_logger.warning(f"unsupported task={trigger_task}")
+            telecom_ai_logger.warning(f"unsupported task={trigger_task}")
             return
         source_type = trigger_task["source_type"]
         rlock = RedisLock()
@@ -255,7 +255,7 @@ class ScheduledTrigger(BaseTrigger):
 
                     ToolTask().execute(trigger_task, **kwargs)
                 else:
-                    maxkb_logger.warning(f"unsupported source_type={source_type}, task_id={trigger_task['id']}")
+                    telecom_ai_logger.warning(f"unsupported source_type={source_type}, task_id={trigger_task['id']}")
             finally:
                 rlock.un_lock(f'{trigger_id}:{source_id}')
 
@@ -277,7 +277,7 @@ class ScheduledTrigger(BaseTrigger):
 
         trigger_tasks = _get_active_trigger_tasks(trigger["id"])
         if not trigger_tasks:
-            maxkb_logger.warning(f"no active trigger_tasks, trigger_id={trigger_id}")
+            telecom_ai_logger.warning(f"no active trigger_tasks, trigger_id={trigger_id}")
             self.undeploy(trigger, **kwargs)
             return
 

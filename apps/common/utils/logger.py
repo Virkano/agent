@@ -3,7 +3,7 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 import logging
 
-maxkb_logger = logging.getLogger('max_kb')
+telecom_ai_logger = logging.getLogger('telecom_ai_agent')
 
 
 class DailyTimedRotatingFileHandler(TimedRotatingFileHandler):

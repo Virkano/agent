@@ -11,7 +11,7 @@ from common.event.listener_manage import (
     UpdateEmbeddingKnowledgeIdArgs,
     UpdateProblemArgs,
 )
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from models_provider.models import Model
@@ -24,7 +24,7 @@ from knowledge.serializers.common import drop_knowledge_index
 
 def get_embedding_model(
     model_id,
-    exception_handler=lambda e: maxkb_logger.error(
+    exception_handler=lambda e: telecom_ai_logger.error(
         _("Failed to obtain vector model: {error} {traceback}").format(error=str(e), traceback=traceback.format_exc())
     ),
 ):
@@ -81,7 +81,7 @@ def embedding_by_document(document_id, model_id, state_list=None):
 
     def exception_handler(e):
         ListenerManagement.update_status(QuerySet(Document).filter(id=document_id), TaskType.EMBEDDING, State.FAILURE)
-        maxkb_logger.error(
+        telecom_ai_logger.error(
             _("Failed to obtain vector model: {error} {traceback}").format(
                 error=str(e), traceback=traceback.format_exc()
             )
@@ -112,12 +112,12 @@ def embedding_by_knowledge(knowledge_id, model_id):
     @param model_id 向量模型
     :return: None
     """
-    maxkb_logger.info(_("Start--->Vectorized knowledge: {knowledge_id}").format(knowledge_id=knowledge_id))
+    telecom_ai_logger.info(_("Start--->Vectorized knowledge: {knowledge_id}").format(knowledge_id=knowledge_id))
     try:
         ListenerManagement.delete_embedding_by_knowledge(knowledge_id)
         drop_knowledge_index(knowledge_id=knowledge_id)
         document_list = QuerySet(Document).filter(knowledge_id=knowledge_id)
-        maxkb_logger.info(
+        telecom_ai_logger.info(
             _("Knowledge documentation: {document_names}").format(
                 document_names=", ".join([d.name for d in document_list])
             )
@@ -128,13 +128,13 @@ def embedding_by_knowledge(knowledge_id, model_id):
             except Exception as e:
                 pass
     except Exception as e:
-        maxkb_logger.error(
+        telecom_ai_logger.error(
             _("Vectorized knowledge: {knowledge_id} error {error} {traceback}").format(
                 knowledge_id=knowledge_id, error=str(e), traceback=traceback.format_exc()
             )
         )
     finally:
-        maxkb_logger.info(_("End--->Vectorized knowledge: {knowledge_id}").format(knowledge_id=knowledge_id))
+        telecom_ai_logger.info(_("End--->Vectorized knowledge: {knowledge_id}").format(knowledge_id=knowledge_id))
 
 
 def embedding_by_problem(args, model_id):

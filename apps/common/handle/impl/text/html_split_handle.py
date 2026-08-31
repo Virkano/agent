@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： html_split_handle.py
     @date：2024/5/23 10:58
     @desc:
@@ -15,7 +15,7 @@ from charset_normalizer import detect
 from markdownify import markdownify
 
 from common.handle.base_split_handle import BaseSplitHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import SplitModel
 
 default_pattern_list = [re.compile('(?<=^)# .*|(?<=\\n)# .*'),
@@ -66,7 +66,7 @@ class HTMLSplitHandle(BaseSplitHandle):
             content = self._remove_anchor_links(content)
             content = markdownify(content, heading_style='ATX')
         except BaseException as e:
-            maxkb_logger.error(f"Error processing HTML file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing HTML file {file.name}: {e}, {traceback.format_exc()}")
 
             return {
                 'name': file.name, 'content': []
@@ -85,5 +85,5 @@ class HTMLSplitHandle(BaseSplitHandle):
             content = self._remove_anchor_links(content)
             return markdownify(content, heading_style='ATX')
         except BaseException as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             return f'{e}'

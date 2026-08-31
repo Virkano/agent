@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎虎
+    @project: dianxin虎
     @file： authenticate.py
     @date：2023/9/4 11:16
     @desc:  认证类
@@ -17,7 +17,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from common.exception.app_exception import AppAuthenticationFailed, AppEmbedIdentityFailed, AppChatNumOutOfBoundsFailed, \
     AppApiException
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 token_cache = cache.caches['default']
 
@@ -90,7 +90,7 @@ class TokenAuth(TokenAuthentication):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
                                                                                                                  AppApiException):
                 raise e
@@ -116,7 +116,7 @@ class ChatTokenAuth(TokenAuthentication):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
                                                                                                                  AppApiException):
                 raise e
@@ -142,7 +142,7 @@ class AllTokenAuth(TokenAuthentication):
                     return handle.handle(request, token, token_details.get_token_details)
             raise AppAuthenticationFailed(1002, _('Authentication information is incorrect! illegal user'))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppEmbedIdentityFailed) or isinstance(e, AppChatNumOutOfBoundsFailed) or isinstance(e,
                                                                                                                  AppApiException):
                 raise e

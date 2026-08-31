@@ -23,8 +23,8 @@ from urllib.parse import urlparse
 
 import websockets
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_stt import BaseSpeechToText
 
 audio_format = "mp3"  # wav 或者 mp3，根据实际音频格式设置
@@ -147,7 +147,7 @@ def parse_response(res):
         result['code'] = code
         payload_size = int.from_bytes(payload[4:8], "big", signed=False)
         payload_msg = payload[8:]
-        maxkb_logger.error(f"Error code: {code}, message: {payload_msg}")
+        telecom_ai_logger.error(f"Error code: {code}, message: {payload_msg}")
     if payload_msg is None:
         return result
     if message_compression == GZIP:
@@ -169,7 +169,7 @@ def read_wav_info(data: bytes = None) -> (int, int, int, int, int):
     return nchannels, sampwidth, framerate, nframes, len(wave_bytes)
 
 
-class VolcanicEngineSpeechToText(MaxKBBaseModel, BaseSpeechToText):
+class VolcanicEngineSpeechToText(TelecomAIBaseModel, BaseSpeechToText):
     workflow: str = "audio_in,resample,partition,vad,fe,decode,itn,nlu_punctuate"
     show_language: bool = False
     show_utterances: bool = False

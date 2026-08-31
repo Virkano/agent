@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/10/17 15:40
     @desc:
@@ -14,7 +14,7 @@ from common import forms
 from common.exception.app_exception import AppApiException
 from common.forms import BaseForm
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class QianfanEmbeddingCredential(BaseForm, BaseModelCredential):
 
@@ -45,7 +45,7 @@ class QianfanEmbeddingCredential(BaseForm, BaseModelCredential):
             model = provider.get_model(model_type, model_name, model_credential)
             model.embed_query(_('Hello'))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

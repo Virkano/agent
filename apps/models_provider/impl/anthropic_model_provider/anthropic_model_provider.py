@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： openai_model_provider.py
     @date：2024/3/28 16:26
     @desc:
@@ -15,7 +15,7 @@ from models_provider.impl.anthropic_model_provider.credential.image import Anthr
 from models_provider.impl.anthropic_model_provider.credential.llm import AnthropicLLMModelCredential
 from models_provider.impl.anthropic_model_provider.model.image import AnthropicImage
 from models_provider.impl.anthropic_model_provider.model.llm import AnthropicChatModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 
 openai_llm_model_credential = AnthropicLLMModelCredential()
 openai_image_model_credential = AnthropicImageModelCredential()

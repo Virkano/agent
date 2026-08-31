@@ -1,5 +1,5 @@
-CREATE DATABASE "maxkb";
+CREATE DATABASE "telecom_ai_agent";
 
-\c "maxkb";
+\c "telecom_ai_agent";
 
 CREATE EXTENSION "vector";

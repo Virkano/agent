@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: maxkb
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： text_split_handle.py
 @date：2024/3/27 18:19
 @desc:
@@ -19,7 +19,7 @@ from pypdf import PdfReader
 from pypdf.generic import Destination
 
 from common.handle.base_split_handle import BaseSplitHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import SplitModel, smart_split_paragraph
 
 default_pattern_list = [
@@ -88,7 +88,7 @@ class PdfSplitHandle(BaseSplitHandle):
                 else:
                     split_model = SplitModel(default_pattern_list, with_filter=with_filter, limit=limit)
         except BaseException as e:
-            maxkb_logger.error(f"File: {file.name}, error: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"File: {file.name}, error: {e}, {traceback.format_exc()}")
             return {"name": file.name, "content": []}
         finally:
             # 处理完后可以删除临时文件
@@ -141,7 +141,7 @@ class PdfSplitHandle(BaseSplitHandle):
             content = content.replace("\0", "")
 
             elapsed_time = time.time() - start_time
-            maxkb_logger.debug(f"File: {file.name}, Page: {page_num + 1}, Time: {elapsed_time:.3f}s")
+            telecom_ai_logger.debug(f"File: {file.name}, Page: {page_num + 1}, Time: {elapsed_time:.3f}s")
 
         return content
 
@@ -464,7 +464,7 @@ class PdfSplitHandle(BaseSplitHandle):
                     pre_toc[i]["content"] = re.sub(r"(?<!。)\n+", "", pre_toc[i]["content"])
                     pre_toc[i]["content"] = re.sub(r"(?<!.)\n+", "", pre_toc[i]["content"])
             except BaseException as e:
-                maxkb_logger.error(_("This document has no preface and is treated as ordinary text: {e}").format(e=e))
+                telecom_ai_logger.error(_("This document has no preface and is treated as ordinary text: {e}").format(e=e))
                 if pattern_list is not None and len(pattern_list) > 0:
                     split_model = SplitModel(pattern_list, with_filter, limit)
                 else:

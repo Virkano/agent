@@ -5,12 +5,12 @@ from typing import Dict
 
 from openai import OpenAI
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_stt import BaseSpeechToText
 
 
-class AliyunBaiLianOmiSpeechToText(MaxKBBaseModel, BaseSpeechToText):
+class AliyunBaiLianOmiSpeechToText(TelecomAIBaseModel, BaseSpeechToText):
     api_key: str
     api_url: str
     model: str
@@ -87,5 +87,5 @@ class AliyunBaiLianOmiSpeechToText(MaxKBBaseModel, BaseSpeechToText):
             return "".join(result)
 
         except Exception as err:
-            maxkb_logger.error(f":Error: {str(err)}: {traceback.format_exc()}")
+            telecom_ai_logger.error(f":Error: {str(err)}: {traceback.format_exc()}")
             raise err

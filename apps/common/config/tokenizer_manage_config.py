@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： tokenizer_manage_config.py
     @date：2024/4/28 10:17
     @desc:
@@ -10,7 +10,7 @@
 import os
 from pathlib import Path
 
-from maxkb.env import get_env
+from telecom_ai_agent.env import get_env
 
 
 class MKTokenizer:
@@ -32,8 +32,8 @@ class TokenizerManage:
 
         model_path = Path(
             get_env(
-                "MAXKB_TOKENIZER_MODEL_PATH",
-                os.path.join("/opt/maxkb-app", "model", "tokenizer", "models--bert-base-cased"),
+                "TELECOM_AI_TOKENIZER_MODEL_PATH",
+                os.path.join("/opt/telecom_ai_agent-app", "model", "tokenizer", "models--bert-base-cased"),
             )
         )
         tokenizer_file = TokenizerManage._get_tokenizer_file(model_path)

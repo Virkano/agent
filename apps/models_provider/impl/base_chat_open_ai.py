@@ -16,7 +16,7 @@ from langchain_openai.chat_models.base import _create_usage_metadata
 from requests.exceptions import ReadTimeout
 
 from common.config.tokenizer_manage_config import TokenizerManage
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 def custom_get_token_ids(text: str):
@@ -103,7 +103,7 @@ class BaseChatOpenAI(ChatOpenAI):
                 future = executor.submit(super().get_num_tokens_from_messages, messages, tools)
                 try:
                     response = future.result(timeout=timeout)
-                    maxkb_logger.info("请求成功（未超时）")
+                    telecom_ai_logger.info("请求成功（未超时）")
                     return response
                 except Exception as e:
                     if isinstance(e, ReadTimeout):

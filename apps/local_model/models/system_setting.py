@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： system_management.py
     @date：2024/3/19 13:47
     @desc: 邮箱管理

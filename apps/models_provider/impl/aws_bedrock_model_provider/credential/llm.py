@@ -7,7 +7,7 @@ from common import forms
 from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
 from models_provider.base_model_provider import ValidCode, BaseModelCredential
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class BedrockLLMModelParams(BaseForm):
     temperature = forms.SliderField(TooltipLabel(_('Temperature'),
@@ -53,7 +53,7 @@ class BedrockLLMModelCredential(BaseForm, BaseModelCredential):
         except AppApiException:
             raise
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if raise_exception:
                 raise AppApiException(ValidCode.valid_error.value,
                                       gettext(

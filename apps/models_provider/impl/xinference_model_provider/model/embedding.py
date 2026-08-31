@@ -4,10 +4,10 @@ from typing import Dict, Optional, List, Any
 
 from langchain_core.embeddings import Embeddings
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class XinferenceEmbedding(MaxKBBaseModel, Embeddings):
+class XinferenceEmbedding(TelecomAIBaseModel, Embeddings):
     client: Any
     server_url: Optional[str]
     """URL of the xinference server"""

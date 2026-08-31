@@ -39,7 +39,7 @@
         ref="editorRef"
         editorId="preview-only"
         :modelValue="form.content"
-        class="maxkb-md"
+        class="telecom-ai-md"
       />
     </el-form-item>
   </el-form>

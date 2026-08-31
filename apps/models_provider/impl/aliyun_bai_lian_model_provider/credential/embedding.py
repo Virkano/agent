@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/10/16 17:01
     @desc:
@@ -15,7 +15,7 @@ from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
 from models_provider.impl.aliyun_bai_lian_model_provider.model.embedding import AliyunBaiLianEmbedding
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class BaiLianEmbeddingModelParams(BaseForm):
@@ -70,7 +70,7 @@ class AliyunBaiLianEmbeddingCredential(BaseForm, BaseModelCredential):
             model: AliyunBaiLianEmbedding = provider.get_model(model_type, model_name, model_credential)
             model.embed_query(_("Hello"))
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException):
                 raise e
             if raise_exception:

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： openai_model_provider.py
     @date：2024/3/28 16:26
     @desc:
@@ -27,7 +27,7 @@ from models_provider.impl.siliconCloud_model_provider.model.reranker import Sili
 from models_provider.impl.siliconCloud_model_provider.model.stt import SiliconCloudSpeechToText
 from models_provider.impl.siliconCloud_model_provider.model.tti import SiliconCloudTextToImage
 from models_provider.impl.siliconCloud_model_provider.model.tts import SiliconCloudTextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 openai_llm_model_credential = SiliconCloudLLMModelCredential()

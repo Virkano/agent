@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： wenxin_model_provider.py
     @date：2023/10/31 16:19
     @desc:
@@ -16,7 +16,7 @@ from models_provider.impl.wenxin_model_provider.credential.llm import WenxinLLMM
 from models_provider.impl.wenxin_model_provider.credential.reranker import QfRerankerCredential
 from models_provider.impl.wenxin_model_provider.model.embedding import QianfanEmbeddings
 from models_provider.impl.wenxin_model_provider.model.llm import QianfanChatModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 from models_provider.impl.wenxin_model_provider.model.reranker import QfBgeReranker

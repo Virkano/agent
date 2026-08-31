@@ -1,5 +1,5 @@
 """
-URL configuration for maxkb project.
+URL configuration for telecom_ai_agent project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -25,9 +25,9 @@ from rest_framework import status
 from chat.urls import urlpatterns as chat_urlpatterns
 from common.init.init_doc import init_doc
 from common.result import Result
-from maxkb import settings
-from maxkb.conf import PROJECT_DIR
-from maxkb.const import CONFIG
+from telecom_ai_agent import settings
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.const import CONFIG
 
 admin_api_prefix = CONFIG.get_admin_path()[1:] + '/api/'
 admin_ui_prefix = CONFIG.get_admin_path()

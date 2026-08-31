@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： i_data_source_web_node.py
     @date：2025/11/12 13:47

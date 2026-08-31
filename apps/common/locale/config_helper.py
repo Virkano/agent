@@ -7,7 +7,7 @@
 import os
 from typing import List, Tuple, Dict
 
-from common.utils.logger import maxkb_logger as logger
+from common.utils.logger import telecom_ai_logger as logger
 
 
 class LocaleConfigHelper:

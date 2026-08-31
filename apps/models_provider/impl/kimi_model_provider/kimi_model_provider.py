@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： kimi_model_provider.py
     @date：2024/3/28 16:26
     @desc:
@@ -13,7 +13,7 @@ from models_provider.base_model_provider import IModelProvider, ModelProvideInfo
     ModelTypeConst, ModelInfoManage
 from models_provider.impl.kimi_model_provider.credential.llm import KimiLLMModelCredential
 from models_provider.impl.kimi_model_provider.model.llm import KimiChatModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 
 kimi_llm_model_credential = KimiLLMModelCredential()
 

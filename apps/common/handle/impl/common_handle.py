@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： tools.py
     @date：2024/9/11 16:41
     @desc:
@@ -19,7 +19,7 @@ from openpyxl.drawing.image import Image as openpyxl_Image
 from openpyxl.packaging.relationship import get_rels_path, get_dependents
 from openpyxl.xml.constants import SHEET_DRAWING_NS, REL_NS, SHEET_MAIN_NS
 
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from knowledge.models import File
 
 from PIL import ImageFile
@@ -77,7 +77,7 @@ def handle_images(deps, archive: ZipFile) -> []:
             image_io = archive.read(dep.target)
             image = openpyxl_Image(BytesIO(image_io))
         except Exception as e:
-            maxkb_logger.error(f"Error reading image {dep.target}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error reading image {dep.target}: {e}, {traceback.format_exc()}")
             continue
         image.embed = dep.id  # 文件rId
         image.target = dep.target  # 文件地址

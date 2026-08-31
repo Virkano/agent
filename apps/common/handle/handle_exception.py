@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎
+    @project: dianxin
     @file： handle_exception.py
     @date：2023/9/5 19:29
     @desc:
@@ -17,7 +17,7 @@ from common.exception.app_exception import AppApiException
 from django.utils.translation import gettext_lazy as _
 
 from common.result import result
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 def to_result(key, args, parent_key=None):
@@ -90,6 +90,6 @@ def handle_exception(exc, context):
     if issubclass(exception_class, APIException):
         return result.error(exc.detail)
     if response is None:
-        maxkb_logger.error(f'{str(exc)}:{traceback.format_exc()}')
+        telecom_ai_logger.error(f'{str(exc)}:{traceback.format_exc()}')
         return result.error(str(exc))
     return response

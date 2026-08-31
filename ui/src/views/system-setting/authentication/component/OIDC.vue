@@ -218,7 +218,7 @@ function getDetail() {
       }
     }
     if (!form.value.config.redirectUrl) {
-      form.value.config.redirectUrl = window.location.origin + window.MaxKB.prefix + '/api/oidc'
+      form.value.config.redirectUrl = window.location.origin + window.TelecomAI.prefix + '/api/oidc'
     }
   })
 }

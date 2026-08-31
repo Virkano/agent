@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： model.py
     @date：2025/11/5 15:26
     @desc:
@@ -13,14 +13,15 @@ from typing import Dict, List
 from langchain_core.embeddings import Embeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 max_retries = 3
-LOCAL_HASH_EMBEDDING_MODEL = "maxkb-local-hash-embedding"
+LOCAL_HASH_EMBEDDING_MODEL = "telecom-ai-local-hash-embedding"
+LEGACY_LOCAL_HASH_EMBEDDING_MODEL = "telecom_ai_agent-local-hash-embedding"
 
 
-class LocalHashEmbedding(MaxKBBaseModel, Embeddings):
+class LocalHashEmbedding(TelecomAIBaseModel, Embeddings):
     dimension = 384
 
     @staticmethod
@@ -48,14 +49,14 @@ class LocalHashEmbedding(MaxKBBaseModel, Embeddings):
         return [self._embed(text) for text in texts]
 
 
-class LocalEmbedding(MaxKBBaseModel, HuggingFaceEmbeddings):
+class LocalEmbedding(TelecomAIBaseModel, HuggingFaceEmbeddings):
     @staticmethod
     def is_cache_model():
         return True
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        if model_name == LOCAL_HASH_EMBEDDING_MODEL:
+        if model_name in [LOCAL_HASH_EMBEDDING_MODEL, LEGACY_LOCAL_HASH_EMBEDDING_MODEL]:
             return LocalHashEmbedding()
 
         for attempt in range(max_retries):
@@ -69,7 +70,7 @@ class LocalEmbedding(MaxKBBaseModel, HuggingFaceEmbeddings):
                 return embedding
             except Exception as e:
                 if 'meta tensor' in str(e).lower() and attempt < max_retries - 1:
-                    maxkb_logger.warning(
+                    telecom_ai_logger.warning(
                         f"Test failed with meta tensor error, retrying... (attempt {attempt + 1}/{max_retries})")
                     import time
                     time.sleep(1)

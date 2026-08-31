@@ -41,7 +41,7 @@ const open: (loading?: Ref<boolean>) => Promise<Result<string>> = (loading) => {
  * data
  */
 const chat: (chat_id: string, data: any) => Promise<any> = (chat_id, data) => {
-  const prefix = (window.MaxKB?.chatPrefix || window.MaxKB?.prefix || '/chat') + '/api'
+  const prefix = (window.TelecomAI?.chatPrefix || window.TelecomAI?.prefix || '/chat') + '/api'
   return postStream(`${prefix}/chat_message/${chat_id}`, data)
 }
 

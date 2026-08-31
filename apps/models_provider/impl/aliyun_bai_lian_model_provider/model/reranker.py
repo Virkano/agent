@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： reranker.py.py
     @date：2024/9/2 16:42
     @desc:
@@ -14,10 +14,10 @@ from langchain_core.callbacks import Callbacks
 from langchain_core.documents import BaseDocumentCompressor, Document
 from langchain_core.documents import BaseDocumentCompressor
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class AliyunBaiLianReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class AliyunBaiLianReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     model: Optional[str]
     api_key: Optional[str]
     base_url: str = ''

@@ -5,12 +5,12 @@ from typing import Dict
 from dashscope import ImageSynthesis, MultiModalConversation
 from dashscope.aigc.image_generation import ImageGeneration
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tti import BaseTextToImage
 
 
-class QwenTextToImageModel(MaxKBBaseModel, BaseTextToImage):
+class QwenTextToImageModel(TelecomAIBaseModel, BaseTextToImage):
     api_key: str
     model_name: str
     params: dict
@@ -96,7 +96,7 @@ class QwenTextToImageModel(MaxKBBaseModel, BaseTextToImage):
                         if result.message.content.get('image'):
                             file_urls.append(result.message.content.get('image'))
             else:
-                maxkb_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
+                telecom_ai_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                    (rsp.status_code, rsp.code, rsp.message))
                 raise Exception('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                 (rsp.status_code, rsp.code, rsp.message))
@@ -112,7 +112,7 @@ class QwenTextToImageModel(MaxKBBaseModel, BaseTextToImage):
                 for result in rsp.output.results:
                     file_urls.append(result.url)
             else:
-                maxkb_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
+                telecom_ai_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                    (rsp.status_code, rsp.code, rsp.message))
                 raise Exception('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                 (rsp.status_code, rsp.code, rsp.message))
@@ -149,7 +149,7 @@ class QwenTextToImageModel(MaxKBBaseModel, BaseTextToImage):
                         if result.message.content.get('image'):
                             file_urls.append(result.message.content.get('image'))
             else:
-                maxkb_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
+                telecom_ai_logger.error('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                    (rsp.status_code, rsp.code, rsp.message))
                 raise Exception('sync_call Failed, status_code: %s, code: %s, message: %s' %
                                 (rsp.status_code, rsp.code, rsp.message))

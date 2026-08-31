@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： ts_vecto_util.py
     @date：2024/4/16 15:26
     @desc:

@@ -3,15 +3,15 @@ from typing import Dict, List
 from langchain_core.messages import get_buffer_string, BaseMessage
 
 from common.config.tokenizer_manage_config import TokenizerManage
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 
 
-class VllmImage(MaxKBBaseModel, BaseChatOpenAI):
+class VllmImage(TelecomAIBaseModel, BaseChatOpenAI):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return VllmImage(
             model_name=model_name,
             openai_api_base=model_credential.get('api_base'),

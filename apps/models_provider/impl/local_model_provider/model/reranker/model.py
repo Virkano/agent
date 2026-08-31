@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： model.py
     @date：2025/11/5 15:30
     @desc:
@@ -12,10 +12,10 @@ from typing import Sequence, Optional, Dict, Any
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import Document, BaseDocumentCompressor
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class LocalReranker(MaxKBBaseModel, BaseDocumentCompressor):
+class LocalReranker(TelecomAIBaseModel, BaseDocumentCompressor):
     client: Any = None
     tokenizer: Any = None
     model: Optional[str] = None

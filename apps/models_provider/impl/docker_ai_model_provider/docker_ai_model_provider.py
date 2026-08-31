@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： docker_ai_model_provider.py
     @date：2024/3/28 16:26
     @desc:
@@ -25,7 +25,7 @@ from models_provider.impl.docker_ai_model_provider.model.reranker import DockerA
 from models_provider.impl.docker_ai_model_provider.model.stt import DockerAISpeechToText
 from models_provider.impl.docker_ai_model_provider.model.tti import DockerAITextToImage
 from models_provider.impl.docker_ai_model_provider.model.tts import DockerAITextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext_lazy as _
 
 docker_ai_llm_model_credential = DockerAILLMModelCredential()

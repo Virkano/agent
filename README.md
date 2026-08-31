@@ -1,7 +1,7 @@
-Access the 智能体 web interface at `http://your_server_ip:8080` with default admin credentials:
+Access the 电信智能体 web interface at `http://your_server_ip:8080` with default admin credentials:
 
 - username: admin
-- password: MaxKB@123..
+- password: TelecomAI@123..
 ## Technical stack
 
 - Frontend：[Vue.js](https://vuejs.org/)

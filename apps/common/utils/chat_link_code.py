@@ -1,5 +1,5 @@
 """
-    @project: MaxKB
+    @project: dianxin
     @Author: niu
     @file: chat_link_code.py
     @date: 2026/2/9 11:31

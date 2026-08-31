@@ -1,5 +1,5 @@
 """
-    @project: MaxKB-xpack-ee
+    @project: dianxin-xpack-ee
     @Author: niu
     @file: shared_resource_auth.py
     @date: 2026/3/11 11:22

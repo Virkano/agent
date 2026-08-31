@@ -23,7 +23,7 @@ from common.exception.app_exception import AppApiException
 from common.field.common import UploadedImageField
 from common.result import result
 from common.utils.common import bytes_to_uploaded_file, common_convert_value, generate_uuid, get_file_content
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.rsa_util import rsa_long_decrypt, rsa_long_encrypt
 from common.utils.tool_code import ToolExecutor
 from common.utils.url_validator import ALLOWED_CALLBACK_HOSTS, ALLOWED_DOWNLOAD_HOSTS, validate_trusted_url
@@ -37,7 +37,7 @@ from django.utils.translation import gettext_lazy as _
 from knowledge.models import File, FileSourceType, Knowledge
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from maxkb.const import CONFIG, PROJECT_DIR
+from telecom_ai_agent.const import CONFIG, PROJECT_DIR
 from models_provider.models import Model
 from rest_framework import serializers, status
 from system_manage.models import AuthTargetType, WorkspaceUserResourcePermission
@@ -164,7 +164,7 @@ def validate_mcp_config(servers: Dict):
     try:
         asyncio.run(validate())
     except Exception as e:
-        maxkb_logger.error(f"validate mcp config error: {e}, servers: {servers}")
+        telecom_ai_logger.error(f"validate mcp config error: {e}, servers: {servers}")
         raise serializers.ValidationError(_("MCP configuration is invalid"))
 
 
@@ -496,7 +496,7 @@ class ToolSerializer(serializers.Serializer):
                        raise AppApiException(500, _("Illegal download callback url"))
                     requests.get(download_callback_url, timeout=5, allow_redirects=False)
                 except Exception as e:
-                    maxkb_logger.error(f"callback appstore tool download error: {e}")
+                    telecom_ai_logger.error(f"callback appstore tool download error: {e}")
                 return tool
 
             tool_id = uuid.uuid7()
@@ -1274,7 +1274,7 @@ class ToolSerializer(serializers.Serializer):
             self.is_valid(raise_exception=True)
             # 下载zip文件
             try:
-                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/maxkb.json.zip")
+                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/telecom_ai_agent.json.zip")
                 res = requests.get(appstore_url, timeout=5)
                 res.raise_for_status()
                 # 创建临时文件保存zip
@@ -1316,7 +1316,7 @@ class ToolSerializer(serializers.Serializer):
                     # 清理临时文件
                     os.unlink(temp_zip_path)
             except Exception as e:
-                maxkb_logger.error(f"fetch appstore tools error: {e}")
+                telecom_ai_logger.error(f"fetch appstore tools error: {e}")
                 return {"apps": [], "additionalProperties": {"tags": []}}
 
     class AddStoreTool(serializers.Serializer):
@@ -1386,7 +1386,7 @@ class ToolSerializer(serializers.Serializer):
                     raise AppApiException(500, _("Illegal download callback url"))
                 requests.get(download_callback_url, timeout=5, allow_redirects=False)
             except Exception as e:
-                maxkb_logger.error(f"callback appstore tool download error: {e}")
+                telecom_ai_logger.error(f"callback appstore tool download error: {e}")
             return ToolModelSerializer(tool).data
 
     class UpdateStoreTool(serializers.Serializer):
@@ -1444,7 +1444,7 @@ class ToolSerializer(serializers.Serializer):
                     raise AppApiException(500, _("Illegal download callback url"))
                 requests.get(download_callback_url, timeout=5, allow_redirects=False)
             except Exception as e:
-                maxkb_logger.error(f"callback appstore tool download error: {e}")
+                telecom_ai_logger.error(f"callback appstore tool download error: {e}")
             return ToolModelSerializer(tool).data
 
     class ToolRecord(serializers.Serializer):

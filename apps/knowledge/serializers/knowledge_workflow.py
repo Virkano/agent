@@ -29,7 +29,7 @@ from common.field.common import UploadedFileField
 from common.result import result
 from common.utils.common import bytes_to_uploaded_file
 from common.utils.common import restricted_loads, generate_uuid
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.tool_code import ToolExecutor
 from common.utils.url_validator import ALLOWED_CALLBACK_HOSTS, ALLOWED_DOWNLOAD_HOSTS, validate_trusted_url
@@ -408,7 +408,7 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                        raise AppApiException(500, _("Illegal download callback url"))
                     requests.get(download_callback_url, timeout=5, allow_redirects=False)
                 except Exception as e:
-                    maxkb_logger.error(f"callback appstore tool download error: {e}")
+                    telecom_ai_logger.error(f"callback appstore tool download error: {e}")
 
             return {**KnowledgeModelSerializer(knowledge).data, "document_list": []}
 
@@ -655,7 +655,7 @@ class KnowledgeWorkflowSerializer(serializers.Serializer):
                        raise AppApiException(500, _("Illegal download callback url"))
                     requests.get(download_callback_url, timeout=5, allow_redirects=False)
                 except Exception as e:
-                    maxkb_logger.error(f"callback appstore tool download error: {e}")
+                    telecom_ai_logger.error(f"callback appstore tool download error: {e}")
 
                 return self.one()
 

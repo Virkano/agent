@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： workflow_manage.py
     @date：2024/1/9 17:40
     @desc:
@@ -25,7 +25,7 @@ from application.flow.i_step_node import INode, WorkFlowPostHandler, NodeResult,
 from application.flow.step_node import get_node
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 executor = ThreadPoolExecutor(max_workers=200)
 
@@ -386,7 +386,7 @@ class WorkflowManage:
                 current_node, node_result_future)
             return result
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
         return None
 
     def hand_node_result(self, current_node, node_result_future):
@@ -398,7 +398,7 @@ class WorkflowManage:
                 list(result)
             return current_result
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
             self.answer += str(e)
@@ -494,7 +494,7 @@ class WorkflowManage:
             return current_result
         except Exception as e:
             # 添加节点
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             enableException = current_node.node.properties.get('enableException')
             current_node.get_write_error_context(e)
             self.status = 500

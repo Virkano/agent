@@ -263,7 +263,7 @@ const generate_prompt: (
   application_id: string,
   data: any,
 ) => Promise<any> = (workspace_id, model_id, application_id, data) => {
-  const prefix = (window.MaxKB?.prefix ? window.MaxKB?.prefix : '/admin') + '/api'
+  const prefix = (window.TelecomAI?.prefix ? window.TelecomAI?.prefix : '/admin') + '/api'
   return postStream(
     `${prefix}/workspace/${workspace_id}/application/${application_id}/model/${model_id}/prompt_generate`,
     data,
@@ -278,7 +278,7 @@ const generate_prompt: (
  * @param data
  */
 const chat: (chat_id: string, data: any) => Promise<any> = (chat_id, data) => {
-  const prefix = (window.MaxKB?.prefix ? window.MaxKB?.prefix : '/admin') + '/api'
+  const prefix = (window.TelecomAI?.prefix ? window.TelecomAI?.prefix : '/admin') + '/api'
   return postStream(`${prefix}/chat_message/${chat_id}`, data)
 }
 /**

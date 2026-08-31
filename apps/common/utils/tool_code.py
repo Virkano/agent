@@ -18,14 +18,14 @@ from textwrap import dedent
 
 import uuid_utils.compat as uuid
 from django.utils.translation import gettext_lazy as _
-from maxkb.const import BASE_DIR, CONFIG, PROJECT_DIR
+from telecom_ai_agent.const import BASE_DIR, CONFIG, PROJECT_DIR
 
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 _enable_sandbox = bool(int(CONFIG.get("SANDBOX", 0)))
 _run_user = "sandbox" if _enable_sandbox else getpass.getuser()
 _sandbox_path = (
-    CONFIG.get("SANDBOX_HOME", "/opt/maxkb-app/sandbox")
+    CONFIG.get("SANDBOX_HOME", "/opt/telecom_ai_agent-app/sandbox")
     if _enable_sandbox
     else os.path.join(PROJECT_DIR, "data", "sandbox")
 )
@@ -58,12 +58,12 @@ class ToolExecutor:
         except FileExistsError:
             # 文件已存在 → 已初始化过
             return
-        maxkb_logger.info("Init sandbox dir.")
+        telecom_ai_logger.info("Init sandbox dir.")
         try:
             os.system("chmod -R g-rwx /dev/shm /dev/mqueue")
             os.system("chmod o-rwx /run/postgresql")
         except Exception as e:
-            maxkb_logger.warning(f"Exception: {e}", exc_info=True)
+            telecom_ai_logger.warning(f"Exception: {e}", exc_info=True)
             pass
         if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", "0") == "1":
             os.system("chmod g+rwx /tmp")
@@ -97,7 +97,7 @@ class ToolExecutor:
     try:
         init_sandbox_dir()
     except Exception as e:
-        maxkb_logger.error(f"Exception: {e}", exc_info=True)
+        telecom_ai_logger.error(f"Exception: {e}", exc_info=True)
 
     def exec_code(self, code_str, keywords, function_name=None):
         _id = str(uuid.uuid7())
@@ -113,7 +113,7 @@ class ToolExecutor:
 try:
     import os, sys, json
     from contextlib import redirect_stdout
-    path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
+    path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/telecom_ai_agent-app/apps']
     sys.path = [p for p in sys.path if p not in path_to_exclude]
     sys.path += {_sandbox_python_sys_path}
     _id = os.environ.get("_ID")
@@ -136,7 +136,7 @@ except Exception as e:
 sys.stdout.write("\\n" + _id + "__END__\\n")
 sys.stdout.flush()
 """
-        maxkb_logger.debug(f"Tool execution({_id}) execute code: {_exec_code}")
+        telecom_ai_logger.debug(f"Tool execution({_id}) execute code: {_exec_code}")
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=True) as f:
             f.write(_exec_code)
             f.flush()
@@ -313,7 +313,7 @@ import os, sys, logging
 logging.basicConfig(level=logging.WARNING)
 logging.getLogger("mcp").setLevel(logging.ERROR)
 logging.getLogger("mcp.server").setLevel(logging.ERROR)
-path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
+path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/telecom_ai_agent-app/apps']
 sys.path = [p for p in sys.path if p not in path_to_exclude]
 sys.path += {_sandbox_python_sys_path}
 {set_run_user}
@@ -323,7 +323,7 @@ exec({dedent(code)!a})
 
     def get_tool_mcp_config(self, tool, params):
         _code = self.generate_mcp_server_code(tool.code, params, tool.name, tool.desc, str(tool.id))
-        maxkb_logger.debug(f"Python code of mcp tool: {_code}")
+        telecom_ai_logger.debug(f"Python code of mcp tool: {_code}")
         compressed_and_base64_encoded_code_str = base64.b64encode(gzip.compress(_code.encode())).decode()
         tool_config = {
             "command": sys.executable,
@@ -392,4 +392,4 @@ def execution_timer(id=""):
     try:
         yield
     finally:
-        maxkb_logger.debug(f"Tool execution({id}) takes {time.perf_counter() - start:.6f} seconds.")
+        telecom_ai_logger.debug(f"Tool execution({id}) takes {time.perf_counter() - start:.6f} seconds.")

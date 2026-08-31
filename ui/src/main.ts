@@ -8,7 +8,7 @@ import {createApp} from 'vue'
 import {createPinia} from 'pinia'
 import App from './App.vue'
 import router from '@/router'
-import i18n, {initExternalLocales} from '@/locales'
+import i18n, {getStoredLocale, initExternalLocales} from '@/locales'
 import Components from '@/components'
 import directives from '@/directives'
 import {getDefaultWhiteList} from 'xss'
@@ -105,7 +105,7 @@ const locale_map: any = {
   'en-US': enUs,
 }
 app.use(ElementPlus, {
-  locale: locale_map[localStorage.getItem('MaxKB-locale') || navigator.language || 'en-US'],
+  locale: locale_map[getStoredLocale() || navigator.language || 'en-US'],
 })
 app.use(directives)
 app.use(router)

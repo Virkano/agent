@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 from application.models import Application
-from system_manage.models.chat_user import ChatUser, UserGroup
+from system_manage.models.chat_user import ChatUser
 from users.models import User
 
 
@@ -80,6 +80,22 @@ class ChatPlatform(models.Model):
 
     class Meta:
         db_table = 'chat_platform'
+
+
+class ChatExternalAccount(models.Model):
+    id = models.CharField(primary_key=True, max_length=128, default=uuid.uuid7, editable=False)
+    chat_user = models.ForeignKey(ChatUser, on_delete=models.CASCADE, related_name='external_accounts')
+    platform = models.CharField(max_length=64, db_index=True)
+    external_id = models.CharField(max_length=150, db_index=True)
+    union_id = models.CharField(max_length=150, default='', blank=True, db_index=True)
+    open_id = models.CharField(max_length=150, default='', blank=True, db_index=True)
+    profile = models.JSONField(default=dict)
+    create_time = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
+    update_time = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        db_table = 'chat_external_account'
+        unique_together = ('platform', 'external_id')
 
 
 class ApplicationSetting(models.Model):

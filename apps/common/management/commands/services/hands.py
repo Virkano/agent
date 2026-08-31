@@ -2,10 +2,10 @@ import logging
 import os
 import sys
 
-from maxkb.const import CONFIG, PROJECT_DIR, LOG_DIR
+from telecom_ai_agent.const import CONFIG, PROJECT_DIR, LOG_DIR
 
 try:
-    from apps.maxkb import const
+    from apps.telecom_ai_agent import const
 
     __version__ = const.VERSION
 except ImportError as e:

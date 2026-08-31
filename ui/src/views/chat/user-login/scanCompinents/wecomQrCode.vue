@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import {nextTick, defineProps, onBeforeUnmount} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {getBrowserLang} from '@/locales'
+import {getBrowserLang, getStoredLocale} from '@/locales'
 import useStore from '@/stores'
 
 const props = defineProps<{
@@ -48,7 +48,7 @@ function createTransparentIFrame(el: string) {
 }
 
 function getLang() {
-  const lang = localStorage.getItem('MaxKB-locale') || getBrowserLang()
+  const lang = getStoredLocale() || getBrowserLang()
   return lang === 'en-US' ? 'en' : 'zh'
 }
 

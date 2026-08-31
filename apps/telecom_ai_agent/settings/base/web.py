@@ -1,12 +1,11 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
-    @file： model.py
+    @project: dianxin
+    @project: dianxin虎
+    @file： web.py
     @date：2025/11/5 14:53
     @desc:
 """
-
 from pathlib import Path
 from ...const import CONFIG, PROJECT_DIR
 from ...env import get_env, has_env
@@ -34,13 +33,32 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'local_model',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'users.apps.UsersConfig',
+    'tools.apps.ToolConfig',
+    'knowledge',
+    'common',
+    'system_manage',
+    'models_provider',
+    'django_celery_beat',
+    'application',
+    'chat',
+    'oss',
+    'trigger',
+    'xpack_lite',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'common.middleware.gzip.GZipMiddleware',
+    'common.middleware.chat_headers_middleware.ChatHeadersMiddleware',
+    'common.middleware.cross_domain_middleware.CrossDomainMiddleware',
+    'common.middleware.doc_headers_middleware.DocHeadersMiddleware',
 
 ]
 
@@ -52,7 +70,7 @@ REST_FRAMEWORK = {
 }
 STATICFILES_DIRS = [(os.path.join(PROJECT_DIR, 'ui', 'dist'))]
 STATIC_ROOT = os.path.join(BASE_DIR.parent, 'static')
-ROOT_URLCONF = 'maxkb.urls'
+ROOT_URLCONF = 'telecom_ai_agent.urls'
 APPS_DIR = os.path.join(PROJECT_DIR, 'apps')
 
 TEMPLATES = [
@@ -113,7 +131,7 @@ SPECTACULAR_SETTINGS = {
         }
     }
 }
-WSGI_APPLICATION = 'maxkb.wsgi.application'
+WSGI_APPLICATION = 'telecom_ai_agent.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -156,7 +174,6 @@ DATA_UPLOAD_MAX_NUMBER_FILES = 1000
 
 # 支持的语言
 LANGUAGES = CONFIG.get_languages()
-
 # 翻译文件路径
 LOCALE_PATHS = [
     os.path.join(BASE_DIR.parent, 'locales')
@@ -172,8 +189,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOCAL_XPACK_ENABLED = get_env('MAXKB_LOCAL_XPACK_ENABLED', 'true').lower() in ['1', 'true', 'yes', 'on']
+LOCAL_XPACK_ENABLED = get_env('TELECOM_AI_LOCAL_XPACK_ENABLED', 'true').lower() in ['1', 'true', 'yes', 'on']
 edition = 'EE' if LOCAL_XPACK_ENABLED else 'CE'
+MODEL_HANDLES = [
+    'xpack_lite.database_model_manage.handle.impl.local_xpack_model_handle.LocalXpackModelHandle'
+] if LOCAL_XPACK_ENABLED else []
 
-if has_env('MAXKB_REDIS_SENTINEL_SENTINELS'):
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if has_env('TELECOM_AI_REDIS_SENTINEL_SENTINELS'):
     DJANGO_REDIS_CONNECTION_FACTORY = "django_redis.pool.SentinelConnectionFactory"

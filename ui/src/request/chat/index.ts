@@ -9,7 +9,7 @@ import useStore from '@/stores'
 import { ref, type WritableComputedRef } from 'vue'
 
 const axiosConfig = {
-  baseURL: (window.MaxKB?.chatPrefix || window.MaxKB?.prefix || '/chat') + '/api',
+  baseURL: (window.TelecomAI?.chatPrefix || window.TelecomAI?.prefix || '/chat') + '/api',
   withCredentials: false,
   timeout: 600000,
   headers: {},
@@ -26,7 +26,7 @@ const redirectToChatLogin = () => {
   sessionStorage.removeItem(`${accessToken}-accessToken`)
   localStorage.removeItem(`${accessToken}-accessToken`)
   chatUser.token = undefined
-  const basePath = import.meta.env.VITE_BASE_PATH || window.MaxKB?.chatPrefix || window.MaxKB?.prefix || '/chat/'
+  const basePath = import.meta.env.VITE_BASE_PATH || window.TelecomAI?.chatPrefix || window.TelecomAI?.prefix || '/chat/'
   const normalizedBasePath = `/${basePath.replace(/^\/|\/$/g, '')}`
   const loginPath = normalizedBasePath === '/admin'
     ? `${normalizedBasePath}/user-login/${accessToken}`

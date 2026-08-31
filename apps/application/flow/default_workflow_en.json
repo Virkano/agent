@@ -13,8 +13,8 @@
                 "stepName": "Base",
                 "node_data": {
                     "desc": "",
-                    "name": "maxkbapplication",
-                    "prologue": "Hello, I am the MaxKB assistant. You can ask me about MaxKB usage issues.\n-What are the main functions of MaxKB?\n-What major language models does MaxKB support?\n-What document types does MaxKB support?"
+                    "name": "telecom_ai_agent",
+                    "prologue": "Hello, I am the Telecom AI Agent assistant. You can ask me about agent usage issues.\n-What are the main functions of Telecom AI Agent?\n-What major language models does Telecom AI Agent support?\n-What document types does Telecom AI Agent support?"
                 },
                 "input_field_list": [
 

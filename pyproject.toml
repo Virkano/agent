@@ -1,5 +1,5 @@
 [project]
-name = "maxkb"
+name = "telecom-ai-agent"
 version = "2.0.0"
 description = "强大易用的开源企业级智能体平台"
 authors = [{ name = "shaohuzhang1", email = "shaohu.zhang@fit2cloud.com" }]

@@ -9,8 +9,8 @@ from django_celery_beat.models import (
     PeriodicTasks
 )
 
-from common.utils.logger import maxkb_logger
-from maxkb.const import PROJECT_DIR
+from common.utils.logger import telecom_ai_logger
+from telecom_ai_agent.const import PROJECT_DIR
 
 logger = logging.getLogger(__file__)
 
@@ -63,7 +63,7 @@ def get_celery_status():
     active_queue_worker = set([n.split('@')[0] for n in active_nodes if n])
     # Celery Worker 数量: 2
     if len(active_queue_worker) < 2:
-        maxkb_logger.info("Not all celery worker worked")
+        telecom_ai_logger.info("Not all celery worker worked")
         return False
     else:
         return True

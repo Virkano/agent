@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: maxkb
-@Author：虎
+@project: dianxin
+@project: dianxin
 @file： base_chat_step.py
 @date：2024/1/9 18:25
 @desc: 对话step Base实现
@@ -27,7 +27,7 @@ from application.models import (
     ChatUserType,
 )
 from common.exception.app_exception import AppApiException
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.shared_resource_auth import filter_authorized_ids, get_runtime_user_id
 from common.utils.tool_code import ToolExecutor
@@ -186,9 +186,9 @@ def event_content(
             add_access_num(chat_user_id, chat_user_type, manage.context.get("application_id"))
     except BaseException as e:
         if isinstance(e, GeneratorExit):
-            maxkb_logger.error(f"Generator was closed (client disconnected)")
+            telecom_ai_logger.error(f"Generator was closed (client disconnected)")
         else:
-            maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+            telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
             all_text = "Exception:" + str(e)
         write_context(step, manage, 0, 0, all_text)
         post_response_handler.handler(

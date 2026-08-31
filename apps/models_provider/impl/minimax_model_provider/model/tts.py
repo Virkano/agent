@@ -6,11 +6,11 @@ import requests
 from django.utils.translation import gettext as _
 
 from common.utils.common import _remove_empty_lines
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tts import BaseTextToSpeech
 
 
-class MiniMaxTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
+class MiniMaxTextToSpeech(TelecomAIBaseModel, BaseTextToSpeech):
     api_base: str
     api_key: str
     model: str

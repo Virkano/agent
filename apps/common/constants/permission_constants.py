@@ -1,6 +1,6 @@
 """
     @project: qabot
-    @Author：虎虎
+    @project: dianxin虎
     @file： permission_constants.py
     @date：2023/9/13 18:23
     @desc: 权限,角色 常量
@@ -12,7 +12,7 @@ from typing import List
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from maxkb import settings
+from telecom_ai_agent import settings
 
 
 class Group(Enum):

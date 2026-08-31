@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： llm.py
     @date：2024/7/11 18:32
     @desc:
@@ -16,7 +16,7 @@ from common import forms
 from common.exception.app_exception import AppApiException
 from common.forms import BaseForm, TooltipLabel
 from models_provider.base_model_provider import BaseModelCredential, ValidCode
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 class DockerAILLMModelParams(BaseForm):
     temperature = forms.SliderField(TooltipLabel(_('Temperature'),
@@ -57,7 +57,7 @@ class DockerAILLMModelCredential(BaseForm, BaseModelCredential):
             model = provider.get_model(model_type, model_name, model_credential, **model_params)
             model.invoke([HumanMessage(content=gettext('Hello'))])
         except Exception as e:
-            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            telecom_ai_logger.error(f'Exception: {e}', exc_info=True)
             if isinstance(e, AppApiException) or isinstance(e, BadRequestError):
                 raise e
             if raise_exception:

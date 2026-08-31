@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： authentication_type.py
     @date：2023/11/14 20:03
     @desc:

@@ -3217,7 +3217,7 @@ msgstr "修改问题"
 msgid "Get the list of questions by page"
 msgstr "分页获取问题列表"
 
-#: apps/maxkb/settings/base.py:101
+#: apps/telecom_ai_agent/settings/base.py:101
 msgid "Intelligent customer service platform"
 msgstr "强大易用的企业级智能体平台"
 
@@ -6606,8 +6606,8 @@ msgstr "获取邮箱设置"
 
 #: apps/system_manage/views/system_profile.py:22
 #: apps/system_manage/views/system_profile.py:23
-msgid "Get MaxKB related information"
-msgstr "获取 MaxKB 相关信息"
+msgid "Get Telecom AI Agent related information"
+msgstr "获取电信智能体相关信息"
 
 #: apps/system_manage/views/system_profile.py:25
 msgid "System parameters"

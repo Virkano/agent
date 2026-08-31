@@ -2329,7 +2329,7 @@ COPY public.log (create_time, update_time, id, menu, operate, operation_object, 
 --
 
 COPY public.model (create_time, update_time, id, name, status, model_type, model_name, provider, credential, meta, model_params_form, workspace_id, user_id) FROM stdin;
-2026-08-10 01:23:59.823078+00	2026-08-10 01:23:59.823085+00	42f63a3d-427e-11ef-b3ec-a8a1595801ab	maxkb-embedding	SUCCESS	EMBEDDING	maxkb-local-hash-embedding	model_local_provider	YfNkB3jzeXwKC1Er4JZEIAAX2Mgzj/vRVOt5gzD6Uo/9RVuZTdz04SadBNnrBuA9SkRVF3qC1+KMDwiZBEwC/++nfy2dl+5PTDpfXEES1/1UV6mPx60BO118ylQR8M0VeoBIglCdOmY5Z+BVhO1cjJhD3mx58N4WnecMOJEI3HTfaKT3SOn1aaUN51nOo9fvW+JJ/MX2KmqzJqN3CnuncCJc2jxprvS+6EgIMHluNxJMsgSyNFunukBTKnErFUAuXITlw2/NEoMA8Di+HM2NuOhT95HPmtO25luZZfEF+IA0ZAsVZ/4wWlcmO8pUeNno27lPVb3fe4kvzzzjRKGFug==	{}	[]	default	f0dd8f71-e4ee-11ee-8c84-a8a1595801ab
+2026-08-10 01:23:59.823078+00	2026-08-10 01:23:59.823085+00	42f63a3d-427e-11ef-b3ec-a8a1595801ab	telecom-ai-embedding	SUCCESS	EMBEDDING	telecom-ai-local-hash-embedding	model_local_provider	YfNkB3jzeXwKC1Er4JZEIAAX2Mgzj/vRVOt5gzD6Uo/9RVuZTdz04SadBNnrBuA9SkRVF3qC1+KMDwiZBEwC/++nfy2dl+5PTDpfXEES1/1UV6mPx60BO118ylQR8M0VeoBIglCdOmY5Z+BVhO1cjJhD3mx58N4WnecMOJEI3HTfaKT3SOn1aaUN51nOo9fvW+JJ/MX2KmqzJqN3CnuncCJc2jxprvS+6EgIMHluNxJMsgSyNFunukBTKnErFUAuXITlw2/NEoMA8Di+HM2NuOhT95HPmtO25luZZfEF+IA0ZAsVZ/4wWlcmO8pUeNno27lPVb3fe4kvzzzjRKGFug==	{}	[]	default	f0dd8f71-e4ee-11ee-8c84-a8a1595801ab
 \.
 
 

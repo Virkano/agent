@@ -3,12 +3,12 @@ import time
 from typing import Dict
 import requests
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.base_ttv import BaseGenerationVideo
 
 
-class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
+class GenerationVideoModel(TelecomAIBaseModel, BaseGenerationVideo):
     base_url: str
     api_key: str
     model: str
@@ -62,12 +62,12 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
 
             # 3. 处理首帧（图生视频）
             if first_frame_url:
-                maxkb_logger.info("Processing first frame...")
+                telecom_ai_logger.info("Processing first frame...")
                 operation_args["image"] = self._load_image_as_sdk_type(first_frame_url)
 
             # 4. 处理尾帧（图生视频）
             if last_frame_url:
-                maxkb_logger.info("Processing last frame...")
+                telecom_ai_logger.info("Processing last frame...")
                 config_params["last_frame"] = self._load_image_as_sdk_type(last_frame_url)
 
             # 5. 统一组装视频配置（无论是宽高比还是尾帧，都统一在这里安全实例化）
@@ -75,7 +75,7 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
                 operation_args["config"] = types.GenerateVideosConfig(**config_params)
 
             # 6. 发起异步生成任务
-            maxkb_logger.info(f"Starting video generation with model: {operation_args['model']}")
+            telecom_ai_logger.info(f"Starting video generation with model: {operation_args['model']}")
             operation = client.models.generate_videos(**operation_args)
 
             # 7. 安全轮询任务状态
@@ -84,7 +84,7 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             wait_time = 10
 
             while not operation.done and retry_count < max_retries:
-                maxkb_logger.info(f"Waiting for video generation to complete... ({retry_count * wait_time}s)")
+                telecom_ai_logger.info(f"Waiting for video generation to complete... ({retry_count * wait_time}s)")
                 time.sleep(wait_time)
                 operation = client.operations.get(operation)
                 retry_count += 1
@@ -103,13 +103,13 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             video_file_ref = generated_video_obj.video
 
             # 9. 下载视频字节流
-            maxkb_logger.info("Downloading video bytes...")
+            telecom_ai_logger.info("Downloading video bytes...")
             video_bytes = client.files.download(file=video_file_ref)
 
             return video_bytes
 
         except Exception as e:
-            maxkb_logger.error(f"Video generation error: {str(e)}")
+            telecom_ai_logger.error(f"Video generation error: {str(e)}")
             raise
 
     def _load_image_as_sdk_type(self, image_url: str):

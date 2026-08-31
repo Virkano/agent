@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： base_parse_qa_handle.py
     @date：2024/5/21 14:56
     @desc:

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： zhipu_model_provider.py
     @date：2024/04/19 13:5
     @desc:
@@ -17,7 +17,7 @@ from models_provider.impl.zhipu_model_provider.credential.tti import ZhiPuTextTo
 from models_provider.impl.zhipu_model_provider.model.image import ZhiPuImage
 from models_provider.impl.zhipu_model_provider.model.llm import ZhipuChatModel
 from models_provider.impl.zhipu_model_provider.model.tti import ZhiPuTextToImage
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 zhipu_model_credential = ZhiPuLLMModelCredential()

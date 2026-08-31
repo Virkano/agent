@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： base_search_dataset_node.py
     @date：2024/6/4 11:56
     @desc:
@@ -21,7 +21,7 @@ from common.db.search import native_search
 from common.utils.common import get_file_content
 from common.utils.shared_resource_auth import filter_authorized_ids
 from knowledge.models import Document, Paragraph, Knowledge, SearchMode
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MaxKB (Max Knowledge Brain) is an open-source enterprise-grade agent platform built on RAG, agentic workflows, and MCP tool-use. Backend is Python 3.11 / Django 5.2 / LangChain; frontend is Vue 3 / Vite. Data layer is PostgreSQL + pgvector and Redis; Celery for async work. GPL-3.0.
+Telecom AI Agent is an enterprise-grade agent platform built on RAG, agentic workflows, and MCP tool-use. Backend is Python 3.11 / Django 5.2 / LangChain; frontend is Vue 3 / Vite. Data layer is PostgreSQL + pgvector and Redis; Celery for async work. GPL-3.0.
 
 ## Development Commands
 
@@ -54,12 +54,12 @@ Dependencies are managed with `uv` (`uv.lock`, `pyproject.toml`). Python is pinn
 
 ### Settings: one project, two runtimes
 
-`apps/maxkb/settings/` is split by the `SERVER_NAME` env var (set by `main.py` based on the service):
+`apps/telecom_ai_agent/settings/` is split by the `SERVER_NAME` env var (set by `main.py` based on the service):
 - `base/web.py` — full Django app (DB, cache, REST framework, all `INSTALLED_APPS`, templates, i18n). Default for `web`.
 - `base/model.py` — minimal settings for the local-embedding model server. Selected when `SERVER_NAME=local_model`.
 - `settings/__init__.py` imports `web` or `model` accordingly. This is why a missing/wrong `SERVER_NAME` silently loads the wrong app set.
 
-All runtime config comes from the `CONFIG` singleton (`apps/maxkb/const.py` + `conf.py`). `MAXKB_CONFIG_TYPE=ENV` reads `MAXKB_*` env vars (the `.env` file uses this); otherwise it loads YAML from `/opt/maxkb/conf`. `CONFIG.get_db_setting()` / `get_cache_setting()` build the DB and Redis configs (with optional Redis Sentinel support).
+All runtime config comes from the `CONFIG` singleton (`apps/telecom_ai_agent/const.py` + `conf.py`). `TELECOM_AI_CONFIG_TYPE=ENV` reads `TELECOM_AI_*` env vars (the `.env` file uses this); otherwise it loads YAML from `/opt/telecom_ai_agent/conf`. `CONFIG.get_db_setting()` / `get_cache_setting()` build the DB and Redis configs (with optional Redis Sentinel support).
 
 ### URL layout
 
@@ -71,7 +71,7 @@ The Vue admin SPA and chat SPA are served as Django static files from `ui/dist` 
 
 ### Model provider abstraction (`apps/models_provider/`)
 
-`IModelProvider` (abstract) -> per-vendor impl in `impl/<vendor>_model_provider/` (OpenAI, Anthropic, Gemini, Qwen, DeepSeek, Ollama, vLLM, Wenxin, Zhipu, Volcengine, AWS Bedrock, Tencent, Kimi, MiniMax, Xinference, local, etc.). Each provider registers `ModelInfo` (model type + credential + model class) into `ModelInfoManage`. Model types are `LLM`, `EMBEDDING`, `STT`, `TTS`, `IMAGE` (vision), `TTI` (image gen), `RERANKER`, `TTV`, `ITV` (`ModelTypeConst`). To add a model, register `ModelInfo` with a `MaxKBBaseModel` subclass and a `BaseModelCredential`. The local_model service serves the bundled sentence-transformers embedding model.
+`IModelProvider` (abstract) -> per-vendor impl in `impl/<vendor>_model_provider/` (OpenAI, Anthropic, Gemini, Qwen, DeepSeek, Ollama, vLLM, Wenxin, Zhipu, Volcengine, AWS Bedrock, Tencent, Kimi, MiniMax, Xinference, local, etc.). Each provider registers `ModelInfo` (model type + credential + model class) into `ModelInfoManage`. Model types are `LLM`, `EMBEDDING`, `STT`, `TTS`, `IMAGE` (vision), `TTI` (image gen), `RERANKER`, `TTV`, `ITV` (`ModelTypeConst`). To add a model, register `ModelInfo` with a `TelecomAIBaseModel` subclass and a `BaseModelCredential`. The local_model service serves the bundled sentence-transformers embedding model.
 
 ### Application & chat (`apps/application/`, `apps/chat/`)
 
@@ -79,7 +79,7 @@ An "application" is a configurable agent. Two execution engines coexist:
 - `chat_pipeline/` — older linear step pipeline (`PipelineManage` builder, steps in `step/`).
 - `flow/` — the workflow engine. A graph of `step_node/*` nodes (start, ai_chat, search_knowledge, search_document, reranker, condition, tool, mcp, loop/*, variable_*, form, document_split/extract, knowledge_write, speech/text/image/video nodes, etc.). `workflow_manage.py` runs nodes concurrently on a `ThreadPoolExecutor`, streams output, and merges node details. Default workflows are seeded from `default_workflow*.json`. Specialized managers: `tool_workflow_manage`, `knowledge_workflow_manage`, `loop_workflow_manage` (and their `_loop_` variants).
 
-Streaming chat responses go through `BaseToResponse` (`apps/common/handle/base_to_response.py`) with three impls: `system_to_response` (MaxKB SSE protocol), `openai_to_response` (OpenAI-compatible), `loop_to_response`. SSE frames are `data: <json>\n\n`.
+Streaming chat responses go through `BaseToResponse` (`apps/common/handle/base_to_response.py`) with three impls: `system_to_response` (Telecom AI Agent SSE protocol), `openai_to_response` (OpenAI-compatible), `loop_to_response`. SSE frames are `data: <json>\n\n`.
 
 ### RAG / knowledge (`apps/knowledge/`)
 
@@ -87,11 +87,11 @@ Documents are split into paragraphs; paragraphs are embedded and stored via `vec
 
 ### Async & scheduling (`apps/ops/`)
 
-Celery app `ops.celery` (name `MaxKB`) with two queues: `celery` (general) and `model` (model/long tasks). Broker + result backend is Redis (sentinel-aware). Tasks use a custom `hmac_signed_serializer`. `@celery_app.task` decorated functions are autodiscovered from every `INSTALLED_APPS`. `django-apscheduler` and `django-celery-beat` provide scheduled jobs. `celery-once` provides single-execution locking.
+Celery app `ops.celery` (name `TelecomAIAgent`) with two queues: `celery` (general) and `model` (model/long tasks). Broker + result backend is Redis (sentinel-aware). Tasks use a custom `hmac_signed_serializer`. `@celery_app.task` decorated functions are autodiscovered from every `INSTALLED_APPS`. `django-apscheduler` and `django-celery-beat` provide scheduled jobs. `celery-once` provides single-execution locking.
 
 ### MCP (`apps/chat/views/mcp.py`)
 
-MaxKB applications can be exposed as MCP tools: a JSON-RPC endpoint (`initialize`, `tools/list`, `tools/call`) routed through `chat.mcp.tools.MCPToolHandler`. MaxKB also *consumes* external MCP servers via `mcp_node` in the workflow and `langchain-mcp-adapters`.
+Telecom AI Agent applications can be exposed as MCP tools: a JSON-RPC endpoint (`initialize`, `tools/list`, `tools/call`) routed through `chat.mcp.tools.MCPToolHandler`. Telecom AI Agent also *consumes* external MCP servers via `mcp_node` in the workflow and `langchain-mcp-adapters`.
 
 ### Frontend (`ui/`)
 
@@ -99,7 +99,7 @@ Two SPAs built from the same repo: admin (`npm run build`) and chat embed (`npm 
 
 ### Sandbox
 
-`installer/sandbox.c` is compiled to `sandbox.so` (loaded via ctypes) to run untrusted Python from tools/nodes in a restricted namespace. Banned keywords/hosts come from `MAXKB_SANDBOX_PYTHON_BANNED_KEYWORDS` / `MAXKB_SANDBOX_PYTHON_BANNED_HOSTS`. Pre-installed packages for sandbox execution live under the path in `MAXKB_SANDBOX_PYTHON_PACKAGE_PATHS`.
+`installer/sandbox.c` is compiled to `sandbox.so` (loaded via ctypes) to run untrusted Python from tools/nodes in a restricted namespace. Banned keywords/hosts come from `TELECOM_AI_SANDBOX_PYTHON_BANNED_KEYWORDS` / `TELECOM_AI_SANDBOX_PYTHON_BANNED_HOSTS`. Pre-installed packages for sandbox execution live under the path in `TELECOM_AI_SANDBOX_PYTHON_PACKAGE_PATHS`.
 
 ## Coding Conventions
 

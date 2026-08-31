@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎虎
+    @project: dianxin虎
     @file： authenticate.py
     @date：2024/3/14 03:02
     @desc:  认证处理器

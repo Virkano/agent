@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： application_chat.py
     @date：2025/6/10 11:06
     @desc:
@@ -27,8 +27,8 @@ from application.models import Chat, Application, ChatRecord, ChatSourceChoices
 from common.db.search import get_dynamics_model, native_search, native_page_search, native_page_handler
 from common.exception.app_exception import AppApiException
 from common.utils.common import get_file_content
-from maxkb.conf import PROJECT_DIR
-from maxkb.settings import TIME_ZONE, edition
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.settings import TIME_ZONE, edition
 
 
 class ApplicationChatResponseSerializers(serializers.Serializer):

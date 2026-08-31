@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： web.py
     @date：2025/11/5 15:24
     @desc:
@@ -13,11 +13,11 @@ import requests
 from anthropic import BaseModel
 from langchain_core.embeddings import Embeddings
 
-from maxkb.const import CONFIG
-from models_provider.base_model_provider import MaxKBBaseModel
+from telecom_ai_agent.const import CONFIG
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class LocalEmbedding(MaxKBBaseModel, BaseModel, Embeddings):
+class LocalEmbedding(TelecomAIBaseModel, BaseModel, Embeddings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model_id = kwargs.get('model_id', None)

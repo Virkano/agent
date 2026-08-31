@@ -27,7 +27,7 @@ export function filesize(size: number) {
 }
 
 // 头像
-export const defaultIcon = `${window.MaxKB.prefix}/favicon.ico`
+export const defaultIcon = `${window.TelecomAI.prefix}/favicon.ico`
 
 export function isAppIcon(url: string | undefined) {
   return url === defaultIcon ? '' : url
@@ -183,7 +183,7 @@ export function getFileUrl(fileId?: string) {
 
 export const resetUrl = (url: string, defaultUrl?: string) => {
   if (url && url.startsWith('./')) {
-    return `${window.MaxKB.prefix}/${url.substring(2)}`
+    return `${window.TelecomAI.prefix}/${url.substring(2)}`
   }
   return url ? url : defaultUrl ? defaultUrl : ''
 }

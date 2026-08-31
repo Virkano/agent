@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-@project: MaxKB
-@Author：虎虎
+@project: dianxin
+@project: dianxin虎
 @file： common.py
 @date：2025/4/14 18:23
 @desc:
@@ -25,7 +25,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import QuerySet
 from django.utils.translation import gettext as _
-from maxkb.settings import TIME_ZONE
+from telecom_ai_agent.settings import TIME_ZONE
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from pydub import AudioSegment
 

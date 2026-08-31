@@ -1,7 +1,7 @@
 # coding=utf-8
 """
     @project: qabot
-    @Author：虎虎
+    @project: dianxin虎
     @file： app_exception.py
     @date：2023/9/4 14:04
     @desc:

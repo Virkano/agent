@@ -25,7 +25,7 @@ from common.exception.app_exception import AppApiException
 from common.field.common import UploadedFileField
 from common.utils.common import bulk_create_in_batches, get_file_content, parse_image, post
 from common.utils.fork import ChildLink, Fork
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.split_model import get_split_model
 from django.core import validators
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -35,8 +35,8 @@ from django.db.models.functions import Reverse, Substr
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _, gettext
-from maxkb.conf import PROJECT_DIR
-from maxkb.const import CONFIG
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.const import CONFIG
 from models_provider.models import Model
 from rest_framework import serializers
 from system_manage.models import AuthTargetType, WorkspaceUserResourcePermission
@@ -1299,7 +1299,7 @@ class KnowledgeSerializer(serializers.Serializer):
                             else child_link.url
                         )
                         paragraphs = get_split_model("web.md").parse(response.content)
-                        maxkb_logger.info(child_link.url.strip())
+                        telecom_ai_logger.info(child_link.url.strip())
                         first = (
                             QuerySet(Document)
                             .filter(meta__source_url=child_link.url.strip(), knowledge=knowledge)
@@ -1323,7 +1323,7 @@ class KnowledgeSerializer(serializers.Serializer):
                                 with_valid=True,
                             )
                     except Exception as e:
-                        maxkb_logger.error(f"{str(e)}:{traceback.format_exc()}")
+                        telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
 
             return handler
 
@@ -1420,7 +1420,7 @@ class KnowledgeSerializer(serializers.Serializer):
             self.is_valid(raise_exception=True)
             # 下载zip文件
             try:
-                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/maxkb.json.zip")
+                appstore_url = CONFIG.get("APPSTORE_URL", "https://apps-assets.fit2cloud.com/stable/telecom_ai_agent.json.zip")
                 res = requests.get(appstore_url, timeout=5)
                 res.raise_for_status()
                 # 创建临时文件保存zip
@@ -1462,7 +1462,7 @@ class KnowledgeSerializer(serializers.Serializer):
                     # 清理临时文件
                     os.unlink(temp_zip_path)
             except Exception as e:
-                maxkb_logger.error(f"fetch appstore tools error: {e}")
+                telecom_ai_logger.error(f"fetch appstore tools error: {e}")
                 return {"apps": [], "additionalProperties": {"tags": []}}
 
     class TransformWorkflow(serializers.Serializer):

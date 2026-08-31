@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： i_search_dataset_node.py
     @date：2024/6/3 17:52
     @desc:

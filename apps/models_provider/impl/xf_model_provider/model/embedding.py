@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： embedding.py
     @date：2024/10/17 15:29
     @desc:
@@ -13,7 +13,7 @@ from typing import Dict, Optional
 from langchain_community.embeddings import SparkLLMTextEmbeddings
 from numpy import ndarray
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 import time
 import json
 import base64
@@ -67,7 +67,7 @@ def _worker():
 threading.Thread(target=_worker, daemon=True).start()
 
 
-class XFEmbedding(MaxKBBaseModel, SparkLLMTextEmbeddings):
+class XFEmbedding(TelecomAIBaseModel, SparkLLMTextEmbeddings):
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         return XFEmbedding(

@@ -36,7 +36,7 @@ ENV PYTHONUNBUFFERED=1 \
     JB_TOKENIZER_MODEL_PATH=/opt/jb-agent-app/model/tokenizer/models--bert-base-cased \
     JB_TIKTOKEN_CACHE_DIR=/opt/jb-agent-app/model/tokenizer/openai-tiktoken-cl100k-base \
     JB_EMBEDDING_MODEL_PATH=/opt/jb-agent-app/model/embedding \
-    JB_EMBEDDING_MODEL_NAME=maxkb-local-hash-embedding \
+    JB_EMBEDDING_MODEL_NAME=telecom-ai-local-hash-embedding \
     JB_SANDBOX_HOME=/opt/jb-agent-app/sandbox
 
 WORKDIR /opt/jb-agent-app
@@ -99,11 +99,11 @@ ENV PYTHONUNBUFFERED=1 \
     JB_TOKENIZER_MODEL_PATH=/opt/jb-agent-app/model/tokenizer/models--bert-base-cased \
     JB_TIKTOKEN_CACHE_DIR=/opt/jb-agent-app/model/tokenizer/openai-tiktoken-cl100k-base \
     JB_EMBEDDING_MODEL_PATH=/opt/jb-agent-app/model/embedding \
-    JB_EMBEDDING_MODEL_NAME=maxkb-local-hash-embedding \
+    JB_EMBEDDING_MODEL_NAME=telecom-ai-local-hash-embedding \
     JB_SANDBOX=1 \
     JB_SANDBOX_HOME=/opt/jb-agent-app/sandbox \
     JB_SANDBOX_PYTHON_PACKAGE_PATHS="/opt/venv/lib/python3.11/site-packages,/opt/jb-agent-app/sandbox/python-packages,/opt/jb-agent/python-packages" \
-    JB_SANDBOX_PYTHON_BANNED_HOSTS="127.0.0.0/8,localhost,host.docker.internal,172.17.0.0/16,maxkb,pgsql,redis,172.31.250.192/26,0.0.0.0/32,::/0" \
+    JB_SANDBOX_PYTHON_BANNED_HOSTS="127.0.0.0/8,localhost,host.docker.internal,172.17.0.0/16,telecom_ai_agent,pgsql,redis,172.31.250.192/26,0.0.0.0/32,::/0" \
     PIP_TARGET=/opt/jb-agent/python-packages
 
 RUN set -eux; \

@@ -7,7 +7,7 @@ from django.utils import timezone
 from langchain_core.messages import HumanMessage
 
 from application.models import Chat, ChatRecord, Application, ApplicationLongTermMemory
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from ops import celery_app
 
@@ -315,7 +315,7 @@ def _remove_long_term_jobs(application_id) -> None:
             try:
                 job.remove()
             except Exception as e:
-                maxkb_logger.warning(
+                telecom_ai_logger.warning(
                     f"remove long_term job failed, job_id={job.id}, err={e}")
 
 
@@ -347,7 +347,7 @@ def _execute_scheduled_extract(workspace_id, application_id):
             _run_extract(workspace_id, application_id, chat_user_id, config,
                          history_limit=history_limit, since_time=since_time)
         except Exception as e:
-            maxkb_logger.warning(
+            telecom_ai_logger.warning(
                 f"scheduled extract long_term_memory failed, "
                 f"application_id={application_id}, chat_user_id={chat_user_id}, err={e}"
             )
@@ -362,7 +362,7 @@ def _deploy_long_term_daily(workspace_id, application_id, setting):
         try:
             hour, minute = _parse_hhmm(t)
         except Exception:
-            maxkb_logger.warning(
+            telecom_ai_logger.warning(
                 f"invalid time={t}, application_id={application_id}")
             continue
         job_id = f"{prefix}daily:{hour:02d}{minute:02d}"
@@ -387,21 +387,21 @@ def _deploy_long_term_weekly(workspace_id, application_id, setting):
     times = setting.get("time") or []
     days = setting.get("days") or []
     if not times or not days:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"empty weekly setting, application_id={application_id}")
         return
     for d in days:
         try:
             dow = _weekday_to_cron(d)
         except Exception:
-            maxkb_logger.warning(
+            telecom_ai_logger.warning(
                 f"invalid weekday={d}, application_id={application_id}")
             continue
         for t in times:
             try:
                 hour, minute = _parse_hhmm(t)
             except Exception:
-                maxkb_logger.warning(
+                telecom_ai_logger.warning(
                     f"invalid time={t}, application_id={application_id}")
                 continue
             job_id = f"{prefix}weekly:{dow}:{hour:02d}{minute:02d}"
@@ -427,7 +427,7 @@ def _deploy_long_term_monthly(workspace_id, application_id, setting):
     times = setting.get("time") or []
     days = setting.get("days") or []
     if not times or not days:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"empty monthly setting, application_id={application_id}")
         return
     for d in days:
@@ -436,14 +436,14 @@ def _deploy_long_term_monthly(workspace_id, application_id, setting):
             if not (1 <= dom <= 31):
                 raise ValueError("invalid day of month")
         except Exception:
-            maxkb_logger.warning(
+            telecom_ai_logger.warning(
                 f"invalid day={d}, application_id={application_id}")
             continue
         for t in times:
             try:
                 hour, minute = _parse_hhmm(t)
             except Exception:
-                maxkb_logger.warning(
+                telecom_ai_logger.warning(
                     f"invalid time={t}, application_id={application_id}")
                 continue
             job_id = f"{prefix}monthly:{dom:02d}:{hour:02d}{minute:02d}"
@@ -469,13 +469,13 @@ def _deploy_long_term_cron(workspace_id, application_id, setting):
 
     cron_expression = setting.get('cron_expression')
     if not cron_expression:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"empty cron_expression, application_id={application_id}")
         return
     try:
         cron_trigger = CronTrigger.from_crontab(cron_expression.strip())
     except ValueError:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"invalid cron_expression={cron_expression}, application_id={application_id}")
         return
 
@@ -502,11 +502,11 @@ def _deploy_long_term_interval(workspace_id, application_id, setting):
         if value_i <= 0:
             raise ValueError("interval_value must be positive")
     except Exception:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"invalid interval_value={value}, application_id={application_id}")
         return
     if unit not in {"seconds", "minutes", "hours", "days"}:
-        maxkb_logger.warning(
+        telecom_ai_logger.warning(
             f"invalid interval_unit={unit}, application_id={application_id}")
         return
 
@@ -549,7 +549,7 @@ def extract_long_term_memory(workspace_id, application_id, chat_user_id):
         chat__application_id=application_id,
         chat__chat_user_id=chat_user_id,
     ).count()
-    maxkb_logger.info(f'extract_long_term_memory: current_rounds={current_rounds}, rounds={rounds}')
+    telecom_ai_logger.info(f'extract_long_term_memory: current_rounds={current_rounds}, rounds={rounds}')
     if current_rounds % rounds != 0:
         return
 
@@ -585,7 +585,7 @@ def schedule_extract_long_term_memory(workspace_id, application_id, enabled, tri
     }
     fn = deployers.get(schedule_type)
     if not fn:
-        maxkb_logger.warning(f"unsupported long_term schedule_type={schedule_type}, application_id={application_id}")
+        telecom_ai_logger.warning(f"unsupported long_term schedule_type={schedule_type}, application_id={application_id}")
         return
 
     fn(workspace_id, application_id, setting)

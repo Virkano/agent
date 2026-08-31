@@ -130,7 +130,7 @@ function getDetail() {
     }
     if (!form.value.config.redirectUrl) {
       form.value.config.redirectUrl =
-        window.location.origin + window.MaxKB.chatPrefix + '/api/auth/cas'
+        window.location.origin + window.TelecomAI.chatPrefix + '/api/auth/cas'
     }
   })
 }

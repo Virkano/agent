@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： workspace_user_resource_permission.py
     @date：2025/4/28 16:38
     @desc:

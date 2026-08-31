@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： authenticate.py
     @date：2024/3/14 03:02
     @desc:  用户认证
@@ -23,7 +23,7 @@ from common.constants.permission_constants import Auth, PermissionConstants, Res
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import AppAuthenticationFailed
 from common.utils.common import group_by
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from system_manage.models.workspace_user_permission import WorkspaceUserResourcePermission
 from users.models import User
 

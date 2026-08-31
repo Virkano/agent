@@ -5,12 +5,12 @@ from typing import Dict
 import requests
 from dashscope import VideoSynthesis
 
-from common.utils.logger import maxkb_logger
-from models_provider.base_model_provider import MaxKBBaseModel
+from common.utils.logger import telecom_ai_logger
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.base_ttv import BaseGenerationVideo
 
 
-class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
+class GenerationVideoModel(TelecomAIBaseModel, BaseGenerationVideo):
     api_key: str
     api_base: str
     model_name: str
@@ -59,7 +59,7 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
             except (requests.exceptions.ProxyError,
                     requests.exceptions.ConnectionError,
                     requests.exceptions.Timeout) as e:
-                maxkb_logger.error(f"⚠️ 网络错误: {e}，正在重试 {attempt + 1}/{self.max_retries}...")
+                telecom_ai_logger.error(f"⚠️ 网络错误: {e}，正在重试 {attempt + 1}/{self.max_retries}...")
                 time.sleep(self.retry_delay)
         raise RuntimeError("多次重试后仍无法连接到 DashScope API，请检查代理或网络配置")
 
@@ -120,17 +120,17 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
         # --- 异步提交任务 ---
         rsp = self._safe_call(VideoSynthesis.async_call, **params)
         if rsp.status_code != HTTPStatus.OK:
-            maxkb_logger.info(f'提交任务失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')
+            telecom_ai_logger.info(f'提交任务失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')
             raise RuntimeError(f'提交任务失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')
 
-        maxkb_logger.info("task_id:", rsp.output.task_id)
+        telecom_ai_logger.info("task_id:", rsp.output.task_id)
 
         # --- 查询任务状态 ---
         status = self._safe_call(VideoSynthesis.fetch, task=rsp, api_key=self.api_key)
         if status.status_code == HTTPStatus.OK:
-            maxkb_logger.info("当前任务状态:", status.output.task_status)
+            telecom_ai_logger.info("当前任务状态:", status.output.task_status)
         else:
-            maxkb_logger.error(
+            telecom_ai_logger.error(
                 f'获取任务状态失败，status_code: {status.status_code}, code: {status.code}, message: {status.message}')
             raise RuntimeError(
                 f'获取任务状态失败，status_code: {status.status_code}, code: {status.code}, message: {status.message}')
@@ -139,11 +139,11 @@ class GenerationVideoModel(MaxKBBaseModel, BaseGenerationVideo):
         rsp = self._safe_call(VideoSynthesis.wait, task=rsp, api_key=self.api_key)
         if rsp.status_code == HTTPStatus.OK:
             if rsp.output.task_status == "SUCCEEDED":
-                maxkb_logger.info(f'视频生成完成！视频 URL: {rsp.output.video_url}')
+                telecom_ai_logger.info(f'视频生成完成！视频 URL: {rsp.output.video_url}')
                 return rsp.output.video_url
             else:
-                maxkb_logger.error(f'视频生成失败: {rsp.output.message}')
+                telecom_ai_logger.error(f'视频生成失败: {rsp.output.message}')
                 raise RuntimeError(f'视频生成失败, message: {rsp.output.message}')
         else:
-            maxkb_logger.error(f'生成失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')
+            telecom_ai_logger.error(f'生成失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')
             raise RuntimeError(f'生成失败，status_code: {rsp.status_code}, code: {rsp.code}, message: {rsp.message}')

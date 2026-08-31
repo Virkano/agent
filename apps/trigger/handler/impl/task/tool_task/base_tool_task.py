@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： application_task.py
     @date：2026/1/14 19:14
     @desc:
@@ -14,7 +14,7 @@ import uuid_utils.compat as uuid
 from django.db.models import QuerySet
 
 from common.utils.common import common_convert_value
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.tool_code import ToolExecutor
 from knowledge.models.knowledge_action import State
@@ -127,7 +127,7 @@ class ToolTask(BaseToolTriggerTask):
 
             result_dict = _get_result_detail(result)
 
-            maxkb_logger.debug(f"Tool execution result: {result}")
+            telecom_ai_logger.debug(f"Tool execution result: {result}")
 
             QuerySet(TaskRecord).filter(id=task_record_id).update(
                 state=State.SUCCESS,
@@ -140,7 +140,7 @@ class ToolTask(BaseToolTriggerTask):
                 meta={'input': parameters, 'output': result_dict}
             )
         except Exception as e:
-            maxkb_logger.error(f"Tool execution error: {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Tool execution error: {traceback.format_exc()}")
             QuerySet(TaskRecord).filter(id=task_record_id).update(
                 state=State.FAILURE,
                 run_time=time.time() - start_time,

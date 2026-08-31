@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： user.py
     @date：2025/4/14 19:18
     @desc:
@@ -37,9 +37,9 @@ from django.db.models import Q, QuerySet
 from django.utils import translation
 from django.utils.translation import get_language, to_locale
 from django.utils.translation import gettext_lazy as _
-from maxkb import settings
-from maxkb.conf import PROJECT_DIR
-from maxkb.const import CONFIG
+from telecom_ai_agent import settings
+from telecom_ai_agent.conf import PROJECT_DIR
+from telecom_ai_agent.const import CONFIG
 from rest_framework import serializers
 from system_manage.models import AuthTargetType, SettingType, SystemSetting, WorkspaceUserResourcePermission
 from users.models import User
@@ -147,7 +147,7 @@ class UserProfileSerializer(serializers.Serializer):
             'source': user.source,
             'role': auth.role_list,
             'permissions': auth.permission_list,
-            'is_edit_password': password_verify(CONFIG.get('DEFAULT_PASSWORD', 'MaxKB@123..'),
+            'is_edit_password': password_verify(CONFIG.get('DEFAULT_PASSWORD', 'TelecomAI@123..'),
                                                 user.password) if user.source == 'LOCAL' else False,
             'language': user.language,
             'workspace_list': workspace_list,

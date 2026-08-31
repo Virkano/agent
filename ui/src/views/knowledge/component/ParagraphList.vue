@@ -41,7 +41,7 @@
             ref="editorRef"
             editorId="preview-only"
             :modelValue="child.content"
-            class="maxkb-md"
+            class="telecom-ai-md"
             style="background: none"
           />
         </div>

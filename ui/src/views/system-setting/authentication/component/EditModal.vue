@@ -154,7 +154,7 @@ const open = async (platform: Platform) => {
   Object.assign(currentPlatform, platform)
 
   // 设置默认的 callback_url
-  const defaultCallbackUrl = window.location.origin + window.MaxKB.prefix
+  const defaultCallbackUrl = window.location.origin + window.TelecomAI.prefix
   switch (platform.key) {
     case 'wecom':
       if (currentPlatform.config.app_key) {

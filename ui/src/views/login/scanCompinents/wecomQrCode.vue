@@ -5,7 +5,7 @@
 
 <script lang="ts" setup>
 import {ref, nextTick, defineProps} from 'vue'
-import {getBrowserLang} from '@/locales'
+import {getBrowserLang, getStoredLocale} from '@/locales'
 
 const props = defineProps<{
   config: {
@@ -26,7 +26,7 @@ const init = async () => {
     agentId: props.config.agent_id,
     redirectUri: props.config.callback_url,
   }
-  let lang = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
+  let lang = getStoredLocale() || getBrowserLang() || 'en-US'
   if (lang === 'en-US') {
     lang = 'en'
   } else {

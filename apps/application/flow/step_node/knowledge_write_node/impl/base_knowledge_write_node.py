@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-    @project: MaxKB
+    @project: dianxin
     @Author：niu
     @file： base_knowledge_write_node.py
     @date：2025/11/13 11:19

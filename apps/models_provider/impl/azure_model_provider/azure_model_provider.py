@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： azure_model_provider.py
     @date：2023/10/31 16:19
     @desc:
@@ -23,7 +23,7 @@ from models_provider.impl.azure_model_provider.model.image import AzureOpenAIIma
 from models_provider.impl.azure_model_provider.model.stt import AzureOpenAISpeechToText
 from models_provider.impl.azure_model_provider.model.tti import AzureOpenAITextToImage
 from models_provider.impl.azure_model_provider.model.tts import AzureOpenAITextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext_lazy as _
 
 base_azure_llm_model_credential = AzureLLMModelCredential()

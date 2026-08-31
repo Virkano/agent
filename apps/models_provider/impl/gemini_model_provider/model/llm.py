@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """
-@Project ：MaxKB 
-@File    ：llm.py
+@Project ：dianxin@File    ：llm.py
 @Author  ：Brian Yang
 @Date    ：5/13/24 7:40 AM 
 """
@@ -12,10 +11,10 @@ from langchain_core.messages import BaseMessage, get_buffer_string
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from common.config.tokenizer_manage_config import TokenizerManage
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 
 
-class GeminiChatModel(MaxKBBaseModel, ChatGoogleGenerativeAI):
+class GeminiChatModel(TelecomAIBaseModel, ChatGoogleGenerativeAI):
 
     @staticmethod
     def is_cache_model():
@@ -23,7 +22,7 @@ class GeminiChatModel(MaxKBBaseModel, ChatGoogleGenerativeAI):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         base_url = model_credential.get('base_url', "https://generativelanguage.googleapis.com")
         if base_url:
             optional_params.setdefault("model_kwargs", {})

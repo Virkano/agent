@@ -6,7 +6,7 @@ from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 from zai import ZhipuAiClient
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_tti import BaseTextToImage
 
 
@@ -15,7 +15,7 @@ def custom_get_token_ids(text: str):
     return tokenizer.encode(text)
 
 
-class ZhiPuTextToImage(MaxKBBaseModel, BaseTextToImage):
+class ZhiPuTextToImage(TelecomAIBaseModel, BaseTextToImage):
     api_key: str
     base_url: str
     model: str

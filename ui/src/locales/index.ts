@@ -12,7 +12,7 @@ type Recordable<T = any> = Record<string, T>
 
 const langModuleMap = new Map<string, Record<string, any>>()
 export const langCode: string[] = []
-export const localeConfigKey = 'MaxKB-locale'
+export const localeConfigKey = 'TelecomAI-locale'
 
 const languages = usePreferredLanguages()
 
@@ -28,6 +28,10 @@ export function getBrowserLang() {
   }
 
   return 'en-US'
+}
+
+export function getStoredLocale() {
+  return localStorage.getItem(localeConfigKey) || getBrowserLang()
 }
 
 function generateLangModuleMap() {
@@ -55,14 +59,14 @@ const importMessages = computed(() => {
 
 export const i18n = createI18n({
   legacy: false,
-  locale: useLocalStorage(localeConfigKey, getBrowserLang()).value || getBrowserLang(),
+  locale: useLocalStorage(localeConfigKey, getStoredLocale()).value || getBrowserLang(),
   fallbackLocale: getBrowserLang(),
   messages: importMessages.value,
   globalInjection: true,
 })
 
 // 外置语言包目录（相对于 public 目录）
-const EXTERNAL_LOCALES_DIR = `${window.MaxKB?.prefix || '/chat'}/locales`
+const EXTERNAL_LOCALES_DIR = `${window.TelecomAI?.prefix || '/chat'}/locales`
 
 async function discoverExternalLocales(): Promise<string[]> {
   try {

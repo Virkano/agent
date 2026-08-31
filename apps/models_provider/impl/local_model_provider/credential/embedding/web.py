@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎虎
+    @project: dianxin
+    @project: dianxin虎
     @file： web.py
     @date：2025/11/7 14:03
     @desc:
@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 from common import forms
 from common.forms import BaseForm
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 from models_provider.base_model_provider import BaseModelCredential
 
 

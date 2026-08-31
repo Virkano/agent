@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： csv_parse_qa_handle.py
     @date：2024/5/21 14:59
     @desc:
@@ -15,7 +15,7 @@ from typing import List
 from charset_normalizer import detect
 
 from common.handle.base_split_handle import BaseSplitHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 def post_cell(cell_value):
@@ -64,7 +64,7 @@ class CsvSplitHandle(BaseSplitHandle):
                 paragraphs.append({'content': result_item_content, 'title': ''})
             return result
         except Exception as e:
-            maxkb_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
             return result
 
     def get_content(self, file, save_image):
@@ -98,7 +98,7 @@ class CsvSplitHandle(BaseSplitHandle):
             return '\n'.join(md_lines)
 
         except Exception as e:
-            maxkb_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
             return ""
 
     def support(self, file, get_buffer):

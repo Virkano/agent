@@ -3,7 +3,7 @@ import logging
 import psycopg
 from django.db import migrations
 
-from maxkb.const import CONFIG
+from telecom_ai_agent.const import CONFIG
 
 
 def get_connect(db_name):

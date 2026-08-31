@@ -1,14 +1,14 @@
 from typing import Dict
 
-from models_provider.base_model_provider import MaxKBBaseModel
+from models_provider.base_model_provider import TelecomAIBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 
 
-class TencentVision(MaxKBBaseModel, BaseChatOpenAI):
+class TencentVision(TelecomAIBaseModel, BaseChatOpenAI):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
+        optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return TencentVision(
             model_name=model_name,
             openai_api_base=model_credential.get('api_base') or 'https://api.hunyuan.cloud.tencent.com/v1',

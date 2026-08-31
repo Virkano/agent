@@ -13,7 +13,7 @@ from models_provider.impl.aws_bedrock_model_provider.credential.reranker import 
 from models_provider.impl.aws_bedrock_model_provider.model.embedding import BedrockEmbeddingModel
 from models_provider.impl.aws_bedrock_model_provider.model.image import BedrockVLModel
 from models_provider.impl.aws_bedrock_model_provider.model.llm import BedrockModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext as _
 
 from models_provider.impl.aws_bedrock_model_provider.model.reranker import BedrockRerankerModel

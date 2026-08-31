@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： xls_parse_qa_handle.py
     @date：2024/5/21 14:59
     @desc:
@@ -11,7 +11,7 @@ import traceback
 import xlrd
 
 from common.handle.base_parse_qa_handle import BaseParseQAHandle, get_title_row_index_dict, get_row_value
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 def handle_sheet(file_name, sheet):
@@ -60,5 +60,5 @@ class XlsParseQAHandle(BaseParseQAHandle):
                         sheet.name, sheet) for sheet
                      in worksheets] if row is not None]
         except Exception as e:
-            maxkb_logger.error(f"Error processing XLS file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing XLS file {file.name}: {e}, {traceback.format_exc()}")
             return [{'name': file.name, 'paragraphs': []}]

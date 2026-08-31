@@ -420,6 +420,7 @@ import SelectProviderDialog from '@/views/model/component/SelectProviderDialog.v
 import type { Provider, Model } from '@/api/type/model'
 import { allObj } from '@/views/model/component/data'
 import { MsgSuccess, MsgConfirm, MsgError } from '@/utils/message'
+import { openUpgradeUrl } from '@/utils/upgrade'
 import { useRouter, useRoute } from 'vue-router'
 import useStore from '@/stores'
 import { t } from '@/locales'
@@ -477,7 +478,7 @@ const importApplication = (file: any) => {
           cancelButtonText: t('common.confirm'),
           confirmButtonText: t('common.professional'),
         }).then(() => {
-          window.open('https://maxkb.cn/pricing.html', '_blank')
+          openUpgradeUrl()
         })
       }
     })
@@ -523,7 +524,7 @@ function importKnowledgeBundle(file: any) {
           cancelButtonText: t('common.confirm'),
           confirmButtonText: t('common.professional'),
         }).then(() => {
-          window.open('https://maxkb.cn/pricing.html', '_blank')
+          openUpgradeUrl()
         })
       }
     })
@@ -553,7 +554,7 @@ function importTool(file: any) {
           cancelButtonText: t('common.confirm'),
           confirmButtonText: t('common.professional'),
         }).then(() => {
-          window.open('https://maxkb.cn/pricing.html', '_blank')
+          openUpgradeUrl()
         })
       }
     })

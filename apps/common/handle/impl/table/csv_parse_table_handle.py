@@ -6,7 +6,7 @@ import traceback
 from charset_normalizer import detect
 from common.handle.base_parse_qa_handle import get_title_row_index_dict, get_row_value
 from common.handle.base_parse_table_handle import BaseParseTableHandle
-from common.utils.logger import maxkb_logger
+from common.utils.logger import telecom_ai_logger
 
 
 class CsvParseTableHandle(BaseParseTableHandle):
@@ -21,7 +21,7 @@ class CsvParseTableHandle(BaseParseTableHandle):
         try:
             content = buffer.decode(detect(buffer)['encoding'])
         except BaseException as e:
-            maxkb_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
             return [{'name': file.name, 'paragraphs': []}]
 
         csv_model = content.split('\n')
@@ -67,5 +67,5 @@ class CsvParseTableHandle(BaseParseTableHandle):
             return '\n'.join(md_lines)
 
         except Exception as e:
-            maxkb_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
+            telecom_ai_logger.error(f"Error processing CSV file {file.name}: {e}, {traceback.format_exc()}")
             return ""

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
+    @project: dianxin
+    @project: dianxin
     @file： openai_model_provider.py
     @date：2024/3/28 16:26
     @desc:
@@ -25,7 +25,7 @@ from models_provider.impl.openai_model_provider.model.tti import OpenAITextToIma
 from models_provider.impl.openai_model_provider.model.tts import OpenAITextToSpeech
 from models_provider.impl.tencent_cloud_model_provider.credential.llm import TencentCloudLLMModelCredential
 from models_provider.impl.tencent_cloud_model_provider.model.llm import TencentCloudChatModel
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext_lazy as _
 
 openai_llm_model_credential = TencentCloudLLMModelCredential()

@@ -17,7 +17,7 @@ from models_provider.impl.minimax_model_provider.credential.ttv import TextToVid
 from models_provider.impl.minimax_model_provider.model.llm import MiniMaxChatModel
 from models_provider.impl.minimax_model_provider.model.tti import MiniMaxTextToImageModel
 from models_provider.impl.minimax_model_provider.model.tts import MiniMaxTextToSpeech
-from maxkb.conf import PROJECT_DIR
+from telecom_ai_agent.conf import PROJECT_DIR
 from django.utils.translation import gettext_lazy as _
 
 from models_provider.impl.minimax_model_provider.model.ttv import GenerationVideoModel
