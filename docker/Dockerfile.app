@@ -56,7 +56,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/* && \
     python -m venv /opt/venv && \
     mkdir -p ${JB_SANDBOX_HOME}/lib /opt/jb-agent-app/model/tokenizer && \
-    gcc -shared -fPIC -o ${JB_SANDBOX_HOME}/lib/sandbox.so /opt/jb-agent-app/installer/sandbox.c -ldl && \
+    gcc -shared -fPIC -o ${JB_SANDBOX_HOME}/lib/sandbox.so /opt/jb-agent-app/docker/sandbox.c -ldl && \
     pip install --no-cache-dir uv && \
     python -m uv pip install -r pyproject.toml && \
     python -c "from transformers import BertTokenizer; BertTokenizer.from_pretrained('bert-base-cased', cache_dir='/opt/jb-agent-app/model/tokenizer')" && \

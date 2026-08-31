@@ -99,7 +99,7 @@ Two SPAs built from the same repo: admin (`npm run build`) and chat embed (`npm 
 
 ### Sandbox
 
-`installer/sandbox.c` is compiled to `sandbox.so` (loaded via ctypes) to run untrusted Python from tools/nodes in a restricted namespace. Banned keywords/hosts come from `TELECOM_AI_SANDBOX_PYTHON_BANNED_KEYWORDS` / `TELECOM_AI_SANDBOX_PYTHON_BANNED_HOSTS`. Pre-installed packages for sandbox execution live under the path in `TELECOM_AI_SANDBOX_PYTHON_PACKAGE_PATHS`.
+`docker/sandbox.c` is compiled to `sandbox.so` (loaded via ctypes) to run untrusted Python from tools/nodes in a restricted namespace. Banned keywords/hosts come from `TELECOM_AI_SANDBOX_PYTHON_BANNED_KEYWORDS` / `TELECOM_AI_SANDBOX_PYTHON_BANNED_HOSTS`. Pre-installed packages for sandbox execution live under the path in `TELECOM_AI_SANDBOX_PYTHON_PACKAGE_PATHS`.
 
 ## Coding Conventions
 
