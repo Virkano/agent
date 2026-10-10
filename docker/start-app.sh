@@ -3,6 +3,12 @@ set -euo pipefail
 
 export PATH="/opt/venv/bin:${PATH}"
 
+security_args=()
+if [[ "${JB_DEPLOYMENT_MODE:-production}" == "production" ]]; then
+  security_args+=(--production)
+fi
+python /opt/jb-agent-app/scripts/check-deployment-security.py "${security_args[@]}"
+
 mkdir -p \
   "${JB_LOG_DIR:-/opt/jb-agent/logs}" \
   "${JB_TMPDIR:-/opt/jb-agent/tmp}" \
@@ -44,6 +50,10 @@ PY
 
 wait_for_tcp "PostgreSQL" "${JB_DB_HOST:-host.docker.internal}" "${JB_DB_PORT:-5432}" 120
 wait_for_tcp "Redis" "${JB_REDIS_HOST:-host.docker.internal}" "${JB_REDIS_PORT:-6379}" 60
+
+if [[ "${JB_START_LOCAL_MODEL:-true}" == "true" ]]; then
+  echo "Embedded vector service will listen inside the container at ${JB_LOCAL_MODEL_HOST:-127.0.0.1}:${JB_LOCAL_MODEL_PORT:-11636}."
+fi
 
 cd /opt/jb-agent-app
 /opt/venv/bin/python main.py start web task

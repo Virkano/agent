@@ -1,0 +1,55 @@
+name: telecom-ai-agent
+
+# This Compose file builds and runs the business image only.
+# PostgreSQL, Redis and Ollama are external services supplied through docker/.env.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.app
+      args:
+        APT_DEBIAN_MIRROR: ${APT_DEBIAN_MIRROR:-https://deb.debian.org/debian}
+        APT_SECURITY_MIRROR: ${APT_SECURITY_MIRROR:-https://deb.debian.org/debian-security}
+        DOCKER_IMAGE_TAG: ${DOCKER_IMAGE_TAG:-local}
+        BUILD_AT: ${BUILD_AT:-compose}
+        GITHUB_COMMIT: ${GITHUB_COMMIT:-local}
+    image: ${JB_APP_IMAGE:-telecom-ai-agent:local}
+    init: true
+    restart: unless-stopped
+    environment:
+      JB_CONFIG_TYPE: ENV
+      JB_DEPLOYMENT_MODE: ${JB_DEPLOYMENT_MODE:-local}
+      JB_SECRET_KEY: ${JB_SECRET_KEY:-}
+      JB_ALLOWED_HOSTS: ${JB_ALLOWED_HOSTS:-}
+      JB_HEALTHCHECK_HOST: ${JB_HEALTHCHECK_HOST:-localhost}
+      JB_DEBUG: "false"
+      JB_DEFAULT_PASSWORD: ${JB_DEFAULT_PASSWORD:-TelecomAI@123..}
+      JB_DB_NAME: ${JB_DB_NAME:-initdb}
+      JB_DB_HOST: ${JB_DB_HOST:-host.docker.internal}
+      JB_DB_PORT: ${JB_DB_PORT:-5432}
+      JB_DB_USER: ${JB_DB_USER:-root}
+      JB_DB_PASSWORD: ${JB_DB_PASSWORD:-}
+      JB_DB_MAX_OVERFLOW: ${JB_DB_MAX_OVERFLOW:-80}
+      JB_REDIS_HOST: ${JB_REDIS_HOST:-host.docker.internal}
+      JB_REDIS_PORT: ${JB_REDIS_PORT:-6379}
+      JB_REDIS_DB: ${JB_REDIS_DB:-0}
+      JB_REDIS_PASSWORD: ${JB_REDIS_PASSWORD:-}
+      JB_REDIS_MAX_CONNECTIONS: ${JB_REDIS_MAX_CONNECTIONS:-100}
+      JB_ADMIN_PATH: ${JB_ADMIN_PATH:-/admin}
+      JB_CHAT_PATH: ${JB_CHAT_PATH:-/chat}
+      JB_LOG_LEVEL: ${JB_LOG_LEVEL:-INFO}
+      JB_START_LOCAL_MODEL: "true"
+      JB_LOCAL_MODEL_HOST: 127.0.0.1
+      JB_LOCAL_MODEL_PORT: 11636
+      JB_LOCAL_MODEL_PROTOCOL: http
+      JB_LOCAL_MODEL_HOST_WORKER: ${JB_LOCAL_MODEL_HOST_WORKER:-1}
+      JB_OLLAMA_BASE_URL: ${JB_OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - "${JB_APP_PORT:-8080}:8080"
+    volumes:
+      - app-data:/opt/jb-agent
+
+volumes:
+  app-data:

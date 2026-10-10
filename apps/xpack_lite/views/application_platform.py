@@ -7,10 +7,12 @@ from rest_framework.views import APIView
 
 from application.models import Application, ApplicationAccessToken
 from common.auth.authenticate import TokenAuth
+from common.auth.authentication import get_is_permissions
+from common.constants.permission_constants import PermissionConstants, RoleConstants
 from common.exception.app_exception import AppApiException
 from common.result import result
 from xpack_lite.models import ApplicationSetting
-from xpack_lite.services import is_admin, is_workspace_manager
+from xpack_lite.services import is_admin
 
 
 PLATFORM_CONFIG_DEFAULTS = {
@@ -80,9 +82,22 @@ def _get_application(application_id, workspace_id=None):
     return application
 
 
-def _require_workspace_access(request, workspace_id, application_id):
+def _require_workspace_access(
+    request,
+    workspace_id,
+    application_id,
+    permission=PermissionConstants.APPLICATION_READ,
+):
     application = _get_application(application_id, workspace_id)
-    if not is_workspace_manager(request.user.id, workspace_id):
+    if not get_is_permissions(
+        request,
+        workspace_id=workspace_id,
+        application_id=application_id,
+    )(
+        permission.get_workspace_application_permission(),
+        permission.get_workspace_permission_workspace_manage_role(),
+        RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
+    ):
         raise AppApiException(403, 'No permission to access')
     return application
 
@@ -165,11 +180,21 @@ class WorkspaceApplicationPlatformStatusView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request, workspace_id, application_id):
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_ACCESS_READ,
+        )
         return result.success(_platform_status(_get_access_token(application)))
 
     def post(self, request: Request, workspace_id, application_id):
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_ACCESS_EDIT,
+        )
         access_token = _get_access_token(application)
         platform_type = request.data.get('type')
         _require_platform(platform_type)
@@ -190,12 +215,22 @@ class WorkspaceApplicationPlatformConfigView(APIView):
 
     def get(self, request: Request, workspace_id, application_id, platform_type):
         _require_platform(platform_type)
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_ACCESS_READ,
+        )
         return result.success(_platform_config(_get_access_token(application), platform_type))
 
     def post(self, request: Request, workspace_id, application_id, platform_type):
         _require_platform(platform_type)
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_ACCESS_EDIT,
+        )
         access_token = _get_access_token(application)
         platforms = _platforms_meta(access_token)
         meta = platforms.get(platform_type) or {}
@@ -214,11 +249,21 @@ class WorkspaceApplicationSettingView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request, workspace_id, application_id):
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_READ,
+        )
         return result.success(_application_setting_to_dict(_get_application_setting(application)))
 
     def put(self, request: Request, workspace_id, application_id):
-        application = _require_workspace_access(request, workspace_id, application_id)
+        application = _require_workspace_access(
+            request,
+            workspace_id,
+            application_id,
+            PermissionConstants.APPLICATION_EDIT,
+        )
         return result.success(_update_application_setting(_get_application_setting(application), request.data or {}))
 
 

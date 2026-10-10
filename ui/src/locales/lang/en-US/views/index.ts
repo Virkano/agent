@@ -16,6 +16,10 @@ import chatUser from './chat-user'
 import operateLog from './operate-log'
 import shared from './shared'
 import trigger from './trigger'
+import platformMonitoring from './platform-monitoring'
+import recommendationEngine from './recommendation-engine'
+import ivrSimulator from './ivr-simulator'
+import rehearsal from './rehearsal'
 export default {
   login,
   model,
@@ -34,5 +38,9 @@ export default {
   chatUser,
   operateLog,
   shared,
-  trigger
+  trigger,
+  platformMonitoring,
+  recommendationEngine,
+  ivrSimulator,
+  rehearsal,
 }

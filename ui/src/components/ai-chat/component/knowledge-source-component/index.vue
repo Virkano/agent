@@ -2,7 +2,7 @@
   <div class="chat-knowledge-source">
     <div
       class="flex align-center mt-16"
-      v-if="type === 'log' || type === 'debug-ai-chat' ? true : application.show_source"
+      v-if="hasParagraphSource && (type === 'log' || type === 'debug-ai-chat' ? true : application.show_source)"
     >
       <span class="mr-4 color-secondary">{{ $t('aiChat.KnowledgeSource.title') }}</span>
       <el-divider direction="vertical" />
@@ -15,7 +15,7 @@
 
     <div
       class="mt-8"
-      v-if="type === 'log' || type === 'debug-ai-chat' ? true : application.show_source"
+      v-if="hasParagraphSource && (type === 'log' || type === 'debug-ai-chat' ? true : application.show_source)"
     >
       <el-row :gutter="8" v-if="uniqueParagraphList?.length">
         <template v-for="(item, index) in uniqueParagraphList" :key="index">
@@ -169,6 +169,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['openExecutionDetail', 'openParagraph', 'openParagraphDocument'])
+const hasParagraphSource = computed(() => (props.data?.paragraph_list || []).length > 0)
 const showPDF = (item: any) => {
   return (
     item.document_name.toLocaleLowerCase().endsWith('.pdf') &&

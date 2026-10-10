@@ -1,7 +1,7 @@
-import { hasPermission, set_next_route } from '@/utils/permission/index'
+import { set_next_route } from '@/utils/permission/index'
 import { getChildRouteList } from '@/router/common'
 import NProgress from 'nprogress'
-import { getPermissionRoute } from '@/router/common'
+import { getPermissionRoute, hasRoutePermission } from '@/router/common'
 import {
   createRouter,
   createWebHistory,
@@ -124,7 +124,7 @@ router.beforeEach(
     }
     set_next_route(to)
     // 判断是否有菜单权限
-    if (to.meta.permission ? hasPermission(to.meta.permission as any, 'OR') : true) {
+    if (hasRoutePermission(routes, to)) {
       if(to.name=='noPermissionD'){
          const n = getPermissionRoute(routes, to)
          if(n.name=='noPermission'){

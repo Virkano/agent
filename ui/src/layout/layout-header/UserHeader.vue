@@ -5,7 +5,7 @@
       <LogoFull />
     </div>
 
-    <div class="flex-between w-full">
+    <div class="header-main flex-between w-full">
       <div class="ml-24 flex align-center w-120">
         <!-- 企业版: 工作空间下拉框-->
         <el-divider
@@ -21,7 +21,12 @@
         />
       </div>
       <TopMenu></TopMenu>
-      <TopAbout class="mr-12"></TopAbout>
+      <div class="flex align-center mr-8">
+        <MarketingNotificationCenter
+          v-if="hasPermission(workspaceMenuPermissions.marketingOperations, 'OR')"
+        />
+        <TopAbout />
+      </div>
     </div>
     <Avatar></Avatar>
   </div>
@@ -32,8 +37,10 @@ import { useRoute, useRouter } from 'vue-router'
 import TopMenu from './top-menu/index.vue'
 import Avatar from './avatar/index.vue'
 import TopAbout from './top-about/index.vue'
+import MarketingNotificationCenter from './MarketingNotificationCenter.vue'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'
+import { workspaceMenuPermissions } from '@/router/workspace-menu-permission'
 import type { WorkspaceItem } from '@/api/type/workspace'
 import useStore from '@/stores'
 const router = useRouter()
@@ -64,5 +71,9 @@ function changeWorkspace(item: WorkspaceItem) {
   height: var(--app-header-height);
   box-sizing: border-box;
   padding: var(--app-header-padding);
+}
+
+.header-main {
+  min-width: 0;
 }
 </style>

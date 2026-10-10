@@ -1,0 +1,187 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - img [ref=e7]
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - separator [ref=e10]
+        - button "默认空间" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]:
+            - img [ref=e15]
+            - generic "默认空间" [ref=e18]
+            - img [ref=e20]
+      - generic [ref=e22]:
+        - img [ref=e26] [cursor=pointer]
+        - img [ref=e31] [cursor=pointer]
+        - button [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]:
+            - img [ref=e38]
+            - img [ref=e41]
+        - button [ref=e44] [cursor=pointer]:
+          - generic [ref=e45]:
+            - img [ref=e47]
+            - img [ref=e51]
+        - button [ref=e54] [cursor=pointer]:
+          - generic [ref=e55]:
+            - img [ref=e57]
+            - img [ref=e60]
+      - generic [ref=e63]:
+        - button "全局通知" [ref=e64] [cursor=pointer]:
+          - img [ref=e67]
+        - superscript [ref=e71]: "3"
+    - button [ref=e73] [cursor=pointer]
+  - generic [ref=e76]:
+    - banner [ref=e77]:
+      - generic [ref=e78]:
+        - text: DECISION INTELLIGENCE · V1
+        - heading "AI 分析报告中心" [level=2] [ref=e79]
+        - paragraph [ref=e80]: 把营销触达、转化和经营投入沉淀成可追溯的决策简报。
+      - generic [ref=e81]:
+        - button "报告订阅" [ref=e82] [cursor=pointer]:
+          - img [ref=e84]
+          - generic [ref=e86]: 报告订阅
+        - button "报告模板" [ref=e87] [cursor=pointer]:
+          - img [ref=e89]
+          - generic [ref=e91]: 报告模板
+        - button "生成报告" [ref=e92] [cursor=pointer]:
+          - img [ref=e94]
+          - generic [ref=e96]: 生成报告
+    - generic [ref=e97]:
+      - generic [ref=e98]:
+        - generic [ref=e99]: 报告总数
+        - strong [ref=e100]: "4"
+        - generic [ref=e101]: 当前工作空间
+      - generic [ref=e102]:
+        - generic [ref=e103]: 最近触达率
+        - strong [ref=e104]: 0%
+        - generic [ref=e105]: 去重触达 / 批次曝光
+      - generic [ref=e106]:
+        - generic [ref=e107]: 最近转化率
+        - strong [ref=e108]: 0%
+        - generic [ref=e109]: 确认转化 / 实际触达
+      - generic [ref=e110]:
+        - generic [ref=e111]: 最近 ROI
+        - strong [ref=e112]: 300%
+        - generic [ref=e113]: （归因收入 - 投入）/ 投入
+    - generic [ref=e114]:
+      - complementary [ref=e115]:
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - text: REPORT LIBRARY
+            - heading "报告库" [level=3] [ref=e118]
+          - button [ref=e119] [cursor=pointer]:
+            - img [ref=e121]
+        - generic [ref=e123]:
+          - generic [ref=e125]:
+            - img [ref=e128]
+            - textbox "搜索标题或任务" [ref=e130]
+          - generic [ref=e133] [cursor=pointer]:
+            - generic:
+              - combobox [ref=e135]
+              - generic [ref=e136]: 全部状态
+            - img [ref=e139]
+        - generic [ref=e141]:
+          - button "M04-02线性归因最终验收 全部营销任务 · 2026-09-11 09:28 已完成 · 规则分析" [ref=e142] [cursor=pointer]:
+            - generic [ref=e144]:
+              - strong [ref=e145]: M04-02线性归因最终验收
+              - generic [ref=e146]: 全部营销任务 · 2026-09-11 09:28
+              - generic [ref=e147]: 已完成 · 规则分析
+            - img [ref=e148]
+          - button "线性归因浏览器验收V2 全部营销任务 · 2026-09-11 09:25 已完成 · 规则分析" [ref=e150] [cursor=pointer]:
+            - generic [ref=e152]:
+              - strong [ref=e153]: 线性归因浏览器验收V2
+              - generic [ref=e154]: 全部营销任务 · 2026-09-11 09:25
+              - generic [ref=e155]: 已完成 · 规则分析
+            - img [ref=e156]
+          - button "线性归因浏览器验收 全部营销任务 · 2026-09-11 09:25 已完成 · 规则分析" [ref=e158] [cursor=pointer]:
+            - generic [ref=e160]:
+              - strong [ref=e161]: 线性归因浏览器验收
+              - generic [ref=e162]: 全部营销任务 · 2026-09-11 09:25
+              - generic [ref=e163]: 已完成 · 规则分析
+            - img [ref=e164]
+          - button "AI分析报告中心V1验收 全部营销任务 · 2026-09-10 14:37 已完成 · 规则分析" [ref=e166] [cursor=pointer]:
+            - generic [ref=e168]:
+              - strong [ref=e169]: AI分析报告中心V1验收
+              - generic [ref=e170]: 全部营销任务 · 2026-09-10 14:37
+              - generic [ref=e171]: 已完成 · 规则分析
+            - img [ref=e172]
+      - main [ref=e174]:
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - generic [ref=e178]: 已完成
+            - generic [ref=e179]: 模板 经营成效分析模板
+            - generic [ref=e180]: 生成方式 规则分析
+          - button "下载报告" [ref=e183] [cursor=pointer]:
+            - img [ref=e185]
+            - generic [ref=e187]: 下载报告
+        - article [ref=e189]:
+          - generic [ref=e190]:
+            - paragraph [ref=e191]: AI ANALYSIS REPORT
+            - heading "M04-02线性归因最终验收" [level=1] [ref=e192]
+            - text: 2026-08-13 — 2026-09-11
+          - generic [ref=e193]:
+            - heading "核心经营指标" [level=2] [ref=e194]
+            - table [ref=e195]:
+              - rowgroup [ref=e196]:
+                - row "曝光人数 0" [ref=e197]:
+                  - rowheader "曝光人数" [ref=e198]
+                  - cell "0" [ref=e199]
+                - row "实际触达人数 0" [ref=e200]:
+                  - rowheader "实际触达人数" [ref=e201]
+                  - cell "0" [ref=e202]
+                - row "触达率 0.0%" [ref=e203]:
+                  - rowheader "触达率" [ref=e204]
+                  - cell "0.0%" [ref=e205]
+                - row "确认转化人数 0" [ref=e206]:
+                  - rowheader "确认转化人数" [ref=e207]
+                  - cell "0" [ref=e208]
+                - row "触达后转化率 0.0%" [ref=e209]:
+                  - rowheader "触达后转化率" [ref=e210]
+                  - cell "0.0%" [ref=e211]
+                - row "归因收入 ¥12000.00" [ref=e212]:
+                  - rowheader "归因收入" [ref=e213]
+                  - cell "¥12000.00" [ref=e214]
+                - row "营销投入 ¥3000.00" [ref=e215]:
+                  - rowheader "营销投入" [ref=e216]
+                  - cell "¥3000.00" [ref=e217]
+                - row "边际贡献 ¥11500.00" [ref=e218]:
+                  - rowheader "边际贡献" [ref=e219]
+                  - cell "¥11500.00" [ref=e220]
+                - row "ROI 300.0%" [ref=e221]:
+                  - rowheader "ROI" [ref=e222]
+                  - cell "300.0%" [ref=e223]
+          - generic [ref=e224]:
+            - heading "经营解读" [level=2] [ref=e225]
+            - paragraph [ref=e226]: 统计周期内共覆盖 0 人，实际触达 0 人，触达率 0.0%；确认转化 0 人，触达后转化率 0.0%。归因收入 12000.00 元，营销投入 3000.00 元，边际贡献 11500.00 元，ROI 300.0%。当前周期尚无触达批次数据，建议先完成客户筛选和批次执行，再评估经营成效。
+          - generic [ref=e227]:
+            - heading "线性归因分布" [level=2] [ref=e228]
+            - paragraph [ref=e229]: 当前周期暂无可归因转化记录。
+          - generic [ref=e230]:
+            - heading "渠道覆盖" [level=2] [ref=e231]
+            - list [ref=e232]:
+              - listitem [ref=e233]: 暂无渠道数据
+    - dialog "报告订阅" [ref=e235]:
+      - banner [ref=e236]:
+        - heading "报告订阅" [level=2] [ref=e237]
+        - button "关闭此对话框" [ref=e238] [cursor=pointer]:
+          - img [ref=e240]
+      - generic [ref=e242]:
+        - generic [ref=e243]:
+          - paragraph [ref=e244]: 按天、周或月自动生成报告；结果统一进入右上角告警铃铛，可选邮件同步送达。
+          - button "新建订阅" [ref=e245] [cursor=pointer]:
+            - img [ref=e247]
+            - generic [ref=e249]: 新建订阅
+        - article [ref=e251]:
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - generic [ref=e255]: 执行中
+              - strong [ref=e256]: M04-02浏览器验收订阅
+            - generic [ref=e257]: 每天 · 09:00
+          - paragraph [ref=e258]: 经营成效分析模板 · 全部营销任务 · 最近 7 天
+          - generic [ref=e259]: 下次执行 2026-09-12 09:00
+          - generic [ref=e260]:
+            - button "立即执行" [ref=e261] [cursor=pointer]:
+              - generic [ref=e262]: 立即执行
+            - button "编辑" [ref=e263] [cursor=pointer]:
+              - generic [ref=e264]: 编辑
+            - button "删除" [ref=e265] [cursor=pointer]:
+              - generic [ref=e266]: 删除

@@ -14,6 +14,7 @@ from django.core import validators
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from application.chat_intent import route_conversation_control_message
 from application.chat_pipeline.I_base_chat_pipeline import IBaseChatPipelineStep, ParagraphPipelineModel
 from application.chat_pipeline.pipeline_manage import PipelineManage
 
@@ -25,6 +26,8 @@ class ISearchDatasetStep(IBaseChatPipelineStep):
         # 系统补全问题文本
         padding_problem_text = serializers.CharField(required=False,
                                                      label=_("System completes question text"))
+        marketing_context = serializers.CharField(required=False, allow_blank=True, allow_null=True,
+                                                  label=_("Marketing context"))
         # 需要查询的数据集id列表
         knowledge_id_list = serializers.ListField(required=True, child=serializers.UUIDField(required=True),
                                                   label=_("Dataset id list"))
@@ -50,6 +53,21 @@ class ISearchDatasetStep(IBaseChatPipelineStep):
         return self.InstanceSerializer
 
     def _run(self, manage: PipelineManage):
+        route = route_conversation_control_message(self.context['step_args'].get('problem_text'))
+        if route is not None:
+            # A pure conversational message must not inherit arbitrary knowledge
+            # just because an application configured a permissive similarity.
+            paragraph_list = []
+            manage.context['conversation_intent'] = route.intent
+            manage.context['no_references_setting'] = {
+                'status': 'designated_answer',
+                'value': route.answer,
+            }
+            manage.context['paragraph_list'] = paragraph_list
+            self.context['paragraph_list'] = paragraph_list
+            self.context['conversation_intent'] = route.intent
+            self.context['retrieval_skipped'] = True
+            return
         paragraph_list = self.execute(**self.context['step_args'], manage=manage)
         manage.context['paragraph_list'] = paragraph_list
         self.context['paragraph_list'] = paragraph_list
@@ -57,6 +75,7 @@ class ISearchDatasetStep(IBaseChatPipelineStep):
     @abstractmethod
     def execute(self, problem_text: str, knowledge_id_list: list[str], exclude_document_id_list: list[str],
                 exclude_paragraph_id_list: list[str], top_n: int, similarity: float, padding_problem_text: str = None,
+                marketing_context: str = None,
                 search_mode: str = None,
                 workspace_id=None,
                 manage: PipelineManage = None,

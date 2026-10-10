@@ -1,0 +1,187 @@
+- generic [ref=e48]:
+  - generic [ref=e50]:
+    - img [ref=e52]
+    - generic [ref=e53]:
+      - generic [ref=e54]:
+        - separator [ref=e55]
+        - button "默认空间" [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]:
+            - img [ref=e60]
+            - generic "默认空间" [ref=e63]
+            - img [ref=e65]
+      - generic [ref=e67]:
+        - img [ref=e71] [cursor=pointer]
+        - img [ref=e76] [cursor=pointer]
+        - button [ref=e80] [cursor=pointer]:
+          - generic [ref=e81]:
+            - img [ref=e83]
+            - img [ref=e86]
+        - button [ref=e89] [cursor=pointer]:
+          - generic [ref=e90]:
+            - img [ref=e92]
+            - img [ref=e96]
+        - button [ref=e99] [cursor=pointer]:
+          - generic [ref=e100]:
+            - img [ref=e102]
+            - img [ref=e106]
+      - button "全局通知" [ref=e110] [cursor=pointer]:
+        - img [ref=e113]
+    - button [ref=e118] [cursor=pointer]
+  - generic [ref=e124]:
+    - generic [ref=e126]:
+      - heading "快速创建" [level=4] [ref=e127]
+      - generic [ref=e128]:
+        - button "创建智能体 从模板或空白创建" [ref=e131] [cursor=pointer]:
+          - generic [ref=e133]:
+            - generic [ref=e135]:
+              - paragraph [ref=e136]: 创建智能体
+              - paragraph [ref=e137]: 从模板或空白创建
+            - img [ref=e139]
+        - button "创建知识库 上传文档或 Web 站点" [ref=e143] [cursor=pointer]:
+          - generic [ref=e145]:
+            - generic [ref=e147]:
+              - paragraph [ref=e148]: 创建知识库
+              - paragraph [ref=e149]: 上传文档或 Web 站点
+            - img [ref=e151]
+        - button "添加工具 脚本工具或工作流工具" [ref=e155] [cursor=pointer]:
+          - generic [ref=e157]:
+            - generic [ref=e159]:
+              - paragraph [ref=e160]: 添加工具
+              - paragraph [ref=e161]: 脚本工具或工作流工具
+            - img [ref=e163]
+        - generic [ref=e170] [cursor=pointer]:
+          - paragraph [ref=e171]: 添加模型
+          - paragraph [ref=e172]: 配置大语言/向量等模型
+    - generic [ref=e174]:
+      - heading "资源" [level=4] [ref=e175]
+      - generic [ref=e176]:
+        - generic [ref=e179] [cursor=pointer]:
+          - generic [ref=e180]:
+            - generic [ref=e181]:
+              - paragraph [ref=e182]: 智能体
+              - heading "0" [level=2] [ref=e183]
+            - img [ref=e186]
+          - generic [ref=e188]:
+            - generic [ref=e189]:
+              - paragraph [ref=e190]: 已发布
+              - heading "0" [level=2] [ref=e191]
+            - generic [ref=e192]:
+              - paragraph [ref=e193]: 未发布
+              - heading "0" [level=2] [ref=e194]
+        - generic [ref=e197] [cursor=pointer]:
+          - generic [ref=e198]:
+            - generic [ref=e199]:
+              - paragraph [ref=e200]: 知识库
+              - heading "0" [level=2] [ref=e201]
+            - img [ref=e204]
+          - generic [ref=e206]:
+            - generic [ref=e207]:
+              - paragraph [ref=e208]: 文档
+              - heading "0" [level=2] [ref=e209]
+            - generic [ref=e210]:
+              - paragraph [ref=e211]: 失败
+              - heading "0" [level=2] [ref=e212]
+        - generic [ref=e215] [cursor=pointer]:
+          - generic [ref=e216]:
+            - generic [ref=e217]:
+              - paragraph [ref=e218]: 工具
+              - heading "0" [level=2] [ref=e219]
+            - img [ref=e222]
+          - generic [ref=e225]:
+            - generic [ref=e226]:
+              - paragraph [ref=e227]: 工具
+              - heading "0" [level=2] [ref=e228]
+            - generic [ref=e229]:
+              - paragraph [ref=e230]: 工作流
+              - heading "0" [level=2] [ref=e231]
+            - generic [ref=e232]:
+              - paragraph [ref=e233]: 其他
+              - heading "0" [level=2] [ref=e234]
+        - generic [ref=e237] [cursor=pointer]:
+          - generic [ref=e238]:
+            - generic [ref=e239]:
+              - paragraph [ref=e240]: 模型
+              - heading "0" [level=2] [ref=e241]
+            - img [ref=e244]
+          - generic [ref=e246]:
+            - generic [ref=e247]:
+              - paragraph [ref=e248]: 大语言
+              - heading "0" [level=2] [ref=e249]
+            - generic [ref=e250]:
+              - paragraph [ref=e251]: 向量
+              - heading "0" [level=2] [ref=e252]
+            - generic [ref=e253]:
+              - paragraph [ref=e254]: 其他
+              - heading "0" [level=2] [ref=e255]
+    - generic [ref=e257]:
+      - generic [ref=e258]:
+        - heading "监控统计" [level=4] [ref=e259]
+        - generic [ref=e260]:
+          - generic [ref=e262] [cursor=pointer]:
+            - generic:
+              - combobox [ref=e264]
+              - generic [ref=e265]: 过去7天
+            - img [ref=e268]
+          - generic [ref=e272]:
+            - combobox [ref=e274]
+            - generic [ref=e276]:
+              - img [ref=e280] [cursor=pointer]
+              - generic "全部智能体" [ref=e286]
+      - generic [ref=e287]:
+        - generic [ref=e292]:
+          - paragraph [ref=e293]: 活跃用户
+          - generic [ref=e294]:
+            - heading "0" [level=2] [ref=e295]
+            - generic [ref=e296]: "+0"
+        - generic [ref=e301]:
+          - paragraph [ref=e302]: 对话次数
+          - heading "0" [level=2] [ref=e304]
+        - generic [ref=e309]:
+          - paragraph [ref=e310]: Tokens 总数
+          - heading "0" [level=2] [ref=e312]
+        - generic [ref=e317]:
+          - paragraph [ref=e318]: 用户满意度
+          - generic [ref=e319]:
+            - img [ref=e321]
+            - heading "0" [level=2] [ref=e324]
+            - img [ref=e326]
+            - heading "0" [level=2] [ref=e329]
+    - generic [ref=e359]:
+      - generic [ref=e360]:
+        - heading "排名 TOP5" [level=4] [ref=e361]
+        - generic [ref=e364] [cursor=pointer]:
+          - generic:
+            - combobox [ref=e366]
+            - generic [ref=e367]: 过去7天
+          - img [ref=e370]
+      - generic [ref=e372]:
+        - generic [ref=e375]:
+          - generic [ref=e376]:
+            - heading "Tokens 消耗 · Top 智能体" [level=4] [ref=e377]
+            - button "详情" [ref=e378] [cursor=pointer]:
+              - generic [ref=e379]:
+                - generic [ref=e380]: 详情
+                - img [ref=e382]
+          - generic [ref=e384]:
+            - img [ref=e386]
+            - paragraph [ref=e403]: 暂无数据
+        - generic [ref=e406]:
+          - generic [ref=e407]:
+            - heading "对话次数 · Top 智能体" [level=4] [ref=e408]
+            - button "详情" [ref=e409] [cursor=pointer]:
+              - generic [ref=e410]:
+                - generic [ref=e411]: 详情
+                - img [ref=e413]
+          - generic [ref=e415]:
+            - img [ref=e417]
+            - paragraph [ref=e434]: 暂无数据
+        - generic [ref=e437]:
+          - generic [ref=e438]:
+            - heading "Tokens 消耗 · Top 用户" [level=4] [ref=e439]
+            - button "详情" [ref=e440] [cursor=pointer]:
+              - generic [ref=e441]:
+                - generic [ref=e442]: 详情
+                - img [ref=e444]
+          - generic [ref=e446]:
+            - img [ref=e448]
+            - paragraph [ref=e465]: 暂无数据

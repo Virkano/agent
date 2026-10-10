@@ -1,308 +1,177 @@
-# Docker 手动打包与运行命令
+# 单业务镜像构建与运行
 
-本文档用于后续手动打包和启动当前项目。当前建议方案是：
+## 1. 部署边界
 
-- PostgreSQL 外部部署，不打进应用镜像
-- Redis 外部部署，不打进应用镜像
-- Ollama 外部部署，通过接口地址配置，不打进应用镜像
-- 应用镜像包含后端服务和已构建的管理端、聊天端静态资源
+项目只交付一个业务镜像 `telecom-ai-agent`：
 
-## 1. 本地检查
+- 镜像内包含管理端、聊天端、Django、Celery 和本地向量服务；
+- 镜像只对外暴露 HTTP `8080`；
+- 本地向量服务只监听容器内 `127.0.0.1:11636`，不对宿主机暴露；
+- PostgreSQL、Redis 使用部署环境中已有的实例，通过环境变量连接；
+- Ollama 不进入镜像，通过 `JB_OLLAMA_BASE_URL` 连接宿主机或独立服务器。
+
+根目录 `docker-compose.yml` 只定义业务容器，不会创建、拉取或删除 PostgreSQL/Redis 镜像和数据卷。
+
+## 2. 数据库初始化
+
+仓库提供不含业务数据和凭证的安全初始化脚本。使用 PostgreSQL 管理账号执行：
 
 ```bash
-cd <project-dir>
-git status --short
-docker version
-docker info
+psql -h <postgres-host> -p 5432 -U <admin-user> -d postgres \
+  -v app_db=initdb -f docker/initdb.sql
 ```
 
-## 2. 可选：创建 Docker 网络
+脚本默认创建 `initdb`，也可通过 `app_db` 指定其他数据库名；数据库已存在时不会删除或覆盖，只会确认并启用 `vector` 扩展。随后启动业务镜像，启动程序会自动执行 Django migrations，创建全部业务表并升级到当前代码对应的最新结构。
 
-如果 PostgreSQL、Redis、应用容器都用 Docker 跑，建议放到同一个网络。
+初始化脚本不创建数据库账号。执行脚本的管理员应提前创建业务账号，并确保 `JB_DB_USER` 对目标数据库拥有连接、建表、序列和读写权限。仓库不提供默认生产数据、验收数据、管理员口令、Token 或模型密钥。
+
+初始化 SQL 被 `.dockerignore` 排除，不会进入业务镜像。
+
+## 3. 配置外部服务
 
 ```bash
-docker network create jb-agent-net
+cp docker/.env.example docker/.env
 ```
 
-如果网络已存在，会提示已存在，忽略即可。
+修改 `docker/.env` 中的 PostgreSQL、Redis 和 Ollama 地址。Mac/Windows 上，容器访问宿主机通常使用 `host.docker.internal`；Linux 的 Compose 配置已添加 `host-gateway` 映射。
 
-## 3. 启动 PostgreSQL
+最关键的配置：
 
-首次启动：
+```dotenv
+JB_DB_NAME=initdb
+JB_DB_HOST=host.docker.internal
+JB_DB_PORT=5432
+JB_DB_USER=root
+JB_DB_PASSWORD=<数据库口令>
 
-```bash
-docker run -d \
-  --name jb-postgres \
-  --network jb-agent-net \
-  -e POSTGRES_DB=telecom_ai_agent \
-  -e POSTGRES_USER=root \
-  -e POSTGRES_PASSWORD=123456 \
-  -p 5432:5432 \
-  -v jb-postgres-data:/var/lib/postgresql/data \
-  pgvector/pgvector:pg17
+JB_REDIS_HOST=host.docker.internal
+JB_REDIS_PORT=6379
+JB_REDIS_DB=0
+JB_REDIS_PASSWORD=<Redis 口令，无密码时留空>
+
+JB_OLLAMA_BASE_URL=http://host.docker.internal:11434
 ```
 
-后续启动：
+`docker/.env` 已加入 Git 忽略规则，不要提交真实口令。
+
+## 4. 构建镜像
+
+推荐命令：
 
 ```bash
-docker start jb-postgres
+docker compose --env-file docker/.env build app
 ```
 
-检查：
+也可以直接构建：
 
 ```bash
-docker ps --filter name=jb-postgres
-docker logs --tail=100 jb-postgres
-```
-
-## 4. 启动 Redis
-
-当前本地 Redis 无密码。
-
-首次启动：
-
-```bash
-docker run -d \
-  --name jb-redis \
-  --network jb-agent-net \
-  -p 6379:6379 \
-  -v jb-redis-data:/data \
-  redis:7-alpine \
-  redis-server --appendonly yes
-```
-
-后续启动：
-
-```bash
-docker start jb-redis
-```
-
-检查：
-
-```bash
-docker ps --filter name=jb-redis
-docker logs --tail=100 jb-redis
-```
-
-## 5. 构建应用镜像
-
-使用应用专用 Dockerfile 打包。这个 Dockerfile 只打应用，不启动内置 PostgreSQL、Redis、Ollama。
-
-```bash
-cd <project-dir>
-
 docker build \
   -f docker/Dockerfile.app \
-  -t jb-agent:slim-local \
+  -t telecom-ai-agent:local \
   --build-arg DOCKER_IMAGE_TAG=local \
   --build-arg BUILD_AT="$(date '+%Y-%m-%d %H:%M:%S')" \
   --build-arg GITHUB_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo local)" \
   .
 ```
 
-查看镜像：
+构建完成后应只需要分发：
 
-```bash
-docker images | grep jb-agent
+```text
+telecom-ai-agent:local
 ```
 
-## 6. 运行应用容器：连接同 Docker 网络里的 PostgreSQL/Redis
+如需离线交付，只导出这一个业务镜像：
 
-这种方式适合第 3、4 步的 `jb-postgres`、`jb-redis`。
+```bash
+docker save -o telecom-ai-agent-local.tar telecom-ai-agent:local
+```
+
+目标环境导入：
+
+```bash
+docker load -i telecom-ai-agent-local.tar
+```
+
+PostgreSQL 和 Redis 镜像不在该 tar 包中。
+
+## 5. 运行
+
+```bash
+docker compose --env-file docker/.env up -d --no-build app
+docker compose --env-file docker/.env ps
+```
+
+直接运行镜像时，建议使用 env 文件，避免口令出现在命令历史：
 
 ```bash
 docker run -d \
-  --name jb-agent-app \
-  --network jb-agent-net \
+  --name telecom-ai-agent \
+  --init \
+  --restart unless-stopped \
+  --add-host host.docker.internal:host-gateway \
+  --env-file docker/.env \
   -p 8080:8080 \
-  -e JB_CONFIG_TYPE=ENV \
-  -e JB_DB_NAME=initdb \
-  -e JB_DB_HOST=jb-postgres \
-  -e JB_DB_PORT=5432 \
-  -e JB_DB_USER=root \
-  -e JB_DB_PASSWORD=123456 \
-  -e JB_DB_MAX_OVERFLOW=80 \
-  -e JB_REDIS_HOST=jb-redis \
-  -e JB_REDIS_PORT=6379 \
-  -e JB_REDIS_DB=0 \
-  -e JB_REDIS_PASSWORD= \
-  -e JB_REDIS_MAX_CONNECTIONS=100 \
-  -e JB_ADMIN_PATH=/admin \
-  -e JB_CHAT_PATH=/chat \
-  -e JB_LOG_LEVEL=INFO \
-  -v jb-agent-data:/opt/jb-agent \
-  jb-agent:slim-local
+  -v telecom-ai-agent-data:/opt/jb-agent \
+  telecom-ai-agent:local
 ```
 
-## 7. 运行应用容器：连接宿主机已有 PostgreSQL/Redis
-
-Mac 本地 Docker 访问宿主机服务一般使用 `host.docker.internal`。
-
-```bash
-docker run -d \
-  --name jb-agent-app \
-  -p 8080:8080 \
-  -e JB_CONFIG_TYPE=ENV \
-  -e JB_DB_NAME=initdb \
-  -e JB_DB_HOST=host.docker.internal \
-  -e JB_DB_PORT=5432 \
-  -e JB_DB_USER=root \
-  -e JB_DB_PASSWORD=123456 \
-  -e JB_DB_MAX_OVERFLOW=80 \
-  -e JB_REDIS_HOST=host.docker.internal \
-  -e JB_REDIS_PORT=6379 \
-  -e JB_REDIS_DB=0 \
-  -e JB_REDIS_PASSWORD= \
-  -e JB_REDIS_MAX_CONNECTIONS=100 \
-  -e JB_ADMIN_PATH=/admin \
-  -e JB_CHAT_PATH=/chat \
-  -e JB_LOG_LEVEL=INFO \
-  -v jb-agent-data:/opt/jb-agent \
-  jb-agent:slim-local
-```
-
-## 8. 访问地址
-
-应用镜像里管理端和聊天端都由后端统一服务提供：
+访问地址：
 
 ```text
-http://localhost:8080/admin
-http://localhost:8080/chat
-http://localhost:8080/admin/api-doc/
+管理端：http://localhost:8080/admin/
+聊天端：http://localhost:8080/chat/
+健康检查：http://localhost:8080/healthz
+接口文档：http://localhost:8080/admin/api-doc/
 ```
 
-本地开发环境里的 `3000` 是 Vite 开发服务端口；Docker 镜像运行时默认只暴露 `8080`。
+## 6. 健康检查与验收
 
-## 9. 查看日志和状态
+`/healthz` 同时验证 PostgreSQL 查询、Redis 读写和容器内向量服务端口。任一依赖异常都会返回 503。
 
 ```bash
-docker ps --filter name=jb-agent-app
-docker logs -f --tail=200 jb-agent-app
+curl -fsS http://127.0.0.1:8080/healthz
+docker logs --tail=200 telecom-ai-agent
+docker exec telecom-ai-agent sh -c 'test -n "$(command -v gunicorn)"'
 ```
 
-进入容器：
+还应确认：
 
-```bash
-docker exec -it jb-agent-app bash
+- `docker inspect telecom-ai-agent` 只有 `8080/tcp` 暴露声明；
+- 容器内 `127.0.0.1:11636` 可连接，但宿主机没有对应端口映射；
+- 未认证管理 API 返回 401 而不是 500；
+- 容器能访问配置的 Ollama `/api/tags`；
+- 日志中没有数据库口令、Redis 口令或模型凭证。
+
+## 7. 生产配置
+
+切换为生产模式前必须设置：
+
+```dotenv
+JB_DEPLOYMENT_MODE=production
+JB_SECRET_KEY=<至少 32 位随机密钥>
+JB_ALLOWED_HOSTS=<正式域名>
+JB_HEALTHCHECK_HOST=<正式域名>
+JB_DB_PASSWORD=<数据库强口令>
+JB_REDIS_PASSWORD=<Redis 强口令>
+JB_DEFAULT_PASSWORD=<首次登录强口令>
 ```
 
-容器内查看服务日志：
+生产 HTTPS 由反向代理、Ingress 或云平台负载均衡终止。启动脚本会先执行安全门禁，生产必填项缺失、默认口令、通配域名或 DEBUG 开启时会拒绝启动。
 
-```bash
-ls -lah /opt/jb-agent/logs
-tail -f /opt/jb-agent/logs/gunicorn.log
-tail -f /opt/jb-agent/logs/celery_default.log
-```
+## 8. 常见故障
 
-## 10. 停止、删除、重启
+### 数据库端口可访问但应用仍启动失败
 
-停止应用：
+端口开放不代表 PostgreSQL 已能执行查询。检查目标数据库是否存在、账号权限、vector 扩展和 migrations 日志。
 
-```bash
-docker stop jb-agent-app
-```
+### 本地向量服务异常
 
-重新启动应用：
+查看容器内 `/opt/jb-agent/logs/local_model.log`。根路径 404 不能作为离线判断，应使用数据库中模型 UUID 调用真实 `embed_query` 接口。
 
-```bash
-docker start jb-agent-app
-```
+### Ollama 无法连接
 
-删除应用容器：
+先在 Ollama 所在主机调用 `GET /api/tags`，再确认 `JB_OLLAMA_BASE_URL` 对容器可达。数据库中原来保存为 `127.0.0.1` 的 Ollama 地址可由该运行时配置覆盖。
 
-```bash
-docker rm -f jb-agent-app
-```
+### Docker Desktop 拉取或构建反复中断
 
-删除镜像：
-
-```bash
-docker rmi jb-agent:slim-local
-```
-
-## 11. 重新打包并替换运行
-
-```bash
-docker rm -f jb-agent-app
-
-docker build \
-  -f docker/Dockerfile.app \
-  -t jb-agent:slim-local \
-  --build-arg DOCKER_IMAGE_TAG=local \
-  --build-arg BUILD_AT="$(date '+%Y-%m-%d %H:%M:%S')" \
-  --build-arg GITHUB_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo local)" \
-  .
-
-docker run -d \
-  --name jb-agent-app \
-  --network jb-agent-net \
-  -p 8080:8080 \
-  -e JB_CONFIG_TYPE=ENV \
-  -e JB_DB_NAME=initdb \
-  -e JB_DB_HOST=jb-postgres \
-  -e JB_DB_PORT=5432 \
-  -e JB_DB_USER=root \
-  -e JB_DB_PASSWORD=123456 \
-  -e JB_REDIS_HOST=jb-redis \
-  -e JB_REDIS_PORT=6379 \
-  -e JB_REDIS_DB=0 \
-  -e JB_REDIS_PASSWORD= \
-  -e JB_ADMIN_PATH=/admin \
-  -e JB_CHAT_PATH=/chat \
-  -v jb-agent-data:/opt/jb-agent \
-  jb-agent:slim-local
-```
-
-## 12. Ollama 配置说明
-
-Ollama 暂时不打包进应用镜像。服务器上单独部署 Ollama 后，在系统的私有模型配置中填写 Ollama 地址即可。
-
-如果应用容器访问宿主机 Ollama：
-
-```text
-http://host.docker.internal:11434
-```
-
-如果应用容器和 Ollama 在同一个 Docker 网络：
-
-```text
-http://ollama:11434
-```
-
-如果 Ollama 在独立服务器：
-
-```text
-http://服务器IP:11434
-```
-
-## 13. 常见检查命令
-
-检查数据库连通：
-
-```bash
-docker exec -it jb-postgres psql -U root -d telecom_ai_agent -c '\dt'
-```
-
-检查 Redis 连通：
-
-```bash
-docker exec -it jb-redis redis-cli ping
-```
-
-检查应用接口：
-
-```bash
-curl -i http://localhost:8080/admin/api/profile
-```
-
-检查管理端页面：
-
-```bash
-curl -I http://localhost:8080/admin/
-```
-
-检查聊天端页面：
-
-```bash
-curl -I http://localhost:8080/chat/
-```
+先执行 `docker info`。如果全局配置了大量失效的 registry mirror，镜像层可能不断重试；这属于 Docker 守护进程/镜像代理问题，不是业务代码错误。

@@ -11,6 +11,8 @@ from rest_framework.views import APIView
 
 from common.auth.authenticate import TokenAuth
 from common.exception.app_exception import AppApiException
+from common.log.log import log
+from common.log.labels import expand_menu_labels, normalize_menu_label, normalize_operate_label
 from common.result import result
 from system_manage.models import Log, SettingType, SystemSetting
 from xpack_lite.models import Workspace
@@ -18,24 +20,6 @@ from xpack_lite.services import is_admin, page_result
 
 
 DEFAULT_CLEAN_TIME = 180
-
-MENU_LABELS = {
-    'Application': '智能体',
-    'Chat User': '对话用户',
-    'Dialogue users': '对话用户',
-    'Email settings': '邮箱设置',
-    'file': '文件',
-    'Folder': '文件夹',
-    'Knowledge': '知识库',
-    'Knowledge Base': '知识库',
-    'model': '模型',
-    'Model': '模型',
-    'System': '系统',
-    'Tool': '工具',
-    'Trigger': '触发器',
-    'User management': '用户管理',
-}
-
 
 def _require_admin(request):
     if not request.user or not is_admin(request.user.id):
@@ -84,8 +68,8 @@ def _serialize_log(log_item, workspace_name_map=None):
     return {
         'id': str(log_item.id),
         'menu': log_item.menu,
-        'menu_label': MENU_LABELS.get(log_item.menu, log_item.menu),
-        'operate': log_item.operate,
+        'menu_label': normalize_menu_label(log_item.menu),
+        'operate': normalize_operate_label(log_item.operate),
         'operation_object': log_item.operation_object or {},
         'user': log_item.user or {},
         'status': log_item.status,
@@ -113,6 +97,7 @@ def _filter_queryset(params):
             Q(user__username__icontains=username)
             | Q(user__nick_name__icontains=username)
             | Q(user__email__icontains=username)
+            | Q(user__id__icontains=username)
         )
 
     ip_address = params.get('ip_address')
@@ -125,7 +110,7 @@ def _filter_queryset(params):
 
     menus = _loads_list(params.get('menu'))
     if menus:
-        queryset = queryset.filter(menu__in=menus)
+        queryset = queryset.filter(menu__in=expand_menu_labels(menus))
 
     workspace_ids = _loads_list(params.get('workspace_ids'))
     if workspace_ids:
@@ -149,10 +134,8 @@ class OperateLogMenuOptionView(APIView):
             .distinct()
             .order_by('menu')
         )
-        return result.success([
-            {'menu': menu, 'menu_label': MENU_LABELS.get(menu, menu)}
-            for menu in menus
-        ])
+        labels = sorted({normalize_menu_label(menu) for menu in menus})
+        return result.success([{'menu': label, 'menu_label': label} for label in labels])
 
 
 class OperateLogView(APIView):
@@ -173,6 +156,7 @@ class OperateLogView(APIView):
 class OperateLogExportView(APIView):
     authentication_classes = [TokenAuth]
 
+    @log(menu='日志管理', operate='导出全局操作日志')
     def post(self, request):
         _require_admin(request)
         queryset = _filter_queryset(request.query_params)
@@ -187,7 +171,7 @@ class OperateLogExportView(APIView):
             worksheet.append([
                 row['menu_label'],
                 row['operate'],
-                (row['user'] or {}).get('username', ''),
+                (row['user'] or {}).get('username') or (row['user'] or {}).get('id', ''),
                 row['workspace_name'],
                 '成功' if row['status'] == 200 else '失败',
                 row['ip_address'],
@@ -208,6 +192,7 @@ class OperateLogCleanTimeView(APIView):
         _require_admin(request)
         return result.success(_get_clean_time())
 
+    @log(menu='日志管理', operate='更新日志清理策略')
     def post(self, request):
         _require_admin(request)
         clean_time = int(request.data.get('clean_time') or DEFAULT_CLEAN_TIME)

@@ -1,0 +1,127 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e5]:
+    - generic [ref=f1e8]:
+      - generic [ref=f1e9]:
+        - separator [ref=f1e10]
+        - button "默认空间" [ref=f1e12] [cursor=pointer]:
+          - generic "默认空间" [ref=f1e18]
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23] [cursor=pointer]
+        - generic [ref=f1e28] [cursor=pointer]
+        - button [ref=f1e35] [cursor=pointer]
+        - button [ref=f1e44] [cursor=pointer]
+        - button [ref=f1e54] [cursor=pointer]
+      - generic [ref=f1e62]:
+        - button "全局通知" [ref=f1e64] [cursor=pointer]
+        - button [ref=f1e72] [cursor=pointer]
+    - button [ref=f1e79] [cursor=pointer]
+  - generic [ref=f1e82]:
+    - banner [ref=f1e83]:
+      - generic [ref=f1e84]:
+        - text: DECISION INTELLIGENCE · V1
+        - heading "AI 分析报告中心" [level=2] [ref=f1e85]
+        - paragraph [ref=f1e86]: 把营销触达、转化和经营投入沉淀成可追溯的决策简报。
+      - generic [ref=f1e87]:
+        - button "报告模板" [ref=f1e88] [cursor=pointer]
+        - button "生成报告" [ref=f1e93] [cursor=pointer]
+    - generic [ref=f1e98]:
+      - generic [ref=f1e99]:
+        - generic [ref=f1e100]: 报告总数
+        - strong [ref=f1e101]: "0"
+        - generic [ref=f1e102]: 当前工作空间
+      - generic [ref=f1e103]:
+        - generic [ref=f1e104]: 最近触达率
+        - strong [ref=f1e105]: —
+        - generic [ref=f1e106]: 去重触达 / 批次曝光
+      - generic [ref=f1e107]:
+        - generic [ref=f1e108]: 最近转化率
+        - strong [ref=f1e109]: —
+        - generic [ref=f1e110]: 确认转化 / 实际触达
+      - generic [ref=f1e111]:
+        - generic [ref=f1e112]: 最近 ROI
+        - strong [ref=f1e113]: —
+        - generic [ref=f1e114]: （归因收入 - 投入）/ 投入
+    - generic [ref=f1e115]:
+      - complementary [ref=f1e116]:
+        - generic [ref=f1e117]:
+          - generic [ref=f1e118]:
+            - text: REPORT LIBRARY
+            - heading "报告库" [level=3] [ref=f1e119]
+          - button [ref=f1e120] [cursor=pointer]
+        - generic [ref=f1e124]:
+          - textbox "搜索标题或任务" [ref=f1e131]
+          - generic [ref=f1e134] [cursor=pointer]:
+            - generic:
+              - combobox [ref=f1e136]
+              - generic [ref=f1e137]: 全部状态
+        - generic [ref=f1e143]:
+          - paragraph [ref=f1e162]: 还没有分析报告
+          - button "生成第一份报告" [ref=f1e164] [cursor=pointer]
+      - main [ref=f1e166]:
+        - generic [ref=f1e167]:
+          - heading "从一次经营复盘开始" [level=3] [ref=f1e170]
+          - paragraph [ref=f1e171]: 选择统计周期和营销任务，系统会计算指标并生成结构化报告。
+          - button "生成报告" [ref=f1e172] [cursor=pointer]
+    - dialog "生成营销分析报告" [ref=f1e175]:
+      - generic [active] [ref=f1e176]:
+        - banner [ref=f1e177]:
+          - heading "生成营销分析报告" [level=2] [ref=f1e178]
+          - button "关闭此对话框" [ref=f1e179] [cursor=pointer]
+        - generic [ref=f1e184]:
+          - generic [ref=f1e185]:
+            - generic [ref=f1e186]:
+              - generic [ref=f1e187]: "*报告模板"
+              - generic [ref=f1e190] [cursor=pointer]:
+                - generic:
+                  - combobox "*报告模板" [ref=f1e192]
+                  - generic [ref=f1e193]: 经营成效分析模板 · V1
+            - generic [ref=f1e198]:
+              - generic [ref=f1e199]: 营销任务
+              - generic [ref=f1e202]:
+                - generic [ref=f1e203]:
+                  - combobox "营销任务" [ref=f1e205]
+                  - generic [ref=f1e206]: 全部营销任务
+                - generic [ref=f1e208] [cursor=pointer]
+          - generic [ref=f1e211]:
+            - generic [ref=f1e212]: "*统计周期"
+            - generic [ref=f1e214]:
+              - combobox "*统计周期" [ref=f1e218]: 2026-08-12
+              - generic [ref=f1e219]: 至
+              - combobox "结束日期" [ref=f1e220]: 2026-09-10
+          - generic [ref=f1e221]:
+            - generic [ref=f1e222]: 报告标题
+            - textbox "报告标题" [ref=f1e226]:
+              - /placeholder: 留空则按模板自动生成
+          - generic [ref=f1e227]:
+            - generic [ref=f1e228]:
+              - strong [ref=f1e229]: 经营投入参数
+              - generic [ref=f1e230]: 用于计算边际贡献和 ROI；暂未接财务系统时可手动录入
+            - generic [ref=f1e231]:
+              - generic [ref=f1e232]:
+                - generic [ref=f1e233]: 归因收入（元）
+                - generic [ref=f1e235]:
+                  - button "减少数值" [ref=f1e236]
+                  - button "增加数值" [ref=f1e240] [cursor=pointer]
+                  - spinbutton "归因收入（元）" [ref=f1e246]: "0.00"
+              - generic [ref=f1e247]:
+                - generic [ref=f1e248]: 营销投入（元）
+                - generic [ref=f1e250]:
+                  - button "减少数值" [ref=f1e251]
+                  - button "增加数值" [ref=f1e255] [cursor=pointer]
+                  - spinbutton "营销投入（元）" [ref=f1e261]: "0.00"
+              - generic [ref=f1e262]:
+                - generic [ref=f1e263]: 变动成本（元）
+                - generic [ref=f1e265]:
+                  - button "减少数值" [ref=f1e266]
+                  - button "增加数值" [ref=f1e270] [cursor=pointer]
+                  - spinbutton "变动成本（元）" [ref=f1e276]: "0.00"
+          - generic [ref=f1e277]:
+            - generic [ref=f1e278]:
+              - strong [ref=f1e279]: 启用模型智能解读
+              - generic [ref=f1e280]: 关闭时仍会生成基于规则的完整报告
+            - generic [ref=f1e281]:
+              - switch
+              - generic [ref=f1e282] [cursor=pointer]
+        - contentinfo [ref=f1e284]:
+          - button "取消" [ref=f1e285] [cursor=pointer]
+          - button "开始生成" [ref=f1e287] [cursor=pointer]

@@ -42,6 +42,8 @@ class IGenerateHumanMessageStep(IBaseChatPipelineStep):
         # 补齐问题
         padding_problem_text = serializers.CharField(required=False,
                                                      label=_("Completion problem"))
+        marketing_context = serializers.CharField(required=False, allow_blank=True, allow_null=True,
+                                                  label=_("Marketing context"))
         # 未查询到引用分段
         no_references_setting = NoReferencesSetting(required=True,
                                                     label=_("No reference segment settings"))
@@ -62,6 +64,7 @@ class IGenerateHumanMessageStep(IBaseChatPipelineStep):
                 max_paragraph_char_number: int,
                 prompt: str,
                 padding_problem_text: str = None,
+                marketing_context: str = None,
                 no_references_setting=None,
                 system=None,
                 **kwargs) -> List[BaseMessage]:

@@ -75,6 +75,22 @@ class Group(Enum):
 
     TRIGGER = "TRIGGER"
 
+    # V1 business menus. Each group maps to one assignable top navigation item.
+    MARKETING_SCENARIO = "MARKETING_SCENARIO"
+    MARKETING_CAMPAIGN = "MARKETING_CAMPAIGN"
+    MARKETING_TASK = "MARKETING_TASK"
+    RECOMMENDATION_ENGINE = "RECOMMENDATION_ENGINE"
+    MARKETING_OPERATIONS = "MARKETING_OPERATIONS"
+    MARKETING_QUALITY = "MARKETING_QUALITY"
+    ANALYSIS_REPORT = "ANALYSIS_REPORT"
+    METRIC_OPERATIONS = "METRIC_OPERATIONS"
+    PLATFORM_MONITORING = "PLATFORM_MONITORING"
+    API_ORCHESTRATION = "API_ORCHESTRATION"
+    EVENT_ORCHESTRATION = "EVENT_ORCHESTRATION"
+    RESOURCE_COORDINATION = "RESOURCE_COORDINATION"
+    IVR_SIMULATOR = "IVR_SIMULATOR"
+    REHEARSAL = "REHEARSAL"
+
     APPLICATION_WORKSPACE_USER_RESOURCE_PERMISSION = "APPLICATION_WORKSPACE_USER_RESOURCE_PERMISSION"
     KNOWLEDGE_WORKSPACE_USER_RESOURCE_PERMISSION = "KNOWLEDGE_WORKSPACE_USER_RESOURCE_PERMISSION"
     TOOL_WORKSPACE_USER_RESOURCE_PERMISSION = "TOOL_WORKSPACE_USER_RESOURCE_PERMISSION"
@@ -135,6 +151,9 @@ class WorkspaceGroup(Enum):
     MODEL = "MODEL"
     TOOL = "TOOL"
     TRIGGER = "TRIGGER"
+    MARKETING_BUSINESS = "MARKETING_BUSINESS"
+    OPERATIONS_ANALYSIS = "OPERATIONS_ANALYSIS"
+    ORCHESTRATION_REHEARSAL = "ORCHESTRATION_REHEARSAL"
     RESOURCE_PERMISSION = "RESOURCE_PERMISSION"
     OTHER = "OTHER"
 
@@ -344,6 +363,9 @@ Permission_Label = {
     WorkspaceGroup.MODEL.value: _("Model"),
     WorkspaceGroup.TOOL.value: _("Tool"),
     WorkspaceGroup.TRIGGER.value: _("Trigger"),
+    WorkspaceGroup.MARKETING_BUSINESS.value: _("Marketing Business"),
+    WorkspaceGroup.OPERATIONS_ANALYSIS.value: _("Operations Analysis"),
+    WorkspaceGroup.ORCHESTRATION_REHEARSAL.value: _("Orchestration and Rehearsal"),
     WorkspaceGroup.OTHER.value: _("Other"),
     Operate.READ.value: _("Read"),
     Operate.EDIT.value: _("Edit"),
@@ -445,6 +467,20 @@ Permission_Label = {
     Group.APPLICATION_FOLDER.value: _("Folder"),
     Group.KNOWLEDGE_FOLDER.value: _("Folder"),
     Group.TOOL_FOLDER.value: _("Folder"),
+    Group.MARKETING_SCENARIO.value: _("Marketing Scenario"),
+    Group.MARKETING_CAMPAIGN.value: _("Marketing Campaign"),
+    Group.MARKETING_TASK.value: _("Marketing Task"),
+    Group.RECOMMENDATION_ENGINE.value: _("Recommendation Engine"),
+    Group.MARKETING_OPERATIONS.value: _("Marketing Operations"),
+    Group.MARKETING_QUALITY.value: _("Conversation Quality"),
+    Group.ANALYSIS_REPORT.value: _("AI Analysis Report"),
+    Group.METRIC_OPERATIONS.value: _("Metric Alert Center"),
+    Group.PLATFORM_MONITORING.value: _("Platform Monitoring"),
+    Group.API_ORCHESTRATION.value: _("API Orchestration"),
+    Group.EVENT_ORCHESTRATION.value: _("Event Orchestration"),
+    Group.RESOURCE_COORDINATION.value: _("Resource Coordination"),
+    Group.IVR_SIMULATOR.value: _("IVR and Change Control"),
+    Group.REHEARSAL.value: _("Fault and Scenario Rehearsal"),
     # SystemGroup.RESOURCE.value: _("Resource"),
     Operate.TOKEN.value: _("Token Index"),
     Operate.TO_WORKSPACE.value: _("Authorize to Workspace")
@@ -589,6 +625,62 @@ class PermissionConstants(Enum):
     TRIGGER_RECORD = Permission(
         group=Group.TRIGGER, operate=Operate.RECORD, role_list=[RoleConstants.ADMIN],
         parent_group=[WorkspaceGroup.TRIGGER],
+    )
+    MARKETING_SCENARIO_READ = Permission(
+        group=Group.MARKETING_SCENARIO, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.MARKETING_BUSINESS],
+    )
+    MARKETING_CAMPAIGN_READ = Permission(
+        group=Group.MARKETING_CAMPAIGN, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.MARKETING_BUSINESS],
+    )
+    MARKETING_TASK_READ = Permission(
+        group=Group.MARKETING_TASK, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.MARKETING_BUSINESS],
+    )
+    RECOMMENDATION_ENGINE_READ = Permission(
+        group=Group.RECOMMENDATION_ENGINE, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.MARKETING_BUSINESS],
+    )
+    MARKETING_OPERATIONS_READ = Permission(
+        group=Group.MARKETING_OPERATIONS, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.OPERATIONS_ANALYSIS],
+    )
+    MARKETING_QUALITY_READ = Permission(
+        group=Group.MARKETING_QUALITY, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.OPERATIONS_ANALYSIS],
+    )
+    ANALYSIS_REPORT_READ = Permission(
+        group=Group.ANALYSIS_REPORT, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.OPERATIONS_ANALYSIS],
+    )
+    METRIC_OPERATIONS_READ = Permission(
+        group=Group.METRIC_OPERATIONS, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.OPERATIONS_ANALYSIS],
+    )
+    PLATFORM_MONITORING_READ = Permission(
+        group=Group.PLATFORM_MONITORING, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.OPERATIONS_ANALYSIS],
+    )
+    API_ORCHESTRATION_READ = Permission(
+        group=Group.API_ORCHESTRATION, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.ORCHESTRATION_REHEARSAL],
+    )
+    EVENT_ORCHESTRATION_READ = Permission(
+        group=Group.EVENT_ORCHESTRATION, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.ORCHESTRATION_REHEARSAL],
+    )
+    RESOURCE_COORDINATION_READ = Permission(
+        group=Group.RESOURCE_COORDINATION, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.ORCHESTRATION_REHEARSAL],
+    )
+    IVR_SIMULATOR_READ = Permission(
+        group=Group.IVR_SIMULATOR, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.ORCHESTRATION_REHEARSAL],
+    )
+    REHEARSAL_READ = Permission(
+        group=Group.REHEARSAL, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
+        parent_group=[WorkspaceGroup.ORCHESTRATION_REHEARSAL],
     )
     TOOL_READ = Permission(
         group=Group.TOOL, operate=Operate.READ, role_list=[RoleConstants.ADMIN, RoleConstants.USER],

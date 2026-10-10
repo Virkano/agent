@@ -1,0 +1,82 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e8]:
+        - generic [ref=f1e9]:
+          - separator [ref=f1e10]
+          - button "默认空间" [ref=f1e12] [cursor=pointer]:
+            - generic "默认空间" [ref=f1e18]
+        - generic [ref=f1e22]:
+          - generic [ref=f1e23] [cursor=pointer]: 首页
+          - generic [ref=f1e28] [cursor=pointer]: 智能体
+          - button "平台能力" [ref=f1e277] [cursor=pointer]
+          - button "营销中心" [ref=f1e279] [cursor=pointer]
+          - button "运营治理" [ref=f1e281] [cursor=pointer]
+        - generic [ref=f1e63]:
+          - button "全局通知" [ref=f1e65] [cursor=pointer]
+          - button [ref=f1e73] [cursor=pointer]
+      - button [ref=f1e80] [cursor=pointer]
+    - generic [ref=f1e283]:
+      - banner [ref=f1e284]:
+        - generic [ref=f1e285]:
+          - button "返回模型管理" [ref=f1e286] [cursor=pointer]
+          - text: MODEL GOVERNANCE · V1
+          - heading "模型生命周期" [level=2] [ref=f1e291]
+          - paragraph [ref=f1e292]: 从实验、版本评估到发布回滚，为每一次模型变更保留可追溯记录。
+        - button "刷新数据" [ref=f1e293] [cursor=pointer]
+      - generic [ref=f1e298]:
+        - article [ref=f1e299]:
+          - generic [ref=f1e300]: 实验总数
+          - strong [ref=f1e301]: "1"
+          - generic [ref=f1e302]: 0 个正在运行
+        - article [ref=f1e303]:
+          - generic [ref=f1e304]: 已注册版本
+          - strong [ref=f1e305]: "1"
+          - generic [ref=f1e306]: 0 个通过评估
+        - article [ref=f1e307]:
+          - generic [ref=f1e308]: 线上模型
+          - strong [ref=f1e309]: "0"
+          - generic [ref=f1e310]: 同一注册模型仅保留一个发布版本
+        - article [ref=f1e311]:
+          - generic [ref=f1e312]: 最近变更
+          - strong [ref=f1e313]: "0"
+          - generic [ref=f1e314]: 展示最近 10 条发布与回滚审计
+      - generic [ref=f1e316]:
+        - tablist [ref=f1e320]:
+          - tab "实验管理" [ref=f1e322]
+          - tab "版本与发布" [selected] [ref=f1e323]
+          - tab "发布审计" [ref=f1e324]
+        - tabpanel "版本与发布" [ref=f1e400]:
+          - generic [ref=f1e401]:
+            - generic [ref=f1e402]:
+              - textbox "筛选注册模型名称" [ref=f1e409]
+              - generic [ref=f1e412] [cursor=pointer]:
+                - generic:
+                  - combobox [ref=f1e414]
+                  - generic [ref=f1e415]: 全部状态
+            - button "注册模型版本" [ref=f1e420] [cursor=pointer]
+          - generic [ref=f1e426]:
+            - table [ref=f1e428]:
+              - rowgroup [ref=f1e435]:
+                - row [ref=f1e436]:
+                  - columnheader "注册模型" [ref=f1e437]
+                  - columnheader "评估指标" [ref=f1e439]
+                  - columnheader "状态" [ref=f1e441]
+                  - columnheader "发布时间" [ref=f1e443]
+                  - columnheader "操作" [ref=f1e445]
+            - table [ref=f1e531]:
+              - rowgroup [ref=f1e538]:
+                - row [ref=f1e539]:
+                  - cell "QA-M08-服务模型 · v1 来源：QA-M08-生命周期验收" [ref=f1e540]:
+                    - generic [ref=f1e542]:
+                      - strong [ref=f1e543]: QA-M08-服务模型 · v1
+                      - generic [ref=f1e544]: 来源：QA-M08-生命周期验收
+                  - cell "—" [ref=f1e545]
+                  - cell "已注册" [ref=f1e547]
+                  - cell "—" [ref=f1e551]
+                  - cell [ref=f1e553]:
+                    - generic [ref=f1e554]:
+                      - button "运行评估" [ref=f1e555] [cursor=pointer]
+                      - button "删除" [ref=f1e557] [cursor=pointer]
+  - alert [ref=f1e559]:
+    - paragraph [ref=f1e563]: 模型版本注册成功

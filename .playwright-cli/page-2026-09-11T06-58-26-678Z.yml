@@ -1,0 +1,100 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e5]:
+    - generic [ref=f1e8]:
+      - generic [ref=f1e9]:
+        - separator [ref=f1e10]
+        - button "默认空间" [ref=f1e12] [cursor=pointer]:
+          - generic "默认空间" [ref=f1e18]
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23] [cursor=pointer]: 首页
+        - generic [ref=f1e28] [cursor=pointer]: 智能体
+        - button "平台能力" [ref=f1e277] [cursor=pointer]
+        - button "营销中心" [ref=f1e279] [cursor=pointer]
+        - button "运营治理" [ref=f1e281] [cursor=pointer]
+      - generic [ref=f1e63]:
+        - button "全局通知" [ref=f1e65] [cursor=pointer]
+        - button [ref=f1e73] [cursor=pointer]
+    - button [ref=f1e80] [cursor=pointer]
+  - generic [ref=f1e283]:
+    - banner [ref=f1e284]:
+      - generic [ref=f1e285]:
+        - button "返回模型管理" [ref=f1e286] [cursor=pointer]
+        - text: MODEL GOVERNANCE · V1
+        - heading "模型生命周期" [level=2] [ref=f1e291]
+        - paragraph [ref=f1e292]: 从实验、版本评估到发布回滚，为每一次模型变更保留可追溯记录。
+      - button "刷新数据" [ref=f1e293] [cursor=pointer]
+    - generic [ref=f1e298]:
+      - article [ref=f1e299]:
+        - generic [ref=f1e300]: 实验总数
+        - strong [ref=f1e301]: "1"
+        - generic [ref=f1e302]: 0 个正在运行
+      - article [ref=f1e303]:
+        - generic [ref=f1e304]: 已注册版本
+        - strong [ref=f1e305]: "0"
+        - generic [ref=f1e306]: 0 个通过评估
+      - article [ref=f1e307]:
+        - generic [ref=f1e308]: 线上模型
+        - strong [ref=f1e309]: "0"
+        - generic [ref=f1e310]: 同一注册模型仅保留一个发布版本
+      - article [ref=f1e311]:
+        - generic [ref=f1e312]: 最近变更
+        - strong [ref=f1e313]: "0"
+        - generic [ref=f1e314]: 展示最近 10 条发布与回滚审计
+    - generic [ref=f1e316]:
+      - tablist [ref=f1e320]:
+        - tab "实验管理" [ref=f1e322]
+        - tab "版本与发布" [selected] [ref=f1e323]
+        - tab "发布审计" [ref=f1e324]
+      - tabpanel "版本与发布" [ref=f1e400]:
+        - generic [ref=f1e401]:
+          - generic [ref=f1e402]:
+            - textbox "筛选注册模型名称" [ref=f1e409]
+            - generic [ref=f1e412] [cursor=pointer]:
+              - generic:
+                - combobox [ref=f1e414]
+                - generic [ref=f1e415]: 全部状态
+          - button "注册模型版本" [ref=f1e420] [cursor=pointer]
+        - generic [ref=f1e426]:
+          - table [ref=f1e428]:
+            - rowgroup [ref=f1e435]:
+              - row [ref=f1e436]:
+                - columnheader "注册模型" [ref=f1e437]
+                - columnheader "评估指标" [ref=f1e439]
+                - columnheader "状态" [ref=f1e441]
+                - columnheader "发布时间" [ref=f1e443]
+                - columnheader "操作" [ref=f1e445]
+          - generic [ref=f1e450]:
+            - table:
+              - rowgroup
+            - generic [ref=f1e451]: 暂无数据
+        - paragraph [ref=f1e472]: 还没有注册模型版本
+    - dialog "注册模型版本" [ref=f1e474]:
+      - generic [ref=f1e475]:
+        - banner [ref=f1e476]:
+          - heading "注册模型版本" [level=2] [ref=f1e477]
+          - button "关闭此对话框" [ref=f1e478] [cursor=pointer]
+        - generic [ref=f1e483]:
+          - generic [ref=f1e484]:
+            - generic [ref=f1e485]:
+              - generic [ref=f1e486]: "*注册模型名称"
+              - textbox "*注册模型名称" [ref=f1e490]:
+                - /placeholder: 相同名称将自动递增版本号
+                - text: QA-M08-服务模型
+            - generic [ref=f1e491]:
+              - generic [ref=f1e492]: "*来源实验"
+              - generic [ref=f1e495]:
+                - generic [ref=f1e496]:
+                  - combobox "*来源实验" [active] [ref=f1e498]
+                  - generic [ref=f1e499]: QA-M08-生命周期验收
+                - generic [ref=f1e501] [cursor=pointer]
+          - generic [ref=f1e504]:
+            - generic [ref=f1e505]: 模型产物地址
+            - textbox "模型产物地址" [ref=f1e509]:
+              - /placeholder: 对象存储、制品库或本地路径
+          - generic [ref=f1e510]:
+            - generic [ref=f1e511]: 产物摘要
+            - textbox "产物摘要" [ref=f1e515]:
+              - /placeholder: 建议填写 SHA-256，便于核对版本
+        - contentinfo [ref=f1e516]:
+          - button "取消" [ref=f1e517] [cursor=pointer]
+          - button "注册版本" [ref=f1e519] [cursor=pointer]

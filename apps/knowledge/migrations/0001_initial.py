@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunSQL("CREATE EXTENSION IF NOT EXISTS vector", migrations.RunSQL.noop),
         migrations.CreateModel(
             name='File',
             fields=[

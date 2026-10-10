@@ -16,6 +16,12 @@ import uuid_utils.compat as uuid
 from application.chat_pipeline.I_base_chat_pipeline import ParagraphPipelineModel
 from application.chat_pipeline.pipeline_manage import PipelineManage
 from application.chat_pipeline.step.chat_step.i_chat_step import IChatStep, PostResponseHandler
+from application.answer_compliance import (
+    BLOCKED_ANSWER,
+    evaluate_knowledge_answer,
+    runtime_failure_audit,
+    should_apply_platform_compliance,
+)
 from application.flow.tools import Reasoning, get_tools, mcp_response_generator
 from application.long_term_memory import extract_long_term_memory
 from application.models import (
@@ -69,6 +75,107 @@ def write_context(step, manage, request_token, response_token, all_text):
     manage.context["answer_tokens"] = manage.context["answer_tokens"] + response_token
 
 
+def get_marketing_customer_safe_answer(problem_text: str, source: dict | None, answer_text: str):
+    """Prevent a weak local model from making unverified fee commitments to a marketing customer."""
+    if not isinstance(source, dict) or not source.get("marketing_task_id") or not source.get("marketing_customer_id"):
+        return answer_text
+
+    question = problem_text or ""
+    if not any(word in question for word in ["贵", "费用", "多少钱", "加钱", "额外", "月费", "价格", "资费"]):
+        return answer_text
+
+    if any(word in question for word in ["贵", "多少钱", "价格", "资费"]):
+        return (
+            "是否划算要结合您当地可办理的方案和月费变化来判断。"
+            "办理前会先向您确认月费变化、优惠期限和合约期，确认清楚后再由您决定是否办理。"
+        )
+    return (
+        "套餐升级是否会增加费用，要以您当地实际可办理的方案为准。"
+        "办理前会先向您确认月费变化、优惠期限和合约期，确认清楚后再由您决定是否办理。"
+    )
+
+
+def get_marketing_runtime_fallback(problem_text: str, source: dict | None):
+    """Return customer-facing text when a dependency fails during a marketing chat."""
+    if not isinstance(source, dict) or not source.get("marketing_task_id"):
+        return None
+    safe_answer = get_marketing_customer_safe_answer(problem_text, source, "")
+    if safe_answer:
+        return safe_answer
+    return "暂时无法查询最新的本地办理信息，请稍后重试；如需立即确认，可联系当地营业厅或人工客服。"
+
+
+def get_marketing_customer_answer(problem_text: str, source: dict | None, answer_text: str):
+    """Apply customer-safe pricing first, then a configured recommendation."""
+    safe_answer = get_marketing_customer_safe_answer(problem_text, source, answer_text)
+    if safe_answer != answer_text:
+        return safe_answer
+    from marketing.recommendation import get_customer_recommendation_answer
+
+    return get_customer_recommendation_answer(problem_text, source, answer_text)
+
+
+def needs_marketing_customer_review(problem_text: str, source: dict | None):
+    if not isinstance(source, dict) or not source.get("marketing_task_id") or not source.get("marketing_customer_id"):
+        return False
+    question = problem_text or ""
+    if any(word in question for word in ["贵", "费用", "多少钱", "加钱", "额外", "月费", "价格", "资费"]):
+        return True
+    from marketing.recommendation import RECOMMENDATION_QUESTION_KEYWORDS
+
+    recommendation = source.get("marketing_recommendation")
+    return (
+        isinstance(recommendation, dict)
+        and recommendation.get("status") == "MATCHED"
+        and any(word in question for word in RECOMMENDATION_QUESTION_KEYWORDS)
+    )
+
+
+def prepare_marketing_answer_preflight(
+    problem_text: str,
+    generated_answer: str,
+    final_answer: str,
+    source: dict | None,
+    chat_id=None,
+    paragraph_count=0,
+):
+    """Run the optional marketing shadow check without making chat availability depend on it."""
+    try:
+        from marketing.preflight import prepare_marketing_preflight
+
+        return prepare_marketing_preflight(
+            problem_text,
+            generated_answer,
+            final_answer,
+            source,
+            chat_id=chat_id,
+            paragraph_count=paragraph_count,
+        )
+    except Exception:
+        telecom_ai_logger.exception("Marketing shadow preflight evaluation failed for chat %s", chat_id)
+        return None
+
+
+def should_buffer_marketing_answer_preflight(source: dict | None):
+    try:
+        from marketing.preflight import should_buffer_marketing_preflight
+
+        return should_buffer_marketing_preflight(source)
+    except Exception:
+        telecom_ai_logger.exception("Marketing preflight policy lookup failed")
+        return False
+
+
+def save_marketing_answer_preflight(chat_record_id, snapshot):
+    try:
+        from marketing.preflight import save_marketing_preflight
+
+        return save_marketing_preflight(chat_record_id, snapshot)
+    except Exception:
+        telecom_ai_logger.exception("Marketing shadow preflight persistence failed for chat record %s", chat_record_id)
+        return None
+
+
 def event_content(
     response,
     chat_id,
@@ -94,6 +201,11 @@ def event_content(
     reasoning = Reasoning(reasoning_content_start, reasoning_content_end)
     all_text = ""
     reasoning_content = ""
+    knowledge_enabled = should_apply_platform_compliance(manage.context)
+    marketing_review_before_send = needs_marketing_customer_review(
+        problem_text, manage.context.get("source")
+    ) or should_buffer_marketing_answer_preflight(manage.context.get("source"))
+    review_before_send = knowledge_enabled or marketing_review_before_send
     try:
         response_reasoning_content = False
         for chunk in response:
@@ -109,12 +221,36 @@ def event_content(
             if reasoning_content_chunk is None:
                 reasoning_content_chunk = ""
             reasoning_content += reasoning_content_chunk
+            if not review_before_send:
+                yield manage.get_base_to_response().to_stream_chunk_response(
+                    chat_id,
+                    str(chat_record_id),
+                    "ai-chat-node",
+                    [],
+                    content_chunk,
+                    False,
+                    0,
+                    0,
+                    {
+                        "node_is_end": False,
+                        "view_type": "many_view",
+                        "node_type": "ai-chat-node",
+                        "real_node_id": "ai-chat-node",
+                        "reasoning_content": reasoning_content_chunk if reasoning_content_enable else "",
+                    },
+                )
+        reasoning_chunk = reasoning.get_end_reasoning_content()
+        all_text += reasoning_chunk.get("content")
+        reasoning_content_chunk = ""
+        if not response_reasoning_content:
+            reasoning_content_chunk = reasoning_chunk.get("reasoning_content")
+        if not review_before_send:
             yield manage.get_base_to_response().to_stream_chunk_response(
                 chat_id,
                 str(chat_record_id),
                 "ai-chat-node",
                 [],
-                content_chunk,
+                reasoning_chunk.get("content"),
                 False,
                 0,
                 0,
@@ -126,39 +262,57 @@ def event_content(
                     "reasoning_content": reasoning_content_chunk if reasoning_content_enable else "",
                 },
             )
-        reasoning_chunk = reasoning.get_end_reasoning_content()
-        all_text += reasoning_chunk.get("content")
-        reasoning_content_chunk = ""
-        if not response_reasoning_content:
-            reasoning_content_chunk = reasoning_chunk.get("reasoning_content")
-        yield manage.get_base_to_response().to_stream_chunk_response(
-            chat_id,
-            str(chat_record_id),
-            "ai-chat-node",
-            [],
-            reasoning_chunk.get("content"),
-            False,
-            0,
-            0,
-            {
-                "node_is_end": False,
-                "view_type": "many_view",
-                "node_type": "ai-chat-node",
-                "real_node_id": "ai-chat-node",
-                "reasoning_content": reasoning_content_chunk if reasoning_content_enable else "",
-            },
-        )
         # 获取token
         if is_ai_chat:
             try:
                 request_token = chat_model.get_num_tokens_from_messages(message_list)
                 response_token = chat_model.get_num_tokens(all_text)
-            except Exception as e:
+            except Exception:
                 request_token = 0
                 response_token = 0
         else:
             request_token = 0
             response_token = 0
+        generated_text = all_text
+        if marketing_review_before_send:
+            all_text = get_marketing_customer_answer(problem_text, manage.context.get("source"), all_text)
+        preflight_snapshot = prepare_marketing_answer_preflight(
+            problem_text,
+            generated_text,
+            all_text,
+            manage.context.get("source"),
+            chat_id=chat_id,
+            paragraph_count=len(paragraph_list or []),
+        )
+        if preflight_snapshot:
+            all_text = preflight_snapshot.get("final_answer", all_text)
+        if knowledge_enabled:
+            no_reference_setting = manage.context.get("no_references_setting") or {}
+            all_text, step.context["compliance"] = evaluate_knowledge_answer(
+                all_text,
+                paragraph_list,
+                configured_fallback=no_reference_setting.get("status") == "designated_answer",
+            )
+            if preflight_snapshot:
+                preflight_snapshot["final_answer"] = all_text
+        if review_before_send:
+            yield manage.get_base_to_response().to_stream_chunk_response(
+                chat_id,
+                str(chat_record_id),
+                "ai-chat-node",
+                [],
+                all_text,
+                False,
+                0,
+                0,
+                {
+                    "node_is_end": False,
+                    "view_type": "many_view",
+                    "node_type": "ai-chat-node",
+                    "real_node_id": "ai-chat-node",
+                    "reasoning_content": "",
+                },
+            )
         write_context(step, manage, request_token, response_token, all_text)
         post_response_handler.handler(
             chat_id,
@@ -169,8 +323,9 @@ def event_content(
             manage,
             step,
             padding_problem_text,
-            reasoning_content=reasoning_content if reasoning_content_enable else "",
+            reasoning_content=reasoning_content if reasoning_content_enable and not knowledge_enabled else "",
         )
+        save_marketing_answer_preflight(chat_record_id, preflight_snapshot)
         yield manage.get_base_to_response().to_stream_chunk_response(
             chat_id,
             str(chat_record_id),
@@ -186,10 +341,16 @@ def event_content(
             add_access_num(chat_user_id, chat_user_type, manage.context.get("application_id"))
     except BaseException as e:
         if isinstance(e, GeneratorExit):
-            telecom_ai_logger.error(f"Generator was closed (client disconnected)")
+            telecom_ai_logger.error("Generator was closed (client disconnected)")
         else:
             telecom_ai_logger.error(f"{str(e)}:{traceback.format_exc()}")
-            all_text = "Exception:" + str(e)
+            if knowledge_enabled:
+                all_text = BLOCKED_ANSWER
+                step.context["compliance"] = runtime_failure_audit()
+            else:
+                all_text = get_marketing_runtime_fallback(problem_text, manage.context.get("source")) or (
+                    "Exception:" + str(e)
+                )
         write_context(step, manage, 0, 0, all_text)
         post_response_handler.handler(
             chat_id,
@@ -200,7 +361,7 @@ def event_content(
             manage,
             step,
             padding_problem_text,
-            reasoning_content=reasoning_content if reasoning_content_enable else "",
+            reasoning_content=reasoning_content if reasoning_content_enable and not knowledge_enabled else "",
         )
         if not manage.debug:
             add_access_num(chat_user_id, chat_user_type, manage.context.get("application_id"))
@@ -324,6 +485,7 @@ class BaseChatStep(IChatStep):
             "message_tokens": self.context.get("message_tokens"),
             "answer_tokens": self.context.get("answer_tokens"),
             "cost": 0,
+            "compliance": self.context.get("compliance"),
         }
 
     @staticmethod
@@ -385,7 +547,7 @@ class BaseChatStep(IChatStep):
                 if tool is None or tool.is_active is False:
                     continue
                 executor = ToolExecutor()
-                init_params_default_value = {i["field"]: i.get('default_value') for i in tool.init_field_list}
+                init_params_default_value = {i["field"]: i.get("default_value") for i in tool.init_field_list}
                 if tool.init_params is not None:
                     tool_init_params = init_params_default_value | json.loads(rsa_long_decrypt(tool.init_params))
                 else:
@@ -750,16 +912,43 @@ class BaseChatStep(IChatStep):
             else:
                 request_token = 0
                 response_token = 0
-            write_context(self, manage, request_token, response_token, chat_result.content)
             reasoning_result = reasoning.get_reasoning_content(chat_result)
             reasoning_result_end = reasoning.get_end_reasoning_content()
-            content = reasoning_result.get("content") + reasoning_result_end.get("content")
+            generated_content = reasoning_result.get("content") + reasoning_result_end.get("content")
+            content = get_marketing_customer_safe_answer(
+                problem_text,
+                manage.context.get("source"),
+                generated_content,
+            )
+            preflight_snapshot = prepare_marketing_answer_preflight(
+                problem_text,
+                generated_content,
+                content,
+                manage.context.get("source"),
+                chat_id=chat_id,
+                paragraph_count=len(paragraph_list or []),
+            )
+            if preflight_snapshot:
+                content = preflight_snapshot.get("final_answer", content)
+            knowledge_enabled = should_apply_platform_compliance(manage.context)
+            if knowledge_enabled:
+                no_reference_setting = manage.context.get("no_references_setting") or {}
+                content, self.context["compliance"] = evaluate_knowledge_answer(
+                    content,
+                    paragraph_list,
+                    configured_fallback=no_reference_setting.get("status") == "designated_answer",
+                )
+                if preflight_snapshot:
+                    preflight_snapshot["final_answer"] = content
+            write_context(self, manage, request_token, response_token, content)
             if "reasoning_content" in chat_result.response_metadata:
                 reasoning_content = chat_result.response_metadata.get("reasoning_content", "") or ""
             else:
                 reasoning_content = (reasoning_result.get("reasoning_content") or "") + (
                     reasoning_result_end.get("reasoning_content") or ""
                 )
+            if knowledge_enabled:
+                reasoning_content = ""
             post_response_handler.handler(
                 chat_id,
                 chat_record_id,
@@ -771,6 +960,7 @@ class BaseChatStep(IChatStep):
                 padding_problem_text,
                 reasoning_content=reasoning_content,
             )
+            save_marketing_answer_preflight(chat_record_id, preflight_snapshot)
             if not manage.debug:
                 add_access_num(chat_user_id, chat_user_type, manage.context.get("application_id"))
             return manage.get_base_to_response().to_block_response(
@@ -788,7 +978,13 @@ class BaseChatStep(IChatStep):
                 },
             )
         except Exception as e:
-            all_text = "Exception:" + str(e)
+            if should_apply_platform_compliance(manage.context):
+                all_text = BLOCKED_ANSWER
+                self.context["compliance"] = runtime_failure_audit()
+            else:
+                all_text = get_marketing_runtime_fallback(problem_text, manage.context.get("source")) or (
+                    "Exception:" + str(e)
+                )
             write_context(self, manage, 0, 0, all_text)
             post_response_handler.handler(
                 chat_id,
@@ -803,6 +999,11 @@ class BaseChatStep(IChatStep):
             )
             if not manage.debug:
                 add_access_num(chat_user_id, chat_user_type, manage.context.get("application_id"))
+            fallback_status = (
+                status.HTTP_200_OK
+                if get_marketing_runtime_fallback(problem_text, manage.context.get("source"))
+                else status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
             return manage.get_base_to_response().to_block_response(
-                str(chat_id), str(chat_record_id), all_text, True, 0, 0, _status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                str(chat_id), str(chat_record_id), all_text, True, 0, 0, _status=fallback_status
             )

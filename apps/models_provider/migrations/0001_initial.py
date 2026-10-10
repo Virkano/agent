@@ -15,7 +15,10 @@ default_embedding_model_id = '42f63a3d-427e-11ef-b3ec-a8a1595801ab'
 def save_default_embedding_model(apps, schema_editor):
     ModelModel = apps.get_model('models_provider', 'Model')
     cache_folder = CONFIG.get('EMBEDDING_MODEL_PATH')
-    model_name = CONFIG.get('EMBEDDING_MODEL_NAME')
+    # A clean test database may not have an external embedding configuration.
+    # Keep the original branded default so the following rename migration can
+    # upgrade it to the current local hash embedding model.
+    model_name = CONFIG.get('EMBEDDING_MODEL_NAME') or 'telecom_ai_agent-local-hash-embedding'
     credential = {'cache_folder': cache_folder}
     model_credential_str = json.dumps(credential)
     model = ModelModel(id=default_embedding_model_id, name='telecom-ai-embedding', status=Status.SUCCESS,

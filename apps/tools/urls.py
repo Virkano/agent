@@ -6,6 +6,16 @@ app_name = "tool"
 # @formatter:off
 # fmt: off
 urlpatterns = [
+    path('workspace/<str:workspace_id>/api-orchestration/dashboard', views.ApiOrchestrationView.Dashboard.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset', views.ApiOrchestrationView.Asset.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/openapi/import', views.ApiOrchestrationView.OpenApiImport.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>', views.ApiOrchestrationView.AssetOperate.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>/enabled', views.ApiOrchestrationView.Enabled.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>/version/<str:version_id>/publish', views.ApiOrchestrationView.Publish.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>/version/<str:version_id>/rollback', views.ApiOrchestrationView.Rollback.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>/version/<str:version_id>/compare', views.ApiOrchestrationView.VersionCompare.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/asset/<str:asset_id>/mock-invoke', views.ApiOrchestrationView.MockInvoke.as_view()),
+    path('workspace/<str:workspace_id>/api-orchestration/bootstrap', views.ApiOrchestrationView.Bootstrap.as_view()),
     path('workspace/internal/tool', views.ToolView.InternalTool.as_view()),
     path('workspace/store/tool', views.ToolView.StoreTool.as_view()),
     path('workspace/store/tool_workflow_template', views.StoreToolWorkflowView.as_view()),

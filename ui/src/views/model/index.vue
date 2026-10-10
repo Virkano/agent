@@ -61,6 +61,14 @@
             </el-select>
           </div>
           <el-button
+            v-if="!isShared"
+            class="ml-16"
+            plain
+            @click="router.push('/model/lifecycle')"
+          >
+            模型生命周期
+          </el-button>
+          <el-button
             v-if="!isShared && permissionPrecise.create()"
             class="ml-16"
             type="primary"
@@ -127,10 +135,11 @@ import CreateModelDialog from '@/views/model/component/CreateModelDialog.vue'
 import SelectProviderDialog from '@/views/model/component/SelectProviderDialog.vue'
 import {loadSharedApi} from '@/utils/dynamics-api/shared-api'
 import useStore from '@/stores'
-import {useRoute} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import permissionMap from '@/permission'
 
 const route = useRoute()
+const router = useRouter()
 const {model, user} = useStore()
 const apiType = computed(() => {
   if (route.path.includes('shared')) {

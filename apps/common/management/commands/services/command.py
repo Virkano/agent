@@ -4,6 +4,8 @@ import os
 from django.core.management.base import BaseCommand
 from django.db.models import TextChoices
 
+from telecom_ai_agent.env import get_env
+
 from .utils import ServicesUtil
 
 
@@ -29,7 +31,13 @@ class Services(TextChoices):
 
     @classmethod
     def web_services(cls):
-        return [cls.gunicorn, cls.local_model]
+        services = [cls.gunicorn]
+        start_local_model = str(
+            get_env("TELECOM_AI_START_LOCAL_MODEL", "false")
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        if start_local_model:
+            services.append(cls.local_model)
+        return services
 
     @classmethod
     def celery_services(cls):

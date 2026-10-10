@@ -51,6 +51,31 @@ export const getSameRouteList: (
   return []
 }
 
+const routeRecordHasPermission = (route?: RouteRecordRaw) =>
+  !route?.meta?.permission || hasPermission(route.meta.permission as any, 'OR')
+
+/**
+ * Check both the matched route chain and the top-level menu referenced by
+ * activeMenu. The latter protects standalone detail/workflow routes that are
+ * not nested below their visible menu route.
+ */
+export const hasRoutePermission = (
+  routeList: Array<RouteRecordRaw>,
+  to: RouteLocationNormalized,
+) => {
+  if (!to.matched.every((route) => routeRecordHasPermission(route))) {
+    return false
+  }
+
+  const activeMenu = to.meta?.activeMenu as string | undefined
+  if (!activeMenu) return true
+
+  const topMenu = getChildRouteList(routeList, '/', 'root').find(
+    (route) => route.path === activeMenu,
+  )
+  return routeRecordHasPermission(topMenu)
+}
+
 /**
  * 获取有权限的路由
  * @param routes

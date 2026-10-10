@@ -141,6 +141,7 @@ celerybeat.pid
 .env.local
 .venv
 .docker/
+docker/.env
 .local_runtime/
 # env/
 venv/

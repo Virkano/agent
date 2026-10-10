@@ -197,6 +197,7 @@ class KnowledgeSerializer(serializers.Serializer):
         def get_query_set(self, workspace_manage, is_x_pack_ee):
             self.is_valid(raise_exception=True)
             workspace_id = self.data.get("workspace_id")
+            folder_id = self.data.get("folder_id") or None
             query_set_dict = {}
             query_set = QuerySet(
                 model=get_dynamics_model(
@@ -224,12 +225,9 @@ class KnowledgeSerializer(serializers.Serializer):
             if "workspace_id" in self.data and self.data.get("workspace_id") is not None:
                 query_set = query_set.filter(**{"temp.workspace_id": self.data.get("workspace_id")})
                 folder_query_set = folder_query_set.filter(**{"workspace_id": self.data.get("workspace_id")})
-            if (
-                "folder_id" in self.data
-                and self.data.get("folder_id") is not None
-            ):
-                query_set = query_set.filter(**{"temp.folder_id": self.data.get("folder_id")})
-                folder_query_set = folder_query_set.filter(**{"parent_id": self.data.get("folder_id")})
+            if folder_id is not None:
+                query_set = query_set.filter(**{"temp.folder_id": folder_id})
+                folder_query_set = folder_query_set.filter(**{"parent_id": folder_id})
             if "scope" in self.data and self.data.get("scope") is not None:
                 query_set = query_set.filter(**{"temp.scope": self.data.get("scope")})
             if "create_user" in self.data and self.data.get("create_user") is not None:
@@ -253,7 +251,7 @@ class KnowledgeSerializer(serializers.Serializer):
 
         def page(self, current_page: int, page_size: int):
             self.is_valid(raise_exception=True)
-            folder_id = self.data.get("folder_id", self.data.get("workspace_id"))
+            folder_id = self.data.get("folder_id") or self.data.get("workspace_id")
             root = KnowledgeFolder.objects.filter(id=folder_id).first()
             if not root:
                 raise serializers.ValidationError(_("Folder not found"))
@@ -352,7 +350,7 @@ class KnowledgeSerializer(serializers.Serializer):
             embedding_model_id = get_embedding_model_id_by_knowledge_id(self.data.get("knowledge_id"))
             try:
                 embedding_by_knowledge.delay(knowledge_id, embedding_model_id)
-            except AlreadyQueued as e:
+            except AlreadyQueued:
                 raise AppApiException(500, _("Failed to send the vectorization task, please try again later!"))
 
         def generate_related(self, instance: Dict, with_valid=True):
@@ -381,7 +379,7 @@ class KnowledgeSerializer(serializers.Serializer):
             ListenerManagement.get_aggregation_document_status_by_knowledge_id(knowledge_id)()
             try:
                 generate_related_by_knowledge_id.delay(knowledge_id, model_id, model_params_setting, prompt, state_list)
-            except AlreadyQueued as e:
+            except AlreadyQueued:
                 raise AppApiException(500, _("Failed to send the vectorization task, please try again later!"))
 
         def list_application(self, with_valid=True):

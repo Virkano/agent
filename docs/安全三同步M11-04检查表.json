@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "definition": "安全要求与项目规划、建设实施、运行维护同步推进；状态仅依据已存在的本地证据，不代表外部合规认证。",
+  "controls": [
+    {
+      "id": "DESIGN-01",
+      "phase": "PLANNING",
+      "control": "数据资产初分级与业务域岗位归属",
+      "owner_role": "平台安全负责人角色",
+      "status": "DONE",
+      "evidence": "docs/测试/数据资产目录与接口清单M11-02验收文档.md",
+      "gap": "逐字段合规分级和实名负责人待外部确认"
+    },
+    {
+      "id": "DESIGN-02",
+      "phase": "PLANNING",
+      "control": "威胁建模、等保边界和第三方接口安全方案评审",
+      "owner_role": "平台安全负责人角色",
+      "status": "PENDING",
+      "evidence": "",
+      "gap": "需安全团队、云平台和晓搭接口材料"
+    },
+    {
+      "id": "BUILD-01",
+      "phase": "IMPLEMENTATION",
+      "control": "生产密钥、域名、HTTPS 与镜像构建上下文门禁",
+      "owner_role": "平台研发负责人角色",
+      "status": "DONE",
+      "evidence": "docs/测试/部署安全基线M11-01验收文档.md",
+      "gap": "目标环境反向代理联调未完成"
+    },
+    {
+      "id": "BUILD-02",
+      "phase": "IMPLEMENTATION",
+      "control": "依赖与镜像漏洞扫描及高危问题修复闭环",
+      "owner_role": "平台安全负责人角色",
+      "status": "PARTIAL",
+      "evidence": "docs/测试/安全扫描与三同步M11-04验收文档.md",
+      "gap": "依赖扫描存在漏洞发现；镜像扫描缺 Docker Scout 凭据，且现有旧镜像不能代表当前代码；待修复复验"
+    },
+    {
+      "id": "BUILD-03",
+      "phase": "IMPLEMENTATION",
+      "control": "主数据读取审计与新写入操作日志值不落库",
+      "owner_role": "数据安全负责人角色",
+      "status": "PARTIAL",
+      "evidence": "docs/测试/主数据读取审计与敏感日志脱敏M11-03验收文档.md",
+      "gap": "内部读取、认证前拒绝和旧日志尚未覆盖"
+    },
+    {
+      "id": "RUN-01",
+      "phase": "OPERATIONS",
+      "control": "安全事件分级、报告、响应和演练",
+      "owner_role": "安全运营负责人角色",
+      "status": "PENDING",
+      "evidence": "",
+      "gap": "缺外部值守联系人和演练记录"
+    },
+    {
+      "id": "RUN-02",
+      "phase": "OPERATIONS",
+      "control": "备份恢复与对象文件恢复演练",
+      "owner_role": "运维负责人角色",
+      "status": "PARTIAL",
+      "evidence": "docs/测试/数据库备份恢复演练M11-05验收文档.md",
+      "gap": "仅本地 PostgreSQL 与库内文件大对象隔离恢复；缺生产异地备份、跨机恢复、实际 RPO/RTO 和外部对象存储演练"
+    },
+    {
+      "id": "RUN-03",
+      "phase": "OPERATIONS",
+      "control": "生产审计巡检、密钥轮换与漏洞复扫",
+      "owner_role": "安全运营负责人角色",
+      "status": "PENDING",
+      "evidence": "",
+      "gap": "缺生产值守和周期性证据"
+    }
+  ]
+}

@@ -602,7 +602,7 @@ const getOpenChatAPI = () => {
     }
   } else {
     return (a?: string, loading?: Ref<boolean>) => {
-      return chatAPI.open(loading)
+      return chatAPI.open(route.query, loading)
     }
   }
 }

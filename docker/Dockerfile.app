@@ -11,8 +11,8 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build && \
 
 FROM python:3.11-slim-bookworm AS python-build
 
-ARG APT_DEBIAN_MIRROR=http://mirrors.aliyun.com/debian
-ARG APT_SECURITY_MIRROR=http://mirrors.aliyun.com/debian-security
+ARG APT_DEBIAN_MIRROR=https://deb.debian.org/debian
+ARG APT_SECURITY_MIRROR=https://deb.debian.org/debian-security
 
 ENV PYTHONUNBUFFERED=1 \
     PATH=/opt/venv/bin:$PATH \
@@ -21,11 +21,9 @@ ENV PYTHONUNBUFFERED=1 \
     JB_DB_HOST=host.docker.internal \
     JB_DB_PORT=5432 \
     JB_DB_USER=root \
-    JB_DB_PASSWORD=123456 \
     JB_REDIS_HOST=host.docker.internal \
     JB_REDIS_PORT=6379 \
     JB_REDIS_DB=0 \
-    JB_REDIS_PASSWORD="" \
     JB_ADMIN_PATH=/admin \
     JB_CHAT_PATH=/chat \
     JB_LOG_DIR=/opt/jb-agent/logs \
@@ -67,14 +65,15 @@ RUN set -eux; \
 
 FROM python:3.11-slim-bookworm
 
-ARG APT_DEBIAN_MIRROR=http://mirrors.aliyun.com/debian
-ARG APT_SECURITY_MIRROR=http://mirrors.aliyun.com/debian-security
+ARG APT_DEBIAN_MIRROR=https://deb.debian.org/debian
+ARG APT_SECURITY_MIRROR=https://deb.debian.org/debian-security
 ARG DOCKER_IMAGE_TAG=local
 ARG BUILD_AT
 ARG GITHUB_COMMIT
 
 ENV PYTHONUNBUFFERED=1 \
     PATH=/opt/venv/bin:$PATH \
+    JB_DEPLOYMENT_MODE=production \
     JB_VERSION="${DOCKER_IMAGE_TAG} (build at ${BUILD_AT}, commit: ${GITHUB_COMMIT})" \
     JB_CONFIG_TYPE=ENV \
     JB_ADMIN_PATH=/admin \
@@ -84,13 +83,16 @@ ENV PYTHONUNBUFFERED=1 \
     JB_DB_HOST=host.docker.internal \
     JB_DB_PORT=5432 \
     JB_DB_USER=root \
-    JB_DB_PASSWORD=123456 \
     JB_DB_MAX_OVERFLOW=80 \
     JB_REDIS_HOST=host.docker.internal \
     JB_REDIS_PORT=6379 \
     JB_REDIS_DB=0 \
-    JB_REDIS_PASSWORD="" \
     JB_REDIS_MAX_CONNECTIONS=100 \
+    JB_START_LOCAL_MODEL=true \
+    JB_LOCAL_MODEL_HOST=127.0.0.1 \
+    JB_LOCAL_MODEL_PORT=11636 \
+    JB_LOCAL_MODEL_PROTOCOL=http \
+    JB_LOCAL_MODEL_HOST_WORKER=1 \
     JB_LOG_DIR=/opt/jb-agent/logs \
     JB_TMPDIR=/opt/jb-agent/tmp \
     JB_CONFIG_DIR=/opt/jb-agent/conf \
@@ -114,7 +116,7 @@ RUN set -eux; \
       /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true; \
     printf 'Acquire::Retries "5";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' > /etc/apt/apt.conf.d/80-retries; \
     apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates ffmpeg && \
+    apt-get install -y --no-install-recommends ca-certificates curl ffmpeg && \
     apt-get clean all && \
     rm -rf /var/lib/apt/lists/*
 
@@ -125,5 +127,11 @@ COPY --chmod=755 docker/start-app.sh /usr/local/bin/start-app.sh
 
 EXPOSE 8080
 VOLUME /opt/jb-agent
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD curl -fsS \
+      -H "Host: ${JB_HEALTHCHECK_HOST:-localhost}" \
+      -H "X-Forwarded-Proto: https" \
+      http://127.0.0.1:8080/healthz || exit 1
 
 ENTRYPOINT ["/usr/local/bin/start-app.sh"]

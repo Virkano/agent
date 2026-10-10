@@ -28,6 +28,7 @@ from common.exception.app_exception import AppAuthenticationFailed
 from common.log.log import _get_ip_address
 from common.result import result
 from knowledge.models import FileSourceType
+from marketing.attribution import build_marketing_source
 from telecom_ai_agent.const import CONFIG
 from oss.serializers.file import FileSerializer
 from users.api import CaptchaAPI
@@ -83,11 +84,22 @@ class OpenAIView(APIView):
         ip_address = _get_ip_address(request)
         if application_id != str(request.auth.application_id):
             raise AppAuthenticationFailed(500, _('Secret key is invalid'))
+        source = {"type": ChatSourceChoices.API_CALL.value}
+        source.update(
+            build_marketing_source(
+                application_id,
+                request.data.get("marketing_task_id") or request.query_params.get("marketing_task_id"),
+                request.data.get("marketing_customer_id")
+                or request.data.get("customer_id")
+                or request.query_params.get("marketing_customer_id")
+                or request.query_params.get("customer_id"),
+            )
+        )
         return OpenAIChatSerializer(
             data={'application_id': application_id, 'chat_user_id': request.auth.chat_user_id,
                   'chat_user_type': request.auth.chat_user_type,
                   'ip_address': ip_address,
-                  'source': {"type": ChatSourceChoices.API_CALL.value}}).chat(request.data)
+                  'source': source}).chat(request.data)
 
 
 class AnonymousAuthentication(APIView):
@@ -225,12 +237,23 @@ class OpenView(APIView):
     )
     def get(self, request: Request):
         ip_address = _get_ip_address(request)
+        source = {
+            'type': ChatSourceChoices.API_CALL.value
+            if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value
+            else ChatSourceChoices.ONLINE.value
+        }
+        source.update(
+            build_marketing_source(
+                request.auth.application_id,
+                request.query_params.get("marketing_task_id"),
+                request.query_params.get("marketing_customer_id") or request.query_params.get("customer_id"),
+            )
+        )
         return result.success(OpenChatSerializers(
             data={'application_id': request.auth.application_id,
                   'chat_user_id': request.auth.chat_user_id, 'chat_user_type': request.auth.chat_user_type,
                   'ip_address': ip_address,
-                  'source': {
-                      'type': ChatSourceChoices.API_CALL.value if request.auth.chat_user_type == ChatUserType.APPLICATION_API_KEY.value else ChatSourceChoices.ONLINE.value},
+                  'source': source,
                   'debug': False}).open())
 
 

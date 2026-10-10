@@ -35,18 +35,8 @@
         </div>
         <el-dropdown-item
           class="border-t"
-          @click="router.push({ path: `/system/user` })"
-          v-if="
-            hasPermission(
-              [
-                RoleConst.EXTENDS_ADMIN,
-                RoleConst.EXTENDS_WORKSPACE_MANAGE,
-                RoleConst.ADMIN,
-                RoleConst.WORKSPACE_MANAGE,
-              ],
-              'OR',
-            )
-          "
+          @click="openSystemManagement"
+          v-if="accessibleSystemRoutes.length"
         >
           <div class="flex-between w-full">
             {{ $t('views.system.title') }}
@@ -177,6 +167,7 @@ import { langList } from '@/locales/index'
 import { hasPermission } from '@/utils/permission'
 import { PermissionConst, RoleConst, EditionConst } from '@/utils/permission/data'
 import { i18n_name } from '@/utils/common'
+import { getChildRouteListByPathAndName } from '@/router'
 
 const { user, login } = useStore()
 const router = useRouter()
@@ -184,6 +175,17 @@ const router = useRouter()
 const AboutDialogRef = ref()
 const APIKeyDialogRef = ref()
 const resetPasswordRef = ref<InstanceType<typeof ResetPassword>>()
+const accessibleSystemRoutes = computed(() =>
+  getChildRouteListByPathAndName('/system', 'system').filter(
+    (route) =>
+      !route.meta?.permission || hasPermission(route.meta.permission as any, 'OR'),
+  ),
+)
+
+function openSystemManagement() {
+  const firstRoute = accessibleSystemRoutes.value[0]
+  if (firstRoute) router.push(firstRoute.path)
+}
 
 // const { changeLocale } = useLocale()
 const changeLang = (lang: string) => {

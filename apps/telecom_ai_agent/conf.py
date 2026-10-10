@@ -27,7 +27,6 @@ class Config(dict):
         "DB_HOST": "127.0.0.1",
         "DB_PORT": 5432,
         "DB_USER": "root",
-        "DB_PASSWORD": "Password123@postgres",
         "DB_ENGINE": "dj_db_conn_pool.backends.postgresql",
         "DB_MAX_OVERFLOW": 80,
         "LOCAL_MODEL_HOST": "127.0.0.1",
@@ -42,7 +41,6 @@ class Config(dict):
         # 端口
         "REDIS_PORT": 6379,
         # 密码
-        "REDIS_PASSWORD": "Password123@redis",
         # 库
         "REDIS_DB": 0,
         # 最大连接数

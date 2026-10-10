@@ -11,7 +11,6 @@ from typing import List, Dict
 
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from rest_framework.utils.formatting import lazy_format
 
 from application.chat_pipeline.I_base_chat_pipeline import ParagraphPipelineModel
 from application.chat_pipeline.step.search_dataset_step.i_search_dataset_step import ISearchDatasetStep
@@ -20,10 +19,10 @@ from common.constants.permission_constants import RoleConstants
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.db.search import native_search
 from common.utils.common import get_file_content
+from common.utils.logger import telecom_ai_logger
 from knowledge.models import Paragraph, Knowledge
 from knowledge.models import SearchMode
 from telecom_ai_agent.conf import PROJECT_DIR
-from models_provider.models import Model
 from models_provider.tools import get_model, get_model_by_id, get_model_default_params
 
 
@@ -47,6 +46,7 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
 
     def execute(self, problem_text: str, knowledge_id_list: list[str], exclude_document_id_list: list[str],
                 exclude_paragraph_id_list: list[str], top_n: int, similarity: float, padding_problem_text: str = None,
+                marketing_context: str = None,
                 search_mode: str = None,
                 workspace_id=None,
                 manage=None,
@@ -58,6 +58,7 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
                                                                  knowledge_id_list)
         if len(knowledge_id_list) == 0:
             return []
+        # 营销上下文用于指导模型生成回复；检索只使用客户当前问题，避免长画像和内部规则稀释政策关键词。
         exec_problem_text = padding_problem_text if padding_problem_text is not None else problem_text
         model_id = get_embedding_id(knowledge_id_list)
         model = get_model_by_id(model_id, workspace_id)
@@ -66,11 +67,24 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
         self.context['model_name'] = model.name
         default_params = get_model_default_params(model)
         embedding_model = ModelManage.get_model(model_id, lambda _id: get_model(model, **{**default_params}))
-        embedding_value = embedding_model.embed_query(exec_problem_text)
-        vector = VectorStore.get_embedding_vector()
-        embedding_list = vector.query(exec_problem_text, embedding_value, knowledge_id_list, None,
-                                      exclude_document_id_list,
-                                      exclude_paragraph_id_list, True, top_n, similarity, SearchMode(search_mode))
+        try:
+            embedding_value = embedding_model.embed_query(exec_problem_text)
+            vector = VectorStore.get_embedding_vector()
+            embedding_list = vector.query(exec_problem_text, embedding_value, knowledge_id_list, None,
+                                          exclude_document_id_list,
+                                          exclude_paragraph_id_list, True, top_n, similarity, SearchMode(search_mode))
+        except Exception:
+            source = manage.context.get('source') if manage else {}
+            if isinstance(source, dict) and source.get('marketing_task_id'):
+                self.context['retrieval_warning'] = 'MARKETING_KNOWLEDGE_RETRIEVAL_UNAVAILABLE'
+                if manage:
+                    manage.context['marketing_retrieval_degraded'] = True
+                telecom_ai_logger.exception(
+                    'Marketing knowledge retrieval unavailable; continuing without references for task %s',
+                    source.get('marketing_task_id'),
+                )
+                return []
+            raise
         if embedding_list is None:
             return []
         paragraph_list = self.list_paragraph(embedding_list, vector)
@@ -144,6 +158,9 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
             'problem_text': step_args.get(
                 'padding_problem_text') if 'padding_problem_text' in step_args else step_args.get('problem_text'),
             'model_name': self.context.get('model_name'),
+            'retrieval_warning': self.context.get('retrieval_warning'),
+            'conversation_intent': self.context.get('conversation_intent'),
+            'retrieval_skipped': self.context.get('retrieval_skipped', False),
             'message_tokens': 0,
             'answer_tokens': 0,
             'cost': 0

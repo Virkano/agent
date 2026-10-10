@@ -148,7 +148,8 @@ class LoginSerializer(serializers.Serializer):
 
         if not user or not password_verify(password, user.password):
             LoginSerializer._handle_failed_login(username, is_license_valid, failed_attempts, lock_time)
-            raise AppApiException(500, _("The username or password is incorrect"))
+            # 凭据错误属于可预期的业务失败，不应伪装成服务器内部错误。
+            raise AppApiException(1000, _("The username or password is incorrect"))
 
         # Transparently upgrade legacy MD5 hash to PBKDF2
         if needs_password_upgrade(user.password):

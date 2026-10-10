@@ -1,11 +1,11 @@
-import {fileURLToPath, URL} from 'node:url'
-import type {ProxyOptions} from 'vite'
-import {defineConfig, loadEnv} from 'vite'
+import { fileURLToPath, URL } from 'node:url'
+import type { ProxyOptions } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import DefineOptions from 'unplugin-vue-define-options/vite'
 import path from 'path'
-import {createHtmlPlugin} from 'vite-plugin-html'
+import { createHtmlPlugin } from 'vite-plugin-html'
 import fs from 'fs'
 // import vueDevTools from 'vite-plugin-vue-devtools'
 const envDir = './env'
@@ -38,6 +38,11 @@ const localBasePathFallbackPlugin = (basePath: string, entry: string) => {
     '/tool',
     '/system',
     '/home',
+    '/ivr-simulator',
+    '/rehearsal',
+    '/event-orchestration',
+    '/resource-coordination',
+    '/integration-orchestration',
     '/permission',
     '/no-permission',
   ]
@@ -48,7 +53,9 @@ const localBasePathFallbackPlugin = (basePath: string, entry: string) => {
         const [pathname, search = ''] = (req.url || '').split('?')
         if (
           normalizedBasePath === '/admin' &&
-          adminRoutePrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+          adminRoutePrefixes.some(
+            (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+          )
         ) {
           res.statusCode = 302
           res.setHeader('Location', `${normalizedBasePath}${pathname}${search ? `?${search}` : ''}`)
@@ -149,12 +156,13 @@ export default defineConfig((conf: any) => {
       vueJsx(),
       DefineOptions(),
       localBasePathFallbackPlugin(ENV.VITE_BASE_PATH, ENV.VITE_ENTRY),
-      createHtmlPlugin({template: ENV.VITE_ENTRY}),
+      createHtmlPlugin({ template: ENV.VITE_ENTRY }),
       renameHtmlPlugin(`dist${ENV.VITE_BASE_PATH}`, ENV.VITE_ENTRY),
     ],
     server: {
       cors: true,
-      host: '0.0.0.0',
+      // Bind the IPv6 wildcard so localhost (::1) and IPv4 loopback both work.
+      host: '::',
       port: Number(ENV.VITE_APP_PORT),
       strictPort: true,
       proxy: proxyConf,

@@ -6,9 +6,9 @@
     @date：2025/6/4 14:13
     @desc:
 """
-from qianfan.utils.utils import get_ip_address
-
 from system_manage.models.log_management import Log
+
+from common.log.labels import normalize_menu_label, normalize_operate_label
 
 
 def _get_ip_address(request):
@@ -50,23 +50,27 @@ def _get_user(request):
 
 
 def _get_details(request):
-    path = request.path
-    body = request.data
-
-    sensitive_fields = {'password', 're_password'}
-
-    body_copy = dict(body) if hasattr(body, 'items') else body
-
-    if isinstance(body_copy, dict):
-        for field in sensitive_fields:
-            body_copy.pop(field, None)
-
-    query = request.query_params
+    """Store request structure, never arbitrary values or URL path parameters."""
+    match = getattr(request, 'resolver_match', None)
+    body = getattr(request, 'data', None)
+    query = getattr(request, 'query_params', None)
     return {
-        'path': path,
-        'body': body_copy,
-        'query': query
+        'route_template': getattr(match, 'route', None) or 'UNRESOLVED',
+        'body_fields': sorted(str(key) for key in body.keys()) if hasattr(body, 'keys') else [],
+        'query_fields': sorted(str(key) for key in query.keys()) if hasattr(query, 'keys') else [],
     }
+
+
+def _safe_actor(user):
+    if not isinstance(user, dict):
+        return {}
+    return {key: str(user[key]) for key in ('id', 'role') if user.get(key) is not None}
+
+
+def _safe_operation_object(value):
+    if not isinstance(value, dict):
+        return {}
+    return {'field_names': sorted(str(key) for key in value.keys())}
 
 
 def _get_workspace_id(request, kwargs):
@@ -94,24 +98,25 @@ def log(menu: str, operate, get_user=_get_user, get_ip_address=_get_ip_address, 
             try:
                 if get_operation_object is not None:
                     operation_object = get_operation_object(request, kwargs)
-            except Exception as e:
+            except Exception:
                 pass
             try:
                 return func(view, request, **kwargs)
             except Exception as e:
-                status = 500
+                status = getattr(e, 'status_code', 500)
                 raise e
             finally:
                 ip = get_ip_address(request)
-                user = get_user(request)
-                details = get_details(request)
+                user = _safe_actor(get_user(request))
+                details = _get_details(request)
                 workspace_id = get_workspace_id(request, kwargs)
                 _operate = operate
                 if callable(operate):
                     _operate = operate(request)
                 # 插入审计日志
-                Log(menu=menu, operate=_operate, user=user, status=status, ip_address=ip, details=details,
-                    operation_object=operation_object, workspace_id=workspace_id).save()
+                Log(menu=normalize_menu_label(menu), operate=normalize_operate_label(_operate),
+                    user=user, status=status, ip_address=ip, details=details,
+                    operation_object=_safe_operation_object(operation_object), workspace_id=workspace_id).save()
 
         return run
 
@@ -138,7 +143,7 @@ def record_log(menu: str, operate: str, request, user: dict = None, status: int 
     """
     try:
         ip = _get_ip_address(request)
-        details = get_details(request)
+        details = _get_details(request)
 
         # 如果提供了 get_operation_object 函数，优先使用它获取操作对象
         if operation_object is None and get_operation_object is not None:
@@ -147,15 +152,15 @@ def record_log(menu: str, operate: str, request, user: dict = None, status: int 
             except Exception:
                 operation_object = {}
         Log(
-            menu=menu,
-            operate=operate,
-            user=user or {},
+            menu=normalize_menu_label(menu),
+            operate=normalize_operate_label(operate),
+            user=_safe_actor(user),
             status=status,
             ip_address=ip,
             details=details,
-            operation_object=operation_object or {},
+            operation_object=_safe_operation_object(operation_object),
             workspace_id=workspace_id
         ).save()
-    except Exception as e:
+    except Exception:
         # 日志记录失败不应影响主业务流程
         pass

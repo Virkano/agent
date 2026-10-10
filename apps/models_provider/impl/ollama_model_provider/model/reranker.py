@@ -6,6 +6,7 @@ from langchain_core.documents import Document
 from pydantic import BaseModel, Field
 
 from models_provider.base_model_provider import TelecomAIBaseModel
+from models_provider.impl.ollama_model_provider.endpoint import resolve_ollama_base_url
 
 
 class OllamaReranker(TelecomAIBaseModel, OllamaEmbeddings, BaseModel):
@@ -16,7 +17,7 @@ class OllamaReranker(TelecomAIBaseModel, OllamaEmbeddings, BaseModel):
         optional_params = TelecomAIBaseModel.filter_optional_params(model_kwargs)
         return OllamaReranker(
             model=model_name,
-            base_url=model_credential.get('api_base'),
+            base_url=resolve_ollama_base_url(model_credential.get('api_base', '')),
             **optional_params
         )
 

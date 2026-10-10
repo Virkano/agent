@@ -126,6 +126,31 @@ def get_post_handler(chat_info: ChatInfo):
                                      source=chat_info.source
                                      )
             chat_info.append_chat_record(chat_record)
+            if not chat_info.debug:
+                try:
+                    from application.service_answer_review import capture_pending_review
+
+                    capture_pending_review(chat_record, chat_info.application.workspace_id)
+                except Exception:
+                    # The chat record keeps the audit snapshot for later recovery.
+                    from common.utils.logger import telecom_ai_logger
+
+                    telecom_ai_logger.exception("Service answer review capture failed for record %s", chat_record_id)
+            # Marketing insight is operational metadata.  It must never block a
+            # successful customer reply if a historical marketing record is bad.
+            try:
+                from marketing.insight import update_customer_conversation_insight
+
+                update_customer_conversation_insight(
+                    chat_info.source,
+                    problem_text,
+                    chat_id,
+                    chat_record_id,
+                )
+            except Exception:
+                # Keep the chat path available; the recorded conversation can
+                # still be reviewed and manually followed up by an operator.
+                pass
             # 重新设置缓存
             chat_info.set_cache()
 
@@ -341,7 +366,7 @@ class ChatSerializers(serializers.Serializer):
         chat_user_id = self.data.get('chat_user_id')
         chat_user_type = self.data.get('chat_user_type')
         ip_address = self.data.get('ip_address')
-        source = self.data.get('source')
+        source = chat_info.source or self.data.get('source')
         form_data = instance.get("form_data")
         chat_record_id = instance.get('chat_record_id')
         pipeline_manage_builder = PipelineManage.builder()
@@ -396,7 +421,7 @@ class ChatSerializers(serializers.Serializer):
         chat_user_id = self.data.get("chat_user_id")
         chat_user_type = self.data.get('chat_user_type')
         ip_address = self.data.get('ip_address')
-        source = self.data.get('source')
+        source = chat_info.source or self.data.get('source')
         form_data = instance.get('form_data')
         image_list = instance.get('image_list')
         video_list = instance.get('video_list')

@@ -172,11 +172,11 @@
               }}
             </template>
           </el-table-column>
-          <el-table-column
-            width="140"
-            prop="user.username"
-            :label="$t('views.operateLog.table.user')"
-          />
+          <el-table-column width="140" :label="$t('views.operateLog.table.user')">
+            <template #default="{ row }">
+              {{ row.user?.username || row.user?.id || '-' }}
+            </template>
+          </el-table-column>
           <el-table-column
             v-if="user.isEE()"
             width="200"

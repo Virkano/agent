@@ -1,12 +1,12 @@
 import uuid_utils.compat as uuid
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from common.auth.authenticate import TokenAuth
+from common.auth.authentication import get_is_permissions
 from common.constants.permission_constants import (
-    Group,
     PermissionConstants,
     Permission_Label,
     RoleConstants,
@@ -34,7 +34,6 @@ from xpack_lite.services import (
     page_result,
     role_to_dict,
     search_chat_users,
-    search_users,
 )
 
 PERMISSION_NAME_ZH_CN = {
@@ -57,6 +56,23 @@ PERMISSION_NAME_ZH_CN = {
     'MODEL': '模型',
     'TOOL': '工具',
     'TRIGGER': '触发器',
+    'MARKETING_BUSINESS': '营销业务',
+    'OPERATIONS_ANALYSIS': '运营分析',
+    'ORCHESTRATION_REHEARSAL': '调度与演练',
+    'MARKETING_SCENARIO': '营销场景',
+    'MARKETING_CAMPAIGN': '营销活动库',
+    'MARKETING_TASK': '营销任务',
+    'RECOMMENDATION_ENGINE': '召回与精排推荐引擎',
+    'MARKETING_OPERATIONS': '营销运营监控',
+    'MARKETING_QUALITY': '对话质检',
+    'ANALYSIS_REPORT': 'AI 分析报告',
+    'METRIC_OPERATIONS': '指标预警中心',
+    'PLATFORM_MONITORING': '平台监控',
+    'API_ORCHESTRATION': 'API 编排与晓搭',
+    'EVENT_ORCHESTRATION': '事件任务编排',
+    'RESOURCE_COORDINATION': '资源协调中心',
+    'IVR_SIMULATOR': 'IVR 与变更控制',
+    'REHEARSAL': '故障与场景预演',
     'OTHER': '其他',
     'READ': '查看',
     'READ+EDIT': '编辑',
@@ -203,6 +219,62 @@ def _require_admin(request):
 
 def _require_workspace_manager(request, workspace_id):
     if not is_workspace_manager(request.user.id, workspace_id):
+        raise AppApiException(403, 'No permission to access')
+
+
+def _require_chat_user_manager(request, workspace_id='default'):
+    """Protect both system and workspace aliases of chat-user management APIs."""
+    if '/workspace/' in request.path:
+        _require_workspace_manager(request, workspace_id)
+    elif not (is_admin(request.user.id) or is_workspace_manager(request.user.id, workspace_id)):
+        raise AppApiException(403, 'No permission to access')
+
+
+def _require_resource_chat_user_access(
+    request,
+    workspace_id,
+    resource_type,
+    resource_id,
+    *,
+    edit=False,
+):
+    if resource_type == 'APPLICATION':
+        from application.models import Application
+
+        model = Application
+        permission = (
+            PermissionConstants.APPLICATION_CHAT_USER_EDIT
+            if edit
+            else PermissionConstants.APPLICATION_CHAT_USER_READ
+        )
+        permission_factory = permission.get_workspace_application_permission
+        resource_kwargs = {'application_id': resource_id}
+    elif resource_type == 'KNOWLEDGE':
+        from knowledge.models import Knowledge
+
+        model = Knowledge
+        permission = (
+            PermissionConstants.KNOWLEDGE_CHAT_USER_EDIT
+            if edit
+            else PermissionConstants.KNOWLEDGE_CHAT_USER_READ
+        )
+        permission_factory = permission.get_workspace_knowledge_permission
+        resource_kwargs = {'knowledge_id': resource_id}
+    else:
+        raise AppApiException(400, 'Unsupported chat resource type')
+
+    if not model.objects.filter(id=resource_id, workspace_id=workspace_id).exists():
+        raise AppApiException(404, 'Resource does not exist')
+
+    if not get_is_permissions(
+        request,
+        workspace_id=workspace_id,
+        **resource_kwargs,
+    )(
+        permission_factory(),
+        permission.get_workspace_permission_workspace_manage_role(),
+        RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
+    ):
         raise AppApiException(403, 'No permission to access')
 
 
@@ -563,6 +635,7 @@ class ChatUserManageView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request, current_page=None, page_size=None):
+        _require_chat_user_manager(request)
         queryset = search_chat_users(request.query_params)
         if current_page and page_size:
             return result.success(page_result(queryset, current_page, page_size, chat_user_to_dict))
@@ -570,6 +643,7 @@ class ChatUserManageView(APIView):
 
     @transaction.atomic
     def post(self, request: Request):
+        _require_chat_user_manager(request)
         username = request.data.get('username')
         nick_name = request.data.get('nick_name')
         password = request.data.get('password')
@@ -592,6 +666,7 @@ class ChatUserListView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request):
+        _require_chat_user_manager(request)
         return result.success([chat_user_to_dict(row) for row in search_chat_users(request.query_params)[:200]])
 
 
@@ -599,6 +674,7 @@ class ChatUserOperateView(APIView):
     authentication_classes = [TokenAuth]
 
     def put(self, request: Request, user_id):
+        _require_chat_user_manager(request)
         chat_user = ChatUser.objects.filter(id=user_id).first()
         if not chat_user:
             raise AppApiException(500, 'Chat user does not exist')
@@ -611,6 +687,7 @@ class ChatUserOperateView(APIView):
         return result.success(chat_user_to_dict(chat_user))
 
     def delete(self, request: Request, user_id):
+        _require_chat_user_manager(request)
         ChatUser.objects.filter(id=user_id).delete()
         return result.success(True)
 
@@ -619,6 +696,7 @@ class ChatUserPasswordView(APIView):
     authentication_classes = [TokenAuth]
 
     def put(self, request: Request, user_id):
+        _require_chat_user_manager(request)
         password = request.data.get('password')
         re_password = request.data.get('re_password')
         if password != re_password:
@@ -631,6 +709,7 @@ class ChatUserBatchDeleteView(APIView):
     authentication_classes = [TokenAuth]
 
     def post(self, request: Request):
+        _require_chat_user_manager(request)
         ChatUser.objects.filter(id__in=request.data).delete()
         return result.success(True)
 
@@ -638,7 +717,8 @@ class ChatUserBatchDeleteView(APIView):
 def _set_chat_user_groups(user_id, group_ids, replace=False):
     if replace:
         UserGroupRelation.objects.filter(user_id=user_id).delete()
-    for group_id in group_ids:
+    valid_group_ids = set(UserGroup.objects.filter(id__in=group_ids).values_list('id', flat=True))
+    for group_id in valid_group_ids:
         UserGroupRelation.objects.get_or_create(user_id=user_id, group_id=group_id, defaults={'id': uuid.uuid7()})
 
 
@@ -646,6 +726,7 @@ class ChatUserBatchGroupView(APIView):
     authentication_classes = [TokenAuth]
 
     def post(self, request: Request):
+        _require_chat_user_manager(request)
         user_ids = request.data.get('ids') or request.data.get('user_ids') or []
         group_ids = request.data.get('user_group_ids') or []
         replace = not request.data.get('is_append', True)
@@ -658,6 +739,7 @@ class ChatUserSyncView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request):
+        _require_chat_user_manager(request)
         return result.success([{'label': '系统用户', 'value': 'system'}])
 
     def post(self, request: Request, sync_type):
@@ -706,9 +788,11 @@ class UserGroupView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request):
+        _require_chat_user_manager(request)
         return result.success(list(UserGroup.objects.order_by('name').values('id', 'name')))
 
     def post(self, request: Request):
+        _require_chat_user_manager(request)
         name = request.data.get('name')
         group_id = request.data.get('id')
         if not name:
@@ -728,6 +812,9 @@ class UserGroupOperateView(APIView):
     authentication_classes = [TokenAuth]
 
     def delete(self, request: Request, user_group_id):
+        _require_chat_user_manager(request)
+        if user_group_id in ('default', 'dingtalk'):
+            raise AppApiException(400, 'Built-in user group cannot be deleted')
         UserGroup.objects.filter(id=user_group_id).delete()
         return result.success(True)
 
@@ -736,12 +823,19 @@ class UserGroupMemberView(APIView):
     authentication_classes = [TokenAuth]
 
     def post(self, request: Request, user_group_id):
+        _require_chat_user_manager(request)
+        if not UserGroup.objects.filter(id=user_group_id).exists():
+            raise AppApiException(404, 'User group does not exist')
         ids = request.data.get('ids') or request.data.get('user_ids') or []
-        for user_id in ids:
+        valid_ids = set(ChatUser.objects.filter(id__in=ids).values_list('id', flat=True))
+        for user_id in valid_ids:
             UserGroupRelation.objects.get_or_create(user_id=user_id, group_id=user_group_id, defaults={'id': uuid.uuid7()})
         return result.success(True)
 
     def get(self, request: Request, user_group_id, current_page, page_size):
+        _require_chat_user_manager(request)
+        if not UserGroup.objects.filter(id=user_group_id).exists():
+            raise AppApiException(404, 'User group does not exist')
         queryset = UserGroupRelation.objects.select_related('user').filter(group_id=user_group_id)
         username = request.query_params.get('username')
         nick_name = request.query_params.get('nick_name')
@@ -762,6 +856,7 @@ class UserGroupMemberRemoveView(APIView):
     authentication_classes = [TokenAuth]
 
     def post(self, request: Request, user_group_id):
+        _require_chat_user_manager(request)
         ids = request.data.get('ids') or request.data.get('user_group_relation_ids') or []
         UserGroupRelation.objects.filter(id__in=ids, group_id=user_group_id).delete()
         return result.success(True)
@@ -771,7 +866,12 @@ class ResourceUserGroupAuthorizeView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request, workspace_id, resource_type, resource_id):
-        _require_workspace_manager(request, workspace_id)
+        _require_resource_chat_user_access(
+            request,
+            workspace_id,
+            resource_type,
+            resource_id,
+        )
         auth_map = {
             str(row.user_group_id): row.is_auth
             for row in ResourceChatUserGroupAuthorize.objects.filter(
@@ -786,14 +886,27 @@ class ResourceUserGroupAuthorizeView(APIView):
         ])
 
     def put(self, request: Request, workspace_id, resource_type, resource_id):
-        _require_workspace_manager(request, workspace_id)
-        for item in request.data:
+        _require_resource_chat_user_access(
+            request,
+            workspace_id,
+            resource_type,
+            resource_id,
+            edit=True,
+        )
+        payload = request.data if isinstance(request.data, list) else []
+        group_ids = [item.get('user_group_id') for item in payload if item.get('user_group_id')]
+        if UserGroup.objects.filter(id__in=group_ids).count() != len(set(group_ids)):
+            raise AppApiException(400, 'User group does not exist')
+        affected_user_ids = UserGroupRelation.objects.filter(group_id__in=group_ids).values_list('user_id', flat=True)
+        for item in payload:
             ResourceChatUserGroupAuthorize.objects.update_or_create(
                 user_group_id=item.get('user_group_id'),
                 resource_id=resource_id,
                 resource_type=resource_type,
                 defaults={'workspace_id': workspace_id, 'is_auth': item.get('is_auth', False)},
             )
+        for user_id in affected_user_ids:
+            invalidate_user_auth_cache(user_id)
         return result.success(True)
 
 
@@ -801,7 +914,14 @@ class ResourceUserAuthorizeView(APIView):
     authentication_classes = [TokenAuth]
 
     def get(self, request: Request, workspace_id, resource_type, resource_id, user_group_id, current_page, page_size):
-        _require_workspace_manager(request, workspace_id)
+        _require_resource_chat_user_access(
+            request,
+            workspace_id,
+            resource_type,
+            resource_id,
+        )
+        if not UserGroup.objects.filter(id=user_group_id).exists():
+            raise AppApiException(404, 'User group does not exist')
         group_relations = UserGroupRelation.objects.select_related('user').filter(group_id=user_group_id)
         user_auth = {
             str(row.user_id): row.is_auth
@@ -821,8 +941,22 @@ class ResourceUserAuthorizeView(APIView):
         return result.success(page_result(group_relations.order_by('user__username'), current_page, page_size, serialize))
 
     def put(self, request: Request, workspace_id, resource_type, resource_id, user_group_id):
-        _require_workspace_manager(request, workspace_id)
-        for item in request.data:
+        _require_resource_chat_user_access(
+            request,
+            workspace_id,
+            resource_type,
+            resource_id,
+            edit=True,
+        )
+        if not UserGroup.objects.filter(id=user_group_id).exists():
+            raise AppApiException(404, 'User group does not exist')
+        payload = request.data if isinstance(request.data, list) else []
+        valid_user_ids = set(ChatUser.objects.filter(
+            id__in=[item.get('chat_user_id') for item in payload if item.get('chat_user_id')]
+        ).values_list('id', flat=True))
+        if len(valid_user_ids) != len({item.get('chat_user_id') for item in payload if item.get('chat_user_id')}):
+            raise AppApiException(400, 'Chat user does not exist')
+        for item in payload:
             ResourceChatUserAuthorize.objects.update_or_create(
                 user_group_id=user_group_id,
                 user_id=item.get('chat_user_id'),
@@ -830,6 +964,7 @@ class ResourceUserAuthorizeView(APIView):
                 resource_type=resource_type,
                 defaults={'workspace_id': workspace_id, 'is_auth': item.get('is_auth', False)},
             )
+            invalidate_user_auth_cache(item.get('chat_user_id'))
         return result.success(True)
 
 

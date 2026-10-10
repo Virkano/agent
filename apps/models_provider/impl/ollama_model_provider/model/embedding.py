@@ -12,6 +12,7 @@ from langchain_ollama import OllamaEmbeddings
 
 
 from models_provider.base_model_provider import TelecomAIBaseModel
+from models_provider.impl.ollama_model_provider.endpoint import resolve_ollama_base_url
 
 
 class OllamaEmbedding(TelecomAIBaseModel, OllamaEmbeddings):
@@ -19,7 +20,7 @@ class OllamaEmbedding(TelecomAIBaseModel, OllamaEmbeddings):
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         return OllamaEmbedding(
             model=model_name,
-            base_url=model_credential.get('api_base'),
+            base_url=resolve_ollama_base_url(model_credential.get('api_base', '')),
         )
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:

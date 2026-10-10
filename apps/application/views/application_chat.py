@@ -26,6 +26,7 @@ from common.constants.permission_constants import PermissionConstants, RoleConst
 from common.log.log import log
 from common.result import result
 from common.utils.common import query_params_to_single_dict
+from marketing.attribution import build_marketing_source
 
 def get_application_operation_object(application_id):
     application_model = QuerySet(model=Application).filter(id=application_id).first()
@@ -131,9 +132,15 @@ class OpenView(APIView):
                                     CompareConstants.AND),
                      RoleConstants.WORKSPACE_MANAGE.get_workspace_role())
     def get(self, request: Request, workspace_id: str, application_id: str):
+        source = build_marketing_source(
+            application_id,
+            request.query_params.get("marketing_task_id"),
+            request.query_params.get("marketing_customer_id") or request.query_params.get("customer_id"),
+        )
         return result.success(OpenChatSerializers(
             data={'workspace_id': workspace_id, 'application_id': application_id,
                   'chat_user_id': str(request.user.id), 'chat_user_type': ChatUserType.PLATFORM_USER,
+                  'source': source,
                   'debug': True}).open())
 
 

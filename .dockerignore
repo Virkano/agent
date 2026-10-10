@@ -1,4 +1,12 @@
 .git*
+/.env*
+/docker/.env
+/docker/initdb.sql
+/.playwright-cli/
+/.docker/
+/.learnings/
+/.ruff_cache/
+/data/
 .idea*
 *.md
 .venv/
@@ -6,6 +14,7 @@
 tmp/
 Model catalog/
 output/
+/apps/static/
 ui/node_modules/
 ui/dist/
 **/__pycache__/

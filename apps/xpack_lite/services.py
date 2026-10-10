@@ -1,12 +1,12 @@
 import uuid_utils.compat as uuid
 from django.core.cache import cache
-from django.db.models import Count, Q
+from django.db.models import Q
 
 from common.constants.cache_version import Cache_Version
 from common.constants.permission_constants import PermissionConstants, RoleConstants, WorkspaceGroup
 from application.models import Application, ApplicationFolder
 from common.constants.permission_constants import Group
-from knowledge.models import KnowledgeFolder
+from knowledge.models import Knowledge, KnowledgeFolder
 from system_manage.models.chat_user import (
     ChatUser,
     ResourceChatUserAuthorize,
@@ -299,10 +299,26 @@ def is_auth_chat_user(chat_user_id, application_id):
     return len(_get_authorized_resource_ids(chat_user_id, [application_id], Group.APPLICATION.value)) > 0
 
 
+def _get_resource_workspace_ids(resource_ids, resource_type):
+    """Map resources to workspaces so chat-user authorization cannot cross workspaces."""
+    resource_ids = [str(resource_id) for resource_id in (resource_ids or [])]
+    if resource_type == Group.APPLICATION.value:
+        rows = Application.objects.filter(id__in=resource_ids).values('id', 'workspace_id')
+    elif resource_type == Group.KNOWLEDGE.value:
+        rows = Knowledge.objects.filter(id__in=resource_ids).values('id', 'workspace_id')
+    else:
+        return {}
+    return {str(row['id']): row['workspace_id'] or 'default' for row in rows}
+
+
 def _get_authorized_resource_ids(chat_user_id, resource_id_list, resource_type):
     resource_ids = [str(resource_id) for resource_id in (resource_id_list or [])]
     if not chat_user_id or not resource_ids:
         return []
+    workspace_map = _get_resource_workspace_ids(resource_ids, resource_type)
+    if not workspace_map:
+        return []
+    workspace_ids = set(workspace_map.values())
     relation_group_ids = list(
         UserGroupRelation.objects.filter(user_id=chat_user_id).values_list('group_id', flat=True)
     )
@@ -310,9 +326,11 @@ def _get_authorized_resource_ids(chat_user_id, resource_id_list, resource_type):
         user_id=chat_user_id,
         resource_type=resource_type,
         resource_id__in=resource_ids,
+        workspace_id__in=workspace_ids,
     )
-    if relation_group_ids:
-        explicit_query = explicit_query.filter(user_group_id__in=relation_group_ids)
+    if not relation_group_ids:
+        return []
+    explicit_query = explicit_query.filter(user_group_id__in=relation_group_ids)
 
     explicitly_allowed_ids = set(
         str(resource_id)
@@ -322,19 +340,17 @@ def _get_authorized_resource_ids(chat_user_id, resource_id_list, resource_type):
         str(resource_id)
         for resource_id in explicit_query.filter(is_auth=False).values_list('resource_id', flat=True)
     )
-    if not relation_group_ids:
-        return [resource_id for resource_id in resource_ids if resource_id in explicitly_allowed_ids]
-
     group_auth_rows = ResourceChatUserGroupAuthorize.objects.filter(
         user_group_id__in=relation_group_ids,
         resource_type=resource_type,
         resource_id__in=resource_ids,
+        workspace_id__in=workspace_ids,
         is_auth=True,
     )
     group_authorized_ids = {str(row.resource_id) for row in group_auth_rows}
     return [
         resource_id
         for resource_id in resource_ids
-        if resource_id in explicitly_allowed_ids
-        or (resource_id in group_authorized_ids and resource_id not in explicitly_denied_ids)
+        if (resource_id in explicitly_allowed_ids
+            or (resource_id in group_authorized_ids and resource_id not in explicitly_denied_ids))
     ]

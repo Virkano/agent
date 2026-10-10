@@ -7,4 +7,6 @@
     @desc:
 """
 
-from .model_management import *
+from .model_management import *  # noqa: F403
+from .lifecycle import *  # noqa: F403
+from .pipeline import *  # noqa: F403

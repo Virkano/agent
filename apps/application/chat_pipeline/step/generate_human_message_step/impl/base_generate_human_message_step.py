@@ -26,18 +26,24 @@ class BaseGenerateHumanMessageStep(IGenerateHumanMessageStep):
                 max_paragraph_char_number: int,
                 prompt: str,
                 padding_problem_text: str = None,
+                marketing_context: str = None,
                 no_references_setting=None,
                 system=None,
                 **kwargs) -> List[BaseMessage]:
         prompt = prompt if (paragraph_list is not None and len(paragraph_list) > 0) else no_references_setting.get(
             'value')
         exec_problem_text = padding_problem_text if padding_problem_text is not None else problem_text
+        # 客户画像和营销约束属于系统上下文，不应和用户问题混在同一条消息中。
+        # 小模型会把混在用户消息里的“内部说明”误当成待复述内容。
+        system_prompt = system or ""
+        if marketing_context:
+            system_prompt = f"{system_prompt}\n\n{marketing_context}".strip()
         start_index = len(history_chat_record) - dialogue_number
         history_message = [[history_chat_record[index].get_human_message(), history_chat_record[index].get_ai_message()]
                            for index in
                            range(start_index if start_index > 0 else 0, len(history_chat_record))]
-        if system is not None and len(system) > 0:
-            return [SystemMessage(system), *flat_map(history_message),
+        if system_prompt:
+            return [SystemMessage(system_prompt), *flat_map(history_message),
                     self.to_human_message(prompt, exec_problem_text, max_paragraph_char_number, paragraph_list,
                                           no_references_setting)]
 

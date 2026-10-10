@@ -31,8 +31,11 @@ Object.defineProperty(prefix, 'value', {
  * @param loading 加载器
  * @returns
  */
-const open: (loading?: Ref<boolean>) => Promise<Result<string>> = (loading) => {
-  return get('/open', {}, loading)
+const open: (param?: Record<string, any>, loading?: Ref<boolean>) => Promise<Result<string>> = (
+  param,
+  loading,
+) => {
+  return get('/open', param || {}, loading)
 }
 /**
  * 对话

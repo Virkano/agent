@@ -1,0 +1,144 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e5]:
+    - generic [ref=f1e8]:
+      - generic [ref=f1e9]:
+        - separator [ref=f1e10]
+        - button "默认空间" [ref=f1e12] [cursor=pointer]:
+          - generic "默认空间" [ref=f1e18]
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23] [cursor=pointer]
+        - generic [ref=f1e28] [cursor=pointer]
+        - button [ref=f1e35] [cursor=pointer]
+        - button [ref=f1e44] [cursor=pointer]
+        - button [ref=f1e54] [cursor=pointer]
+      - generic [ref=f1e63]:
+        - button "全局通知" [ref=f1e65] [cursor=pointer]
+        - button [ref=f1e73] [cursor=pointer]
+    - button [ref=f1e80] [cursor=pointer]
+  - generic [ref=f1e83]:
+    - banner [ref=f1e84]:
+      - generic [ref=f1e85]:
+        - button "返回模型管理" [ref=f1e86] [cursor=pointer]
+        - text: MODEL GOVERNANCE · V1
+        - heading "模型生命周期" [level=2] [ref=f1e91]
+        - paragraph [ref=f1e92]: 从实验、版本评估到发布回滚，为每一次模型变更保留可追溯记录。
+      - button "刷新数据" [ref=f1e93] [cursor=pointer]
+    - generic [ref=f1e98]:
+      - article [ref=f1e99]:
+        - generic [ref=f1e100]: 实验总数
+        - strong [ref=f1e101]: "2"
+        - generic [ref=f1e102]: 0 个正在运行
+      - article [ref=f1e103]:
+        - generic [ref=f1e104]: 已注册版本
+        - strong [ref=f1e105]: "2"
+        - generic [ref=f1e106]: 0 个通过评估
+      - article [ref=f1e107]:
+        - generic [ref=f1e108]: 线上模型
+        - strong [ref=f1e109]: "2"
+        - generic [ref=f1e110]: 同一注册模型仅保留一个发布版本
+      - article [ref=f1e111]:
+        - generic [ref=f1e112]: 最近变更
+        - strong [ref=f1e113]: "2"
+        - generic [ref=f1e114]: 展示最近 10 条发布与回滚审计
+    - generic [ref=f1e116]:
+      - tablist [ref=f1e120]:
+        - tab "自动训练流水线" [selected] [ref=f1e122]
+        - tab "实验管理" [ref=f1e123]
+        - tab "版本与发布" [ref=f1e124]
+        - tab "发布审计" [ref=f1e125]
+      - tabpanel "自动训练流水线" [ref=f1e127]:
+        - generic [ref=f1e128]:
+          - generic [ref=f1e129]:
+            - generic [ref=f1e130]:
+              - strong [ref=f1e131]: 自动训练与部署流水线
+              - paragraph [ref=f1e132]: 串联特征处理、训练、评估、审批和部署，支持 Cron 定时重训。
+            - generic [ref=f1e133]:
+              - button "刷新" [ref=f1e134] [cursor=pointer]
+              - button "新建流水线" [ref=f1e139] [cursor=pointer]
+          - generic [ref=f1e145]:
+            - table [ref=f1e147]:
+              - rowgroup [ref=f1e154]:
+                - row [ref=f1e155]:
+                  - columnheader "流水线" [ref=f1e156]
+                  - columnheader "发布策略" [ref=f1e158]
+                  - columnheader "定时重训" [ref=f1e160]
+                  - columnheader "最近运行" [ref=f1e162]
+                  - columnheader "操作" [ref=f1e164]
+            - table [ref=f1e170]:
+              - rowgroup [ref=f1e177]:
+                - row [ref=f1e178]:
+                  - cell "QA-M08-02-自动训练验收 QA-M08-02-客服意图模型 · QA-M08-02-训练集" [ref=f1e179]:
+                    - generic [ref=f1e181]:
+                      - strong [ref=f1e182]: QA-M08-02-自动训练验收
+                      - generic [ref=f1e183]: QA-M08-02-客服意图模型 · QA-M08-02-训练集
+                  - cell "自动审批" [ref=f1e184]
+                  - cell "0 2 * * *下次：2026/9/12 02:00:00" [ref=f1e188]
+                  - cell "2026/9/11 16:25:13" [ref=f1e190]
+                  - cell [ref=f1e192]:
+                    - button "立即运行" [ref=f1e194] [cursor=pointer]
+          - generic [ref=f1e196]:
+            - strong [ref=f1e197]: 运行记录
+            - generic [ref=f1e198]: 保留每个阶段的输入、输出和错误信息
+          - generic [ref=f1e200]:
+            - table [ref=f1e202]:
+              - rowgroup [ref=f1e210]:
+                - row [ref=f1e211]:
+                  - columnheader "运行" [ref=f1e212]
+                  - columnheader "当前阶段" [ref=f1e214]
+                  - columnheader "状态" [ref=f1e216]
+                  - columnheader "模型版本" [ref=f1e218]
+                  - columnheader "异常" [ref=f1e220]
+                  - columnheader "操作" [ref=f1e222]
+            - table [ref=f1e228]:
+              - rowgroup [ref=f1e236]:
+                - row [ref=f1e237]:
+                  - 'cell "QA-M08-02-自动训练验收 #1 手动运行 · 2026/9/11 16:25:13" [ref=f1e238]':
+                    - generic [ref=f1e240]:
+                      - strong [ref=f1e241]: "QA-M08-02-自动训练验收 #1"
+                      - generic [ref=f1e242]: 手动运行 · 2026/9/11 16:25:13
+                  - cell "模型部署" [ref=f1e243]
+                  - cell "执行成功" [ref=f1e245]
+                  - cell "v1" [ref=f1e249]
+                  - cell "—" [ref=f1e251]
+                  - cell [ref=f1e253]:
+                    - button "详情" [ref=f1e255] [cursor=pointer]
+          - dialog "流水线运行详情" [ref=f1e261]:
+            - generic [ref=f1e262]:
+              - heading "流水线运行详情" [level=2] [ref=f1e263]
+              - button "关闭此对话框" [ref=f1e264] [cursor=pointer]
+            - generic [ref=f1e269]:
+              - alert [ref=f1e270]:
+                - generic [ref=f1e271]:
+                  - generic [ref=f1e272]: "QA-M08-02-自动训练验收 #1 · 执行成功"
+                  - paragraph [ref=f1e273]: 各阶段执行信息如下
+              - list [ref=f1e274]:
+                - listitem [ref=f1e275]:
+                  - generic [ref=f1e278]:
+                    - generic [ref=f1e279]:
+                      - strong [ref=f1e280]: 特征处理 · 执行成功
+                      - generic [ref=f1e281]: "{ \"feature_set\": \"QA-M08-02-客服意图模型-features\", \"dataset_name\": \"QA-M08-02-训练集\", \"quality_check\": \"PASSED\", \"dataset_version\": \"2026.09\" }"
+                    - generic [ref=f1e282]: 2026/9/11 16:25:13
+                - listitem [ref=f1e283]:
+                  - generic [ref=f1e286]:
+                    - generic [ref=f1e287]:
+                      - strong [ref=f1e288]: 模型训练 · 执行成功
+                      - generic [ref=f1e289]: "{ \"parameters\": { \"epochs\": 3 }, \"artifact_uri\": \"local://model-pipeline/01a08f92-20d5-7bd3-b0c7-dbf62f42cda2/run-1\", \"artifact_digest\": \"sha256:5c97184e6895761470c10f683df8eb33fb73b1bb0dddf0fe93da3c5e681eb123\" }"
+                    - generic [ref=f1e290]: 2026/9/11 16:25:13
+                - listitem [ref=f1e291]:
+                  - generic [ref=f1e294]:
+                    - generic [ref=f1e295]:
+                      - strong [ref=f1e296]: 模型评估 · 执行成功
+                      - generic [ref=f1e297]: "{ \"evaluation\": { \"id\": \"01a08f92-21bb-74f0-ad6f-277527c80760\", \"status\": \"PASSED\", \"metrics\": { \"accuracy\": 0.96, \"latency_ms\": 76 }, \"summary\": \"训练流水线自动评估\", \"started_at\": \"2026-09-11T08:25:13.915Z\", \"thresholds\": { \"accuracy\": { \"min\": 0.9 }, \"latency_ms\": { \"max\": 100 } }, \"create_time\": \"2026-09-11T08:25:13.915Z\", \"finished_at\": \"2026-09-11T08:25:13.915Z\", \"dataset_name\": \"QA-M08-02-训练集\", \"status_label\": \"通过\", \"dataset_version\": \"2026.09\", \"model_version_id\": \"01a08f92-21ad-70d2-9e1f-5f708fade6f4\" } }"
+                    - generic [ref=f1e298]: 2026/9/11 16:25:13
+                - listitem [ref=f1e299]:
+                  - generic [ref=f1e302]:
+                    - generic [ref=f1e303]:
+                      - strong [ref=f1e304]: 发布审批 · 执行成功
+                      - generic [ref=f1e305]: "{ \"action\": \"APPROVE\", \"comment\": \"自动审批通过\" }"
+                    - generic [ref=f1e306]: 2026/9/11 16:25:13
+                - listitem [ref=f1e307]:
+                  - generic [ref=f1e309]:
+                    - generic [ref=f1e310]:
+                      - strong [ref=f1e311]: 模型部署 · 执行成功
+                      - generic [ref=f1e312]: "{ \"release\": { \"id\": \"01a08f92-21e0-7df2-b353-53c3b15da893\", \"action\": \"PUBLISH\", \"reason\": \"训练流水线 QA-M08-02-自动训练验收 第 1 次运行自动发布\", \"status\": \"SUCCESS\", \"details\": { \"source_version\": null, \"target_version\": 1 }, \"create_time\": \"2026-09-11T08:25:13.953Z\", \"operator_id\": \"f0dd8f71-e4ee-11ee-8c84-a8a1595801ab\", \"action_label\": \"发布\", \"from_version\": null, \"status_label\": \"成功\", \"registry_name\": \"QA-M08-02-客服意图模型\", \"target_version\": 1, \"from_version_id\": null, \"target_version_id\": \"01a08f92-21ad-70d2-9e1f-5f708fade6f4\" } }"
+                    - generic [ref=f1e313]: 2026/9/11 16:25:13

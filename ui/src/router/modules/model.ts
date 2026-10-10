@@ -29,6 +29,16 @@ const ModelRouter = {
       },
       component: () => import('@/views/model/index.vue'),
     },
+    {
+      path: '/model/lifecycle',
+      name: 'model-lifecycle',
+      meta: {
+        title: '模型生命周期',
+        activeMenu: '/model',
+        sameRoute: 'model',
+      },
+      component: () => import('@/views/model-lifecycle/index.vue'),
+    },
   ],
 }
 

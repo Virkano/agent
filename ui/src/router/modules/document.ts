@@ -472,6 +472,106 @@ const DocumentRouter = {
       component: () => import('@/views/hit-test/index.vue'),
     },
     {
+      path: 'evaluation',
+      name: 'KnowledgeEvaluation',
+      meta: {
+        icon: 'app-hit-test',
+        title: '检索评估',
+        active: 'evaluation',
+        parentPath: '/knowledge/:id/:folderId/:type',
+        parentName: 'KnowledgeDetail',
+        group: 'KnowledgeDetail',
+        permission: [
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return new ComplexPermission(
+                [RoleConst.USER],
+                [
+                  PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
+                    to ? to.params.id : '',
+                  ),
+                ],
+                [],
+                'AND',
+              )
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return PermissionConst.KNOWLEDGE_HIT_TEST_READ.getKnowledgeWorkspaceResourcePermission(
+                to ? to.params.id : '',
+              )
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return PermissionConst.KNOWLEDGE_HIT_TEST_READ.getWorkspacePermissionWorkspaceManageRole()
+            }
+          },
+        ],
+      },
+      component: () => import('@/views/knowledge-evaluation/index.vue'),
+    },
+    {
+      path: 'etl',
+      name: 'KnowledgeEtl',
+      meta: {
+        icon: 'app-workflow',
+        title: 'ETL 与索引版本',
+        active: 'etl',
+        parentPath: '/knowledge/:id/:folderId/:type',
+        parentName: 'KnowledgeDetail',
+        group: 'KnowledgeDetail',
+        permission: [
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return new ComplexPermission(
+                [RoleConst.USER],
+                [
+                  PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(
+                    to ? to.params.id : '',
+                  ),
+                ],
+                [],
+                'AND',
+              )
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return RoleConst.WORKSPACE_MANAGE.getWorkspaceRole()
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return PermissionConst.KNOWLEDGE_DOCUMENT_READ.getKnowledgeWorkspaceResourcePermission(
+                to ? to.params.id : '',
+              )
+            }
+          },
+          () => {
+            const to: any = get_next_route()
+            if (!['shared', 'resource-management', 'share'].includes(to.params.folderId)) {
+              return PermissionConst.KNOWLEDGE_DOCUMENT_READ.getWorkspacePermissionWorkspaceManageRole()
+            }
+          },
+        ],
+      },
+      component: () => import('@/views/knowledge-etl/index.vue'),
+    },
+    {
       path: 'chat-user',
       name: 'KnowledgeChatUser',
       meta: {

@@ -12,6 +12,7 @@ from ...const import CONFIG, PROJECT_DIR
 from ...env import get_env, has_env
 import os
 from django.utils.translation import gettext_lazy as _
+from ...deployment import deployment_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -20,12 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = CONFIG.get("SECRET_KEY") or 'django-insecure-zm^1_^i5)3gp^&0io6zg72&z!a*d=9kf9o2%uft+27l)+t(#3e'
+globals().update(deployment_settings(CONFIG))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = CONFIG.get_debug()
-
-ALLOWED_HOSTS = ['*']
 
 # Application definition
 

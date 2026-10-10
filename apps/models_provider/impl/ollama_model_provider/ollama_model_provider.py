@@ -9,16 +9,16 @@
 import json
 import os
 from typing import Dict, Iterator
-from urllib.parse import urlparse, ParseResult
 
 import requests
 from common.utils.common import get_file_content
 from models_provider.base_model_provider import IModelProvider, ModelProvideInfo, ModelInfo, ModelTypeConst, \
-    BaseModelCredential, DownModelChunk, DownModelChunkStatus, ValidCode, ModelInfoManage
+    DownModelChunk, DownModelChunkStatus, ModelInfoManage
 from models_provider.impl.ollama_model_provider.credential.embedding import OllamaEmbeddingModelCredential
 from models_provider.impl.ollama_model_provider.credential.image import OllamaImageModelCredential
 from models_provider.impl.ollama_model_provider.credential.llm import OllamaLLMModelCredential
 from models_provider.impl.ollama_model_provider.credential.reranker import OllamaReRankModelCredential
+from models_provider.impl.ollama_model_provider.endpoint import resolve_ollama_base_url
 from models_provider.impl.ollama_model_provider.model.embedding import OllamaEmbedding
 from models_provider.impl.ollama_model_provider.model.image import OllamaImage
 from models_provider.impl.ollama_model_provider.model.llm import OllamaChatModel
@@ -204,14 +204,6 @@ model_info_manage = (
 )
 
 
-def get_base_url(url: str):
-    parse = urlparse(url)
-    result_url = ParseResult(scheme=parse.scheme, netloc=parse.netloc, path=parse.path, params='',
-                             query='',
-                             fragment='').geturl()
-    return result_url[:-1] if result_url.endswith("/") else result_url
-
-
 def convert_to_down_model_chunk(row_str: str, chunk_index: int):
     row = json.loads(row_str)
     status = DownModelChunkStatus.unknown
@@ -262,14 +254,13 @@ class OllamaModelProvider(IModelProvider):
 
     @staticmethod
     def get_base_model_list(api_base):
-        base_url = get_base_url(api_base)
+        base_url = resolve_ollama_base_url(api_base)
         r = requests.request(method="GET", url=f"{base_url}/api/tags", timeout=5)
         r.raise_for_status()
         return r.json()
 
     def down_model(self, model_type: str, model_name, model_credential: Dict[str, object]) -> Iterator[DownModelChunk]:
-        api_base = model_credential.get('api_base', '')
-        base_url = get_base_url(api_base)
+        base_url = resolve_ollama_base_url(model_credential.get('api_base', ''))
         r = requests.request(
             method="POST",
             url=f"{base_url}/api/pull",

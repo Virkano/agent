@@ -141,3 +141,15 @@ def has_permissions(*permission, compare=CompareConstants.OR):
         return run
 
     return inner
+
+
+class WorkspacePermissionMixin:
+    """Apply one workspace-scoped permission consistently to every HTTP method of a view."""
+
+    required_workspace_permissions = ()
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        permissions = self.required_workspace_permissions
+        if permissions and not get_is_permissions(request, **kwargs)(*permissions):
+            raise AppUnauthorizedFailed(403, _('No permission to access'))

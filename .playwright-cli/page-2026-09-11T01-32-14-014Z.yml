@@ -1,0 +1,228 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - separator [ref=e10]
+          - button "默认空间" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - img [ref=e15]
+              - generic "默认空间" [ref=e18]
+              - img [ref=e20]
+        - generic [ref=e22]:
+          - img [ref=e26] [cursor=pointer]
+          - img [ref=e31] [cursor=pointer]
+          - button [ref=e35] [cursor=pointer]:
+            - generic [ref=e36]:
+              - img [ref=e38]
+              - img [ref=e41]
+          - button [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]:
+              - img [ref=e47]
+              - img [ref=e51]
+          - button [ref=e54] [cursor=pointer]:
+            - generic [ref=e55]:
+              - img [ref=e57]
+              - img [ref=e60]
+        - generic [ref=e63]:
+          - button "全局通知" [active] [ref=e64] [cursor=pointer]:
+            - img [ref=e67]
+          - superscript [ref=e71]: "4"
+      - button [ref=e73] [cursor=pointer]
+    - generic [ref=e76]:
+      - banner [ref=e77]:
+        - generic [ref=e78]:
+          - text: DECISION INTELLIGENCE · V1
+          - heading "AI 分析报告中心" [level=2] [ref=e79]
+          - paragraph [ref=e80]: 把营销触达、转化和经营投入沉淀成可追溯的决策简报。
+        - generic [ref=e81]:
+          - button "报告订阅" [ref=e82] [cursor=pointer]:
+            - img [ref=e84]
+            - generic [ref=e86]: 报告订阅
+          - button "报告模板" [ref=e87] [cursor=pointer]:
+            - img [ref=e89]
+            - generic [ref=e91]: 报告模板
+          - button "生成报告" [ref=e92] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e96]: 生成报告
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - generic [ref=e99]: 报告总数
+          - strong [ref=e100]: "5"
+          - generic [ref=e101]: 当前工作空间
+        - generic [ref=e102]:
+          - generic [ref=e103]: 最近触达率
+          - strong [ref=e104]: 0%
+          - generic [ref=e105]: 去重触达 / 批次曝光
+        - generic [ref=e106]:
+          - generic [ref=e107]: 最近转化率
+          - strong [ref=e108]: 0%
+          - generic [ref=e109]: 确认转化 / 实际触达
+        - generic [ref=e110]:
+          - generic [ref=e111]: 最近 ROI
+          - strong [ref=e112]: 0%
+          - generic [ref=e113]: （归因收入 - 投入）/ 投入
+      - generic [ref=e114]:
+        - complementary [ref=e115]:
+          - generic [ref=e116]:
+            - generic [ref=e117]:
+              - text: REPORT LIBRARY
+              - heading "报告库" [level=3] [ref=e118]
+            - button [ref=e119] [cursor=pointer]:
+              - img [ref=e268]
+          - generic [ref=e123]:
+            - generic [ref=e125]:
+              - img [ref=e128]
+              - textbox "搜索标题或任务" [ref=e130]
+            - generic [ref=e133] [cursor=pointer]:
+              - generic:
+                - combobox [ref=e135]
+                - generic [ref=e136]: 全部状态
+              - img [ref=e139]
+          - generic [ref=e141]:
+            - button "2026-09-05 至 2026-09-11 营销分析报告 全部营销任务 · 2026-09-11 09:31 已完成 · 规则分析" [ref=e270] [cursor=pointer]:
+              - generic [ref=e272]:
+                - strong [ref=e273]: 2026-09-05 至 2026-09-11 营销分析报告
+                - generic [ref=e274]: 全部营销任务 · 2026-09-11 09:31
+                - generic [ref=e275]: 已完成 · 规则分析
+              - img [ref=e276]
+            - button "M04-02线性归因最终验收 全部营销任务 · 2026-09-11 09:28 已完成 · 规则分析" [ref=e142] [cursor=pointer]:
+              - generic [ref=e144]:
+                - strong [ref=e145]: M04-02线性归因最终验收
+                - generic [ref=e146]: 全部营销任务 · 2026-09-11 09:28
+                - generic [ref=e147]: 已完成 · 规则分析
+              - img [ref=e148]
+            - button "线性归因浏览器验收V2 全部营销任务 · 2026-09-11 09:25 已完成 · 规则分析" [ref=e150] [cursor=pointer]:
+              - generic [ref=e152]:
+                - strong [ref=e153]: 线性归因浏览器验收V2
+                - generic [ref=e154]: 全部营销任务 · 2026-09-11 09:25
+                - generic [ref=e155]: 已完成 · 规则分析
+              - img [ref=e156]
+            - button "线性归因浏览器验收 全部营销任务 · 2026-09-11 09:25 已完成 · 规则分析" [ref=e158] [cursor=pointer]:
+              - generic [ref=e160]:
+                - strong [ref=e161]: 线性归因浏览器验收
+                - generic [ref=e162]: 全部营销任务 · 2026-09-11 09:25
+                - generic [ref=e163]: 已完成 · 规则分析
+              - img [ref=e164]
+            - button "AI分析报告中心V1验收 全部营销任务 · 2026-09-10 14:37 已完成 · 规则分析" [ref=e166] [cursor=pointer]:
+              - generic [ref=e168]:
+                - strong [ref=e169]: AI分析报告中心V1验收
+                - generic [ref=e170]: 全部营销任务 · 2026-09-10 14:37
+                - generic [ref=e171]: 已完成 · 规则分析
+              - img [ref=e172]
+        - main [ref=e174]:
+          - generic [ref=e175]:
+            - generic [ref=e176]:
+              - generic [ref=e178]: 已完成
+              - generic [ref=e179]: 模板 经营成效分析模板
+              - generic [ref=e180]: 生成方式 规则分析
+            - button "下载报告" [ref=e183] [cursor=pointer]:
+              - img [ref=e185]
+              - generic [ref=e187]: 下载报告
+          - article [ref=e278]:
+            - generic [ref=e279]:
+              - paragraph [ref=e280]: AI ANALYSIS REPORT
+              - heading "2026-09-05 至 2026-09-11 营销分析报告" [level=1] [ref=e281]
+              - text: 2026-09-05 — 2026-09-11
+            - generic [ref=e282]:
+              - heading "核心经营指标" [level=2] [ref=e283]
+              - table [ref=e284]:
+                - rowgroup [ref=e285]:
+                  - row "曝光人数 0" [ref=e286]:
+                    - rowheader "曝光人数" [ref=e287]
+                    - cell "0" [ref=e288]
+                  - row "实际触达人数 0" [ref=e289]:
+                    - rowheader "实际触达人数" [ref=e290]
+                    - cell "0" [ref=e291]
+                  - row "触达率 0.0%" [ref=e292]:
+                    - rowheader "触达率" [ref=e293]
+                    - cell "0.0%" [ref=e294]
+                  - row "确认转化人数 0" [ref=e295]:
+                    - rowheader "确认转化人数" [ref=e296]
+                    - cell "0" [ref=e297]
+                  - row "触达后转化率 0.0%" [ref=e298]:
+                    - rowheader "触达后转化率" [ref=e299]
+                    - cell "0.0%" [ref=e300]
+                  - row "归因收入 ¥0.00" [ref=e301]:
+                    - rowheader "归因收入" [ref=e302]
+                    - cell "¥0.00" [ref=e303]
+                  - row "营销投入 ¥0.00" [ref=e304]:
+                    - rowheader "营销投入" [ref=e305]
+                    - cell "¥0.00" [ref=e306]
+                  - row "边际贡献 ¥0.00" [ref=e307]:
+                    - rowheader "边际贡献" [ref=e308]
+                    - cell "¥0.00" [ref=e309]
+                  - row "ROI 0.0%" [ref=e310]:
+                    - rowheader "ROI" [ref=e311]
+                    - cell "0.0%" [ref=e312]
+            - generic [ref=e313]:
+              - heading "经营解读" [level=2] [ref=e314]
+              - paragraph [ref=e315]: 统计周期内共覆盖 0 人，实际触达 0 人，触达率 0.0%；确认转化 0 人，触达后转化率 0.0%。归因收入 0.00 元，营销投入 0.00 元，边际贡献 0.00 元，ROI 0.0%。当前周期尚无触达批次数据，建议先完成客户筛选和批次执行，再评估经营成效。
+            - generic [ref=e316]:
+              - heading "线性归因分布" [level=2] [ref=e317]
+              - paragraph [ref=e318]: 当前周期暂无可归因转化记录。
+            - generic [ref=e319]:
+              - heading "渠道覆盖" [level=2] [ref=e320]
+              - list [ref=e321]:
+                - listitem [ref=e322]: 暂无渠道数据
+  - tooltip "radio-group 请选择 报告已生成：2026-09-05 至 2026-09-11 营销分析报告 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:31:33 未读 报告已生成：M04-02线性归因最终验收 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:28:36 未读 报告已生成：线性归因浏览器验收V2 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:25:44 未读 报告已生成：线性归因浏览器验收 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:25:13 未读 进入告警处理台" [ref=e328]:
+    - generic [ref=e329]:
+      - banner [ref=e330]:
+        - generic [ref=e331]:
+          - strong [ref=e332]: 全局通知
+          - generic [ref=e333]: 告警与报告 · 4 条未读
+        - generic [ref=e334]:
+          - button "刷新通知" [ref=e335] [cursor=pointer]:
+            - img [ref=e337]
+          - button "全部已读" [ref=e339] [cursor=pointer]:
+            - generic [ref=e340]: 全部已读
+      - generic [ref=e341]:
+        - radiogroup "radio-group" [ref=e342]:
+          - generic [ref=e343]:
+            - radio "全部" [checked] [ref=e344]
+            - generic [ref=e345] [cursor=pointer]: 全部
+          - generic [ref=e346]:
+            - radio "未读" [ref=e347]
+            - generic [ref=e348] [cursor=pointer]: 未读
+        - generic [ref=e350] [cursor=pointer]:
+          - generic:
+            - combobox "告警级别" [ref=e352]
+            - generic [ref=e353]: 请选择
+          - img [ref=e356]
+      - generic [ref=e358]:
+        - button "报告已生成：2026-09-05 至 2026-09-11 营销分析报告 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:31:33 未读" [ref=e359] [cursor=pointer]:
+          - generic [ref=e361]:
+            - generic [ref=e362]:
+              - strong [ref=e363]: 报告已生成：2026-09-05 至 2026-09-11 营销分析报告
+              - generic [ref=e365]: 报告完成
+            - generic [ref=e366]: 营销分析报告已进入报告库，可查看指标、归因和经营建议。
+            - time [ref=e367]: 2026-09-11 09:31:33
+          - generic "未读" [ref=e368]
+        - button "报告已生成：M04-02线性归因最终验收 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:28:36 未读" [ref=e369] [cursor=pointer]:
+          - generic [ref=e371]:
+            - generic [ref=e372]:
+              - strong [ref=e373]: 报告已生成：M04-02线性归因最终验收
+              - generic [ref=e375]: 报告完成
+            - generic [ref=e376]: 营销分析报告已进入报告库，可查看指标、归因和经营建议。
+            - time [ref=e377]: 2026-09-11 09:28:36
+          - generic "未读" [ref=e378]
+        - button "报告已生成：线性归因浏览器验收V2 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:25:44 未读" [ref=e379] [cursor=pointer]:
+          - generic [ref=e381]:
+            - generic [ref=e382]:
+              - strong [ref=e383]: 报告已生成：线性归因浏览器验收V2
+              - generic [ref=e385]: 报告完成
+            - generic [ref=e386]: 营销分析报告已进入报告库，可查看指标、归因和经营建议。
+            - time [ref=e387]: 2026-09-11 09:25:44
+          - generic "未读" [ref=e388]
+        - button "报告已生成：线性归因浏览器验收 报告完成 营销分析报告已进入报告库，可查看指标、归因和经营建议。 2026-09-11 09:25:13 未读" [ref=e389] [cursor=pointer]:
+          - generic [ref=e391]:
+            - generic [ref=e392]:
+              - strong [ref=e393]: 报告已生成：线性归因浏览器验收
+              - generic [ref=e395]: 报告完成
+            - generic [ref=e396]: 营销分析报告已进入报告库，可查看指标、归因和经营建议。
+            - time [ref=e397]: 2026-09-11 09:25:13
+          - generic "未读" [ref=e398]
+      - contentinfo [ref=e399]:
+        - button "进入告警处理台" [ref=e400] [cursor=pointer]:
+          - generic [ref=e401]: 进入告警处理台

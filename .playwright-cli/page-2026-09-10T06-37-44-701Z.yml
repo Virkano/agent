@@ -1,0 +1,125 @@
+- generic [ref=f1e3]:
+  - generic [ref=f1e5]:
+    - generic [ref=f1e8]:
+      - generic [ref=f1e9]:
+        - separator [ref=f1e10]
+        - button "默认空间" [ref=f1e12] [cursor=pointer]:
+          - generic "默认空间" [ref=f1e18]
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23] [cursor=pointer]
+        - generic [ref=f1e28] [cursor=pointer]
+        - button [ref=f1e35] [cursor=pointer]
+        - button [ref=f1e44] [cursor=pointer]
+        - button [ref=f1e54] [cursor=pointer]
+      - generic [ref=f1e62]:
+        - button "全局通知" [ref=f1e64] [cursor=pointer]
+        - button [ref=f1e72] [cursor=pointer]
+    - button [ref=f1e79] [cursor=pointer]
+  - generic [ref=f1e82]:
+    - banner [ref=f1e83]:
+      - generic [ref=f1e84]:
+        - text: DECISION INTELLIGENCE · V1
+        - heading "AI 分析报告中心" [level=2] [ref=f1e85]
+        - paragraph [ref=f1e86]: 把营销触达、转化和经营投入沉淀成可追溯的决策简报。
+      - generic [ref=f1e87]:
+        - button "报告模板" [ref=f1e88] [cursor=pointer]
+        - button "生成报告" [ref=f1e93] [cursor=pointer]
+    - generic [ref=f1e98]:
+      - generic [ref=f1e99]:
+        - generic [ref=f1e100]: 报告总数
+        - strong [ref=f1e101]: "1"
+        - generic [ref=f1e102]: 当前工作空间
+      - generic [ref=f1e103]:
+        - generic [ref=f1e104]: 最近触达率
+        - strong [ref=f1e105]: 0%
+        - generic [ref=f1e106]: 去重触达 / 批次曝光
+      - generic [ref=f1e107]:
+        - generic [ref=f1e108]: 最近转化率
+        - strong [ref=f1e109]: 0%
+        - generic [ref=f1e110]: 确认转化 / 实际触达
+      - generic [ref=f1e111]:
+        - generic [ref=f1e112]: 最近 ROI
+        - strong [ref=f1e113]: 300%
+        - generic [ref=f1e114]: （归因收入 - 投入）/ 投入
+    - generic [ref=f1e115]:
+      - complementary [ref=f1e116]:
+        - generic [ref=f1e117]:
+          - generic [ref=f1e118]:
+            - text: REPORT LIBRARY
+            - heading "报告库" [level=3] [ref=f1e119]
+          - button [ref=f1e120] [cursor=pointer]
+        - generic [ref=f1e124]:
+          - textbox "搜索标题或任务" [ref=f1e131]
+          - generic [ref=f1e134] [cursor=pointer]:
+            - generic:
+              - combobox [ref=f1e136]
+              - generic [ref=f1e137]: 全部状态
+        - button "AI分析报告中心V1验收 全部营销任务 · 2026-09-10 06:37 已完成 · 规则分析" [ref=f1e292] [cursor=pointer]:
+          - generic [ref=f1e294]:
+            - strong [ref=f1e295]: AI分析报告中心V1验收
+            - generic [ref=f1e296]: 全部营销任务 · 2026-09-10 06:37
+            - generic [ref=f1e297]: 已完成 · 规则分析
+      - main [ref=f1e166]:
+        - generic [ref=f1e301]:
+          - generic [ref=f1e302]: 已完成
+          - generic [ref=f1e304]: 模板 经营成效分析模板
+          - generic [ref=f1e305]: 生成方式 规则分析
+        - article [ref=f1e307]:
+          - generic [ref=f1e308]:
+            - paragraph [ref=f1e309]: AI ANALYSIS REPORT
+            - heading "AI分析报告中心V1验收" [level=1] [ref=f1e310]
+            - text: 2026-08-12 — 2026-09-10
+          - generic [ref=f1e311]:
+            - heading "核心经营指标" [level=2] [ref=f1e312]
+            - table [ref=f1e313]:
+              - rowgroup [ref=f1e314]:
+                - row [ref=f1e315]:
+                  - rowheader "曝光人数" [ref=f1e316]
+                  - cell "0" [ref=f1e317]
+                - row [ref=f1e318]:
+                  - rowheader "实际触达人数" [ref=f1e319]
+                  - cell "0" [ref=f1e320]
+                - row [ref=f1e321]:
+                  - rowheader "触达率" [ref=f1e322]
+                  - cell "0.0%" [ref=f1e323]
+                - row [ref=f1e324]:
+                  - rowheader "确认转化人数" [ref=f1e325]
+                  - cell "0" [ref=f1e326]
+                - row [ref=f1e327]:
+                  - rowheader "触达后转化率" [ref=f1e328]
+                  - cell "0.0%" [ref=f1e329]
+                - row [ref=f1e330]:
+                  - rowheader "归因收入" [ref=f1e331]
+                  - cell "¥12000.00" [ref=f1e332]
+                - row [ref=f1e333]:
+                  - rowheader "营销投入" [ref=f1e334]
+                  - cell "¥3000.00" [ref=f1e335]
+                - row [ref=f1e336]:
+                  - rowheader "边际贡献" [ref=f1e337]
+                  - cell "¥9500.00" [ref=f1e338]
+                - row [ref=f1e339]:
+                  - rowheader "ROI" [ref=f1e340]
+                  - cell "300.0%" [ref=f1e341]
+          - generic [ref=f1e342]:
+            - heading "经营解读" [level=2] [ref=f1e343]
+            - paragraph [ref=f1e344]: 统计周期内共覆盖 0 人，实际触达 0 人，触达率 0.0%；确认转化 0 人，触达后转化率 0.0%。归因收入 12000.00 元，营销投入 3000.00 元，边际贡献 9500.00 元，ROI 300.0%。当前周期尚无触达批次数据，建议先完成客户筛选和批次执行，再评估经营成效。
+          - generic [ref=f1e345]:
+            - heading "渠道覆盖" [level=2] [ref=f1e346]
+            - list [ref=f1e347]:
+              - listitem [ref=f1e348]: 暂无渠道数据
+    - dialog "报告模板" [ref=f1e355]:
+      - banner [ref=f1e356]:
+        - heading "报告模板" [level=2] [ref=f1e357]
+        - button "关闭此对话框" [ref=f1e358] [cursor=pointer]
+      - generic [ref=f1e362]:
+        - generic [ref=f1e363]:
+          - paragraph [ref=f1e364]: 模板控制报告标题与智能解读要求，修改后自动增加版本号。
+          - button "新建模板" [ref=f1e365] [cursor=pointer]
+        - article [ref=f1e371]:
+          - generic [ref=f1e372]:
+            - text: V1
+            - generic [ref=f1e373]: 启用
+          - heading "经营成效分析模板" [level=4] [ref=f1e375]
+          - paragraph [ref=f1e376]: 汇总曝光、触达、转化、边际贡献和投入产出，并生成经营建议。
+          - text: "{start_date} 至 {end_date} 营销分析报告"
+          - button "编辑" [ref=f1e378] [cursor=pointer]

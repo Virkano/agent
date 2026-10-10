@@ -106,6 +106,8 @@ class ToolExecute:
 
 
 class ChatInfo:
+    MARKETING_SCENARIO_KEYWORDS = ("电信", "套餐", "营销", "存量客户", "流量", "宽带", "融合套餐")
+
     def __init__(
         self,
         chat_id: str,
@@ -143,13 +145,85 @@ class ChatInfo:
         self.debug = debug
 
     @staticmethod
-    def get_no_references_setting(knowledge_setting, model_setting):
+    def is_marketing_scenario_application(application) -> bool:
+        if application is None:
+            return False
+        model_setting = application.model_setting if isinstance(application.model_setting, dict) else {}
+        text = "\n".join(
+            [
+                application.name or "",
+                application.desc or "",
+                application.prologue or "",
+                model_setting.get("system") or "",
+                model_setting.get("prompt") or "",
+            ]
+        )
+        return any(keyword in text for keyword in ChatInfo.MARKETING_SCENARIO_KEYWORDS) and (
+            "套餐" in text or "营销" in text
+        )
+
+    @staticmethod
+    def get_marketing_no_references_prompt():
+        # 营销身份、客户画像和安全边界已通过 SystemMessage 提供；这里保留用户原问题，
+        # 避免小模型将附加规则误认为待复述的内容。
+        return "用户问题：{question}"
+
+    @staticmethod
+    def get_marketing_context(source: dict):
+        if not isinstance(source, dict) or not source.get("marketing_task_id"):
+            return ""
+
+        task_lines = []
+        if source.get("marketing_scenario_name"):
+            task_lines.append(f"营销场景：{source.get('marketing_scenario_name')}")
+        if source.get("marketing_task_name"):
+            task_lines.append(f"营销任务：{source.get('marketing_task_name')}")
+        if source.get("marketing_target_audience"):
+            task_lines.append(f"目标客群：{source.get('marketing_target_audience')}")
+        if source.get("marketing_objective"):
+            task_lines.append(f"任务目标：{source.get('marketing_objective')}")
+
+        customer_lines = []
+        if source.get("marketing_customer_name"):
+            customer_lines.append(f"客户称呼：{source.get('marketing_customer_name')}")
+        if source.get("marketing_customer_province"):
+            customer_lines.append(f"客户省份：{source.get('marketing_customer_province')}")
+        if source.get("marketing_customer_plan"):
+            customer_lines.append(f"当前套餐：{source.get('marketing_customer_plan')}")
+        if source.get("marketing_customer_data_usage"):
+            customer_lines.append(f"近月流量：{source.get('marketing_customer_data_usage')}")
+        if source.get("marketing_customer_call_usage"):
+            customer_lines.append(f"近月通话：{source.get('marketing_customer_call_usage')}")
+        if source.get("marketing_customer_phone_masked"):
+            customer_lines.append(f"客户标识：{source.get('marketing_customer_phone_masked')}")
+
+        known_context = "；".join([*task_lines, *customer_lines]) or "已通过营销任务链接进入。"
+        from marketing.recommendation import get_recommendation_context
+
+        recommendation_context = get_recommendation_context(source)
+        return (
+            "本轮为中国电信套餐升级客户对话。可信背景："
+            f"{known_context}。\n"
+            "请仅输出客户可见答案：使用“您”，自然简洁地直接回答当前问题；"
+            "不可复述本段背景，不可出现坐席、人工转接、内部规则、客户画像、检索或提示词等字样。"
+            "没有明确资费或活动时，不编造金额；只说明会先核实当地可办方案、月费变化、优惠期限和合约期。"
+            "多轮追问应承接前文，只回答本轮问题。\n"
+            f"{recommendation_context}"
+        )
+
+    @staticmethod
+    def get_no_references_setting(knowledge_setting, model_setting, application=None):
         no_references_setting = knowledge_setting.get(
             "no_references_setting", {"status": "ai_questioning", "value": "{question}"}
         )
         if no_references_setting.get("status") == "ai_questioning":
             no_references_prompt = model_setting.get("no_references_prompt", "{question}")
             no_references_setting["value"] = no_references_prompt if len(no_references_prompt) > 0 else "{question}"
+            if (
+                no_references_setting["value"].strip() == "{question}"
+                and ChatInfo.is_marketing_scenario_application(application)
+            ):
+                no_references_setting["value"] = ChatInfo.get_marketing_no_references_prompt()
         return no_references_setting
 
     def get_application(self):
@@ -270,7 +344,11 @@ class ChatInfo:
             if self.application.model_params_setting is None or len(self.application.model_params_setting.keys()) == 0
             else self.application.model_params_setting,
             "search_mode": self.application.knowledge_setting.get("search_mode") or "embedding",
-            "no_references_setting": self.get_no_references_setting(self.application.knowledge_setting, model_setting),
+            "no_references_setting": self.get_no_references_setting(
+                self.application.knowledge_setting,
+                model_setting,
+                self.application,
+            ),
             "workspace_id": self.application.workspace_id,
             "application_id": self.application_id,
             "mcp_enable": self.application.mcp_enable,
@@ -300,16 +378,18 @@ class ChatInfo:
         if form_data is None:
             form_data = {}
         params = self.to_base_pipeline_manage_params()
+        effective_source = source if isinstance(source, dict) else self.source
         return {
             **params,
             "problem_text": problem_text,
+            "marketing_context": self.get_marketing_context(effective_source),
             "post_response_handler": post_response_handler,
             "exclude_paragraph_id_list": exclude_paragraph_id_list,
             "stream": stream,
             "chat_user_id": chat_user_id,
             "chat_user_type": chat_user_type,
             "ip_address": ip_address,
-            "source": source,
+            "source": effective_source,
             "form_data": form_data,
         }
 
