@@ -7,8 +7,17 @@ export interface ServiceAnswerReview {
   record_id: string
   chat_id: string
   application_id: string
+  application_name?: string
+  conversation_title?: string
+  user_question?: string
   status: 'PENDING' | 'CONFIRMED' | 'DISMISSED'
   risk_types: string[]
+  risk_details?: Array<{
+    code: string
+    label: string
+    description: string
+    review_guidance: string
+  }>
   delivery_action: string
   reference_count: number
   rule_version: string

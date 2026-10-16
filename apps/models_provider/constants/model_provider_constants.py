@@ -50,3 +50,28 @@ class ModelProvideConstants(Enum):
     model_siliconCloud_provider = SiliconCloudModelProvider()
     model_regolo_provider = RegoloModelProvider()
     model_minimax_provider = MiniMaxModelProvider()
+
+
+# 模型接入页只展示当前产品范围内的供应商。这里不从 ModelProvideConstants
+# 删除实现，已有模型仍可继续运行并读取历史配置。
+PUBLIC_MODEL_PROVIDER_KEYS = (
+    'model_kimi_provider',
+    'model_zhipu_provider',
+    'model_xf_provider',
+    'model_deepseek_provider',
+    'model_volcanic_engine_provider',
+    'model_tencent_provider',
+    'aliyun_bai_lian_model_provider',
+)
+
+PRIVATE_MODEL_PROVIDER_KEYS = (
+    'model_docker_ai_provider',
+    'model_ollama_provider',
+)
+
+VISIBLE_MODEL_PROVIDER_KEYS = PUBLIC_MODEL_PROVIDER_KEYS + PRIVATE_MODEL_PROVIDER_KEYS
+
+
+def get_visible_model_provider_keys():
+    """返回可在模型接入目录中展示、且已经注册的供应商。"""
+    return tuple(key for key in VISIBLE_MODEL_PROVIDER_KEYS if key in ModelProvideConstants.__members__)

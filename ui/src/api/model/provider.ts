@@ -4,13 +4,17 @@ import type {Ref} from 'vue'
 import type {Provider, BaseModel} from '@/api/type/model'
 import type {FormField} from '@/components/dynamics-form/type'
 import type {KeyValue} from '../type/common'
+import {filterVisibleModelProviders} from '@/utils/model-provider-visibility'
 
 const prefix_provider = '/provider'
 /**
  * 获得供应商列表
  */
 const getProvider: (loading?: Ref<boolean>) => Promise<Result<Array<Provider>>> = (loading) => {
-  return get(`${prefix_provider}`, {}, loading)
+  return get(`${prefix_provider}`, {}, loading).then((response) => ({
+    ...response,
+    data: filterVisibleModelProviders(response.data),
+  }))
 }
 
 /**
@@ -20,7 +24,10 @@ const getProviderByModelType: (
   model_type: string,
   loading?: Ref<boolean>,
 ) => Promise<Result<Array<Provider>>> = (model_type, loading) => {
-  return get(`${prefix_provider}`, {model_type}, loading)
+  return get(`${prefix_provider}`, {model_type}, loading).then((response) => ({
+    ...response,
+    data: filterVisibleModelProviders(response.data),
+  }))
 }
 
 /**

@@ -10,7 +10,10 @@ from common.auth import TokenAuth
 from common.auth.authentication import has_permissions
 from common.constants.permission_constants import PermissionConstants
 from models_provider.api.provide import ProvideApi
-from models_provider.constants.model_provider_constants import ModelProvideConstants
+from models_provider.constants.model_provider_constants import (
+    ModelProvideConstants,
+    get_visible_model_provider_keys,
+)
 from models_provider.serializers.model_serializer import get_default_model_params_setting
 
 
@@ -25,16 +28,17 @@ class Provide(APIView):
                    tags=[_('Model')])  # type: ignore
     def get(self, request: Request):
         model_type = request.query_params.get('model_type')
+        visible_provider_keys = get_visible_model_provider_keys()
         if model_type:
             providers = []
-            for key in ModelProvideConstants.__members__:
+            for key in visible_provider_keys:
                 if len([item for item in ModelProvideConstants[key].value.get_model_type_list() if
                         item['value'] == model_type]) > 0:
                     providers.append(ModelProvideConstants[key].value.get_model_provide_info().to_dict())
             return result.success(providers)
         return result.success(
             [ModelProvideConstants[key].value.get_model_provide_info().to_dict() for key in
-             ModelProvideConstants.__members__])
+             visible_provider_keys])
 
     class ModelTypeList(APIView):
         authentication_classes = [TokenAuth]

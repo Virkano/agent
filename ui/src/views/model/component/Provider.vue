@@ -110,6 +110,10 @@ import { modelTypeList, allObj } from '@/views/model/component/data'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'
 import { t } from '@/locales'
+import {
+  isPrivateModelProvider,
+  isVisibleModelProvider,
+} from '@/utils/model-provider-visibility'
 const props = defineProps<{
   data: Array<Provider>
   loading: boolean
@@ -124,17 +128,12 @@ const local_provider_list = ref<Array<Provider>>([])
 watch(
   () => props.data,
   (list) => {
-    const local_provider = [
-      'model_ollama_provider',
-      'model_local_provider',
-      'model_xinference_provider',
-      'model_vllm_provider',
-      'model_docker_ai_provider'
-    ]
+    online_provider_list.value = []
+    local_provider_list.value = []
     list
-      .filter((v) => v.provider)
+      .filter((item) => isVisibleModelProvider(item.provider))
       ?.forEach((item) => {
-        if (local_provider.indexOf(item.provider) > -1) {
+        if (isPrivateModelProvider(item.provider)) {
           local_provider_list.value.push(item)
         } else {
           online_provider_list.value.push(item)

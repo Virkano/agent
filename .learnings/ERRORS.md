@@ -1,5 +1,12 @@
 # Errors
 
+## ERR-063：浏览器控制运行时未启动
+
+- **现象**：首次执行桌面浏览器检查时返回 `runtime_unavailable`，无法枚举应用窗口。
+- **根因**：Orca 桌面控制运行时当时未启动，不是 Chrome 或项目页面故障。
+- **修复**：执行 `orca open --json` 启动运行时；随后使用当前 Codex 的计算机控制接口绑定已打开的 Chrome 项目页面。
+- **验证**：成功读取 `localhost:3000/admin/model`，打开添加模型弹窗，并确认最终仅展示 7 个公有供应商和 Docker AI、Ollama 两个私有供应商。
+
 ## ERR-062：新增流水线模型的长补丁在外键定义处被截断
 
 - **现象**：首次新增 `models/pipeline.py` 时，补丁末尾在 `approved_by` 外键处混入无效字符，文件暂时语法不完整。
@@ -4691,3 +4698,43 @@ Django 测试默认创建测试数据库时发现同名测试库已存在，并�
 - 根因：没有先确认根目录是否存在匹配文件，又一次对可选路径使用了裸通配符。
 - 修复：后续只检索已确认存在的 `docker/`、`docker-compose.yml` 和 `docker/.env.example`，或先通过 `rg --files` 获取明确路径。
 - 验证：已使用 `docker-compose.yml`、`docker/.env.example`、`docker/start-app.sh` 和 `docker/Dockerfile.app` 明确路径完成部署默认值检查。
+
+## ERR-328：Milvus 依赖核查再次传入未确认的 requirements 通配符
+
+- 日期：2026-10-10
+- 现象：核对 Milvus 客户端依赖时把可选的 `requirements/*.txt` 直接传给 `rg`，zsh 在该目录无匹配文件时提前报 `no matches found`。
+- 根因：没有先用文件清单确认依赖文件，重复使用了可能无匹配的裸通配符。
+- 修复：改为先通过 `rg --files` 获取实际存在的依赖清单，再对明确文件执行检索。
+- 验证：通过文件清单确认当前依赖入口只有 `pyproject.toml`；其中没有 Milvus/PyMilvus/Zilliz 依赖，向量存储注册表和运行回退实现均只有 PostgreSQL `pg_vector`。
+
+## ERR-329：前端环境目录检索未先确认文件清单
+
+- 日期：2026-10-14
+- 现象：核对 Vite 本地端口时直接对 `ui/env` 执行 `rg`，命令因没有检索到匹配项返回退出码 1。
+- 根因：没有先确认环境文件名称和内容格式；首次文件清单还遗漏了被忽略规则覆盖的 `ui/env/.env`。
+- 修复：先查看目录清单，再显式读取已确认存在的 `ui/env/.env` 与 `.env.chat`。
+- 验证：已确认管理端为 `3000/admin/`，对话端为 `3001/chat/`。
+
+## ERR-330：营销对话数据核对时从错误的 Django 包导入 `Chat`
+
+- 日期：2026-10-15
+- 现象：执行只读 Django shell 探针时，`from chat.models import Chat` 报 `ImportError`。
+- 根因：`Chat` 实际注册在 `application.models.application_chat`，`chat.models` 没有导出该模型。
+- 修复：改用 `from application.models.application_chat import Chat`，后续仍按项目已注册应用标签执行管理命令。
+- 验证：使用正确导入后重新执行营销任务、客户和对话归属只读统计。
+
+## ERR-331：服务检查命令再次使用可能无匹配的 Compose 通配符
+
+- 日期：2026-10-16
+- 现象：定位本地向量服务时，将 `compose*.yml` 直接作为 `rg` 输入路径，zsh 因仓库中没有匹配文件而报 `no matches found`。
+- 根因：虽然仓库存在 `docker-compose.yml`，但同时传入了未经文件清单确认的可选通配符，违反了可选路径先确认的约束。
+- 修复：改用 `rg --files -g '*compose*.yml' -g '*compose*.yaml'` 获取真实文件列表，并只对已确认的 `.env.local` 与 `docker-compose.yml` 检索。
+- 验证：后续检查成功识别本地向量服务监听 `127.0.0.1:11435`，且未再触发 zsh 通配符错误。
+
+## ERR-332：退出 Ollama 桌面应用后后台服务仍监听端口
+
+- 日期：2026-10-16
+- 现象：执行 Ollama 应用退出并向已确认的 `ollama serve` 发送 `SIGTERM` 后，`11434` 端口在五秒内仍保持监听。
+- 根因：Ollama 桌面应用及其后台服务的退出生命周期相互独立，普通应用退出或单次终止信号未能及时关闭后台服务。
+- 修复：重新读取 `11434` 当前监听 PID 与命令，仅在仍确认为 `ollama serve` 时升级为强制终止，并再次检查端口。
+- 验证：`11434` 与项目向量服务 `11636` 均已停止监听；PostgreSQL `5432`、Redis `6379` 和非项目的 CodeGeeX `11435` 仍正常监听。

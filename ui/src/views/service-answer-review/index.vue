@@ -4,7 +4,7 @@
       <div>
         <p class="review-eyebrow">服务助手 / 回答安全</p>
         <h2>人工复核队列</h2>
-        <p>只显示客户实际收到的安全答复；原始生成内容不在此页展示。</p>
+        <p>集中核对用户问题、拦截原因和客户实际收到的安全答复；页面每 10 秒自动刷新。</p>
       </div>
       <el-button :loading="loading" @click="loadReviews">刷新</el-button>
     </header>
@@ -15,13 +15,24 @@
         <el-segmented v-model="status" :options="statusOptions" @change="resetPage" />
       </div>
       <el-table v-loading="loading" :data="records" row-key="id" empty-text="当前没有待复核记录">
-        <el-table-column label="风险与处置" min-width="220">
+        <el-table-column label="用户问题" min-width="280">
+          <template #default="{ row }">
+            <div class="question-cell">
+              <strong>{{ row.application_name || '未知应用' }}</strong>
+              <span>{{ row.user_question || '用户问题加载中' }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="问题点" min-width="260">
           <template #default="{ row }">
             <div class="risk-cell">
               <el-tag :type="row.delivery_action === 'BLOCKED' ? 'danger' : 'warning'" size="small">
                 {{ actionLabels[row.delivery_action] || row.delivery_action }}
               </el-tag>
-              <span>{{ row.risk_types.map((item: string) => riskLabels[item] || item).join('、') }}</span>
+              <div class="risk-summary">
+                <strong>{{ formatRiskLabels(row) }}</strong>
+                <span>{{ formatRiskDescriptions(row) }}</span>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -52,8 +63,36 @@
       />
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="人工复核" width="520px" destroy-on-close>
-      <p class="dialog-hint">复核结论只改变后台处理状态，不会重新向客户发送回答。</p>
+    <el-dialog v-model="dialogVisible" title="人工复核" width="720px" destroy-on-close>
+      <p class="dialog-hint">复核结论只改变后台处理状态，不会重新向客户发送回答。用户问题中的个人信息已脱敏。</p>
+      <div v-if="selected" class="review-context">
+        <section>
+          <span class="context-label">应用</span>
+          <p>{{ selected.application_name || '未知应用' }}</p>
+        </section>
+        <section>
+          <span class="context-label">用户问题</span>
+          <p>{{ selected.user_question || '用户问题加载中' }}</p>
+        </section>
+        <section>
+          <span class="context-label">客户实际收到的答复</span>
+          <p>{{ selected.delivered_answer }}</p>
+        </section>
+        <section>
+          <span class="context-label">具体问题点</span>
+          <div v-for="risk in getRiskDetails(selected)" :key="risk.code" class="risk-detail">
+            <el-tag type="danger" size="small">{{ risk.label }}</el-tag>
+            <div>
+              <p>{{ risk.description }}</p>
+              <small>复核建议：{{ risk.review_guidance }}</small>
+            </div>
+          </div>
+        </section>
+        <section class="context-meta">
+          <span>规则版本：{{ selected.rule_version }}</span>
+          <span>知识引用：{{ selected.reference_count }} 条</span>
+        </section>
+      </div>
       <el-radio-group v-model="decision">
         <el-radio value="CONFIRMED">确认存在问题</el-radio>
         <el-radio value="DISMISSED">排除问题</el-radio>
@@ -68,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { datetimeFormat } from '@/utils/time'
 import {
@@ -87,16 +126,11 @@ const dialogVisible = ref(false)
 const selected = ref<ServiceAnswerReview>()
 const decision = ref<'CONFIRMED' | 'DISMISSED'>('CONFIRMED')
 const note = ref('')
+let autoRefreshTimer: number | undefined
 const statusOptions = [
   { label: '待复核', value: 'PENDING' },
   { label: '全部记录', value: 'ALL' },
 ]
-const riskLabels: Record<string, string> = {
-  NO_REFERENCE: '缺少依据',
-  SENSITIVE_CONTENT: '敏感内容',
-  PRIVATE_DATA: '个人信息',
-  RUNTIME_ERROR: '运行异常',
-}
 const actionLabels: Record<string, string> = {
   BLOCKED: '已拦截',
   FALLBACK: '已兜底',
@@ -108,6 +142,31 @@ const statusLabels: Record<string, string> = {
   DISMISSED: '已排除',
 }
 
+const fallbackRiskDetails: Record<string, NonNullable<ServiceAnswerReview['risk_details']>[number]> = {
+  NO_REFERENCE: { code: 'NO_REFERENCE', label: '缺少知识依据', description: '没有检索到可核实的知识引用。', review_guidance: '核对知识库内容和检索配置。' },
+  SENSITIVE_CONTENT: { code: 'SENSITIVE_CONTENT', label: '命中敏感内容规则', description: '生成答复命中了受限表达规则。', review_guidance: '判断是否误判，并检查提示词和回答边界。' },
+  PRIVATE_DATA: { code: 'PRIVATE_DATA', label: '包含个人信息', description: '生成答复中检测到需要脱敏的个人信息。', review_guidance: '确认脱敏是否完整。' },
+  RUNTIME_ERROR: { code: 'RUNTIME_ERROR', label: '回答生成运行异常', description: '模型、工具或依赖服务调用失败。', review_guidance: '检查模型和依赖服务，恢复后重新验证。' },
+}
+
+function getRiskDetails(record: ServiceAnswerReview) {
+  if (record.risk_details?.length) return record.risk_details
+  return record.risk_types.map(code => fallbackRiskDetails[code] || {
+    code,
+    label: '其他风险',
+    description: '该回答命中了需要人工判断的规则。',
+    review_guidance: '结合关联对话记录进行核实。',
+  })
+}
+
+function formatRiskLabels(record: ServiceAnswerReview) {
+  return getRiskDetails(record).map(item => item.label).join('、')
+}
+
+function formatRiskDescriptions(record: ServiceAnswerReview) {
+  return getRiskDetails(record).map(item => item.description).join('；')
+}
+
 async function loadReviews() {
   try {
     const response = await getServiceAnswerReviews(page.value, 20, status.value, loading)
@@ -117,6 +176,27 @@ async function loadReviews() {
     records.value = []
     total.value = 0
   }
+}
+
+function refreshVisibleQueue() {
+  if (document.visibilityState === 'visible' && !loading.value && !submitting.value) {
+    loadReviews()
+  }
+}
+
+function startAutoRefresh() {
+  if (autoRefreshTimer !== undefined) return
+  loadReviews()
+  autoRefreshTimer = window.setInterval(refreshVisibleQueue, 10_000)
+  document.addEventListener('visibilitychange', refreshVisibleQueue)
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshTimer !== undefined) {
+    window.clearInterval(autoRefreshTimer)
+    autoRefreshTimer = undefined
+  }
+  document.removeEventListener('visibilitychange', refreshVisibleQueue)
 }
 
 function resetPage() {
@@ -143,7 +223,10 @@ async function submitReview() {
   }
 }
 
-onMounted(loadReviews)
+onMounted(startAutoRefresh)
+onActivated(startAutoRefresh)
+onDeactivated(stopAutoRefresh)
+onBeforeUnmount(stopAutoRefresh)
 </script>
 
 <style scoped>
@@ -157,9 +240,20 @@ onMounted(loadReviews)
 .review-count { display: flex; align-items: baseline; gap: 8px; color: #66788d; }
 .review-count strong { font-size: 25px; color: #17283e; }
 .risk-cell { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.question-cell, .risk-summary { display: flex; flex-direction: column; gap: 5px; }
+.question-cell strong, .risk-summary strong { color: #263b55; font-size: 13px; }
+.question-cell span, .risk-summary span { color: #66788d; line-height: 1.55; overflow-wrap: anywhere; }
 .answer-text { white-space: pre-wrap; overflow-wrap: anywhere; color: #33465f; }
 .review-pagination { justify-content: flex-end; margin-top: 20px; }
 .dialog-hint { color: #66788d; margin-top: 0; }
+.review-context { display: grid; gap: 12px; margin: 16px 0 20px; padding: 16px; border: 1px solid #e3eaf2; border-radius: 8px; background: #f8fafc; }
+.review-context section { min-width: 0; }
+.review-context p { margin: 5px 0 0; color: #33465f; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.context-label { color: #7a899b; font-size: 12px; }
+.risk-detail { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+.risk-detail p { margin-top: 0; }
+.risk-detail small { display: block; margin-top: 3px; color: #7a899b; line-height: 1.5; }
+.context-meta { display: flex; flex-wrap: wrap; gap: 20px; color: #7a899b; font-size: 12px; }
 .review-note { margin-top: 20px; }
-@media (max-width: 760px) { .review-heading, .review-toolbar { align-items: flex-start; flex-direction: column; } .review-card { margin: 0 0 24px; } .review-heading { margin-left: 0; } }
+@media (max-width: 760px) { .review-heading, .review-toolbar { align-items: flex-start; flex-direction: column; } .review-card { margin: 0 0 24px; } .review-heading { margin-left: 0; } :deep(.el-dialog) { width: 92% !important; } }
 </style>

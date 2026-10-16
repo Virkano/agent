@@ -137,6 +137,7 @@ import {loadSharedApi} from '@/utils/dynamics-api/shared-api'
 import useStore from '@/stores'
 import {useRoute, useRouter} from 'vue-router'
 import permissionMap from '@/permission'
+import {isVisibleModelProvider} from '@/utils/model-provider-visibility'
 
 const route = useRoute()
 const router = useRouter()
@@ -231,7 +232,7 @@ const list_model = () => {
   loadSharedApi({type: 'model', isShared: isShared.value, systemType: apiType.value})
     .getModelList({...model_search_form.value, ...params}, list_model_loading)
     .then((ok: any) => {
-      model_list.value = ok.data
+      model_list.value = ok.data.filter((item: Model) => isVisibleModelProvider(item.provider))
     })
 }
 

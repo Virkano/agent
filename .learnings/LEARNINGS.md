@@ -6,6 +6,33 @@ Corrections, insights, and knowledge gaps captured during development.
 
 ---
 
+## [LRN-20261016-001] correction
+
+**Logged**: 2026-10-16T10:30:00+08:00
+**Priority**: high
+**Status**: resolved
+**Area**: backend, frontend, tests
+
+### Summary
+模型供应商可见性调整必须同时覆盖后端目录、左侧供应商分组、全部模型列表和“添加模型”供应商弹窗，并在重启 `--noreload` 后端后用真实浏览器验收。
+
+### Details
+首次调整只依赖后端供应商目录和侧栏分组，运行中的 `python main.py dev web` 使用 `--noreload`，因此浏览器仍从旧进程取得完整供应商列表；“添加模型”弹窗又直接调用按模型类型查询的供应商接口，缺少前端白名单兜底。仅凭单元测试和构建通过不能证明当前运行页面已经生效。
+
+### Suggested Action
+供应商可见性使用前后端同一明确白名单；前端 API 层统一过滤所有供应商目录响应，业务列表继续过滤遗留模型；修改后重启后端，并分别打开侧栏和添加模型弹窗检查实际名称。
+
+### Metadata
+- Source: user_feedback
+- Related Files: apps/models_provider/constants/model_provider_constants.py, apps/models_provider/views/provide.py, ui/src/api/model/provider.ts, ui/src/utils/model-provider-visibility.ts, ui/src/views/model/index.vue
+- Tags: model-provider, visibility, dialog, noreload, browser-acceptance
+
+### Resolution
+- **Resolved**: 2026-10-16T10:30:00+08:00
+- **Notes**: 增加前端统一白名单过滤，覆盖供应商侧栏、全部模型列表和添加模型弹窗；后端重启后完成真实浏览器验收。
+
+---
+
 ## [LRN-20261002-001] correction
 
 **Logged**: 2026-10-02T14:00:00+08:00

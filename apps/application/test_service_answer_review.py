@@ -36,13 +36,26 @@ class ServiceAnswerReviewTests(TestCase):
         self.assertEqual(ServiceAnswerReview.objects.filter(record=self.record).count(), 1)
         self.assertNotIn("资料有什么", str(first.__dict__))
 
-    def test_queue_is_scoped_and_exposes_only_delivered_answer(self):
+    def test_queue_is_scoped_and_exposes_safe_review_context(self):
         capture_pending_review(self.record, "review-a")
         page = page_reviews("review-a", 1, 20)
         self.assertEqual(page["total"], 1)
         self.assertEqual(page["records"][0]["delivered_answer"], self.record.answer_text)
+        self.assertEqual(page["records"][0]["user_question"], self.record.problem_text)
+        self.assertEqual(page["records"][0]["application_name"], self.application.name)
+        self.assertEqual(page["records"][0]["risk_details"][0]["label"], "命中敏感内容规则")
         self.assertNotIn("details", page["records"][0])
         self.assertEqual(page_reviews("review-b", 1, 20)["total"], 0)
+
+    def test_queue_redacts_personal_data_in_user_question(self):
+        self.record.problem_text = "请联系 13800138000 或 test@example.com，证件号 110101199001011234"
+        self.record.save(update_fields=["problem_text"])
+        capture_pending_review(self.record, "review-a")
+        item = page_reviews("review-a", 1, 20)["records"][0]
+        self.assertEqual(
+            item["user_question"],
+            "请联系 [手机号已脱敏] 或 [邮箱已脱敏]，证件号 [证件号已脱敏]",
+        )
 
     def test_handle_adds_fact_and_rejects_cross_workspace_or_repeat(self):
         review = capture_pending_review(self.record, "review-a")
@@ -56,7 +69,7 @@ class ServiceAnswerReviewTests(TestCase):
         with self.assertRaises(AppApiException):
             handle_review("review-a", str(review.id), "DISMISSED", "重复操作", reviewer)
 
-    def test_api_accepts_reviewer_permissions_and_returns_safe_answer_only(self):
+    def test_api_accepts_reviewer_permissions_and_returns_safe_review_context(self):
         review = capture_pending_review(self.record, "review-a")
         user = User.objects.create(username="reviewer", nick_name="reviewer", password="x", role="USER")
         client = APIClient()
@@ -78,7 +91,8 @@ class ServiceAnswerReviewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         payload = json.loads(response.content)["data"]
         self.assertEqual(payload["total"], 1)
-        self.assertNotIn("problem_text", str(payload))
+        self.assertEqual(payload["records"][0]["user_question"], self.record.problem_text)
+        self.assertNotIn("details", payload["records"][0])
         handled = client.post(
             f"{prefix}/{review.id}/handle", {"action": "DISMISSED", "note": "已核实"}, format="json"
         )

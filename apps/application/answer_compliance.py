@@ -20,6 +20,14 @@ EMAIL = re.compile(r"(?<![\w.+-])[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}(?![\w.-])")
 ID_NUMBER = re.compile(r"(?<!\d)\d{17}[\dXx](?!\d)")
 
 
+def redact_private_data(value):
+    """Mask common personal identifiers before customer or reviewer display."""
+    redacted = str(value or "")
+    redacted = PHONE.sub("[手机号已脱敏]", redacted)
+    redacted = EMAIL.sub("[邮箱已脱敏]", redacted)
+    return ID_NUMBER.sub("[证件号已脱敏]", redacted)
+
+
 def should_apply_platform_compliance(context):
     """Marketing conversations keep their existing configurable preflight."""
     if not isinstance(context, dict):
@@ -64,10 +72,7 @@ def evaluate_knowledge_answer(answer_text, paragraph_list, *, configured_fallbac
         delivered = NO_REFERENCE_ANSWER
         action = "FALLBACK"
     else:
-        delivered = generated
-        delivered = PHONE.sub("[手机号已脱敏]", delivered)
-        delivered = EMAIL.sub("[邮箱已脱敏]", delivered)
-        delivered = ID_NUMBER.sub("[证件号已脱敏]", delivered)
+        delivered = redact_private_data(generated)
         action = "REDACTED" if delivered != generated else ("CONFIGURED_FALLBACK" if not references else "PASS")
 
     return delivered, {
